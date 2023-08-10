@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  postgres-education:
+    container_name: postgres-education
+    image: postgres:15
+    restart: on-failure
+    volumes:
+      - ./compose-data/postgres-education:/var/lib/pgsql/data
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=education
+      - POSTGRES_PASSWORD=password
+      - PGDATA=/var/lib/pgsql/data
+      - POSTGRES_DB=education
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+  minio:
+    image: minio/minio
+    container_name: minio
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    ports:
+      - "9005:9005"
+      - "9000:9000"
+    environment:
+      MINIO_ROOT_USER: admin
+      MINIO_ROOT_PASSWORD: 7D3ffTPfo0h705Nn
+      MINIO_BROWSER: "on"
+    volumes:
+      - ./compose-data/minio/minio-data:/data
+      - ./compose-data/minio/minio-config:/root/.minio
+    command: server /data --console-address ":9005"
