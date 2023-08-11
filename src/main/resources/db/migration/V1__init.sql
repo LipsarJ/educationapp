@@ -5,7 +5,7 @@ CREATE TYPE media_type AS ENUM ('photo', 'video', 'document', 'audio');
 CREATE TYPE homework_done_status AS ENUM ('pending', 'uploaded');
 
 CREATE TABLE users (
-                       id INT PRIMARY KEY NOT NULL,
+                       id INT PRIMARY KEY,
                        username TEXT NOT NULL,
                        email TEXT NOT NULL,
                        lastname TEXT NOT NULL,
@@ -18,11 +18,11 @@ CREATE TABLE users (
 );
 
 CREATE TABLE roles (
-    role_name TEXT PRIMARY KEY NOT NULL
+    role_name TEXT PRIMARY KEY
 );
 
 CREATE TABLE user_roles (
-                            user_id INT NOT NULL,
+                            user_id INT,
                             role_name TEXT NOT NULL,
                             PRIMARY KEY (user_id, role_name),
                             FOREIGN KEY (user_id) REFERENCES Users(id),
@@ -30,7 +30,7 @@ CREATE TABLE user_roles (
 );
 
 CREATE TABLE courses (
-                         id INT PRIMARY KEY NOT NULL,
+                         id INT PRIMARY KEY,
                          course_name TEXT NOT NULL,
                          teacher_id INT,
                          status course_status NOT NULL,
@@ -48,7 +48,7 @@ CREATE TABLE user_courses (
 );
 
 CREATE TABLE lessons (
-                         id INT PRIMARY KEY NOT NULL,
+                         id INT PRIMARY KEY,
                          course_id INT NOT NULL,
                          lesson_name TEXT NOT NULL,
                          content TEXT,
@@ -59,7 +59,7 @@ CREATE TABLE lessons (
 );
 
 CREATE TABLE homework_task (
-                               id INT PRIMARY KEY NOT NULL,
+                               id INT PRIMARY KEY,
                                lesson_id INT NOT NULL,
                                title TEXT NOT NULL,
                                description TEXT NOT NULL,
@@ -70,7 +70,7 @@ CREATE TABLE homework_task (
 );
 
 CREATE TABLE homework_done (
-                               id INT PRIMARY KEY NOT NULL,
+                               id INT PRIMARY KEY,
                                task_id INT NOT NULL,
                                student_id INT NOT NULL,
                                submission_date TIMESTAMP,
@@ -82,7 +82,7 @@ CREATE TABLE homework_done (
 );
 
 CREATE TABLE media_lesson (
-                              id UUID DEFAULT gen_random_uuid() PRIMARY KEY NOT NULL,
+                              id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
                               name TEXT NOT NULL,
                               size BIGINT NOT NULL,
                               type media_type NOT NULL,
@@ -91,7 +91,7 @@ CREATE TABLE media_lesson (
 );
 
 CREATE TABLE media_homework_task (
-                                     id UUID DEFAULT gen_random_uuid() PRIMARY KEY NOT NULL,
+                                     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
                                      name TEXT NOT NULL,
                                      size BIGINT NOT NULL,
                                      type media_type NOT NULL,
@@ -100,7 +100,7 @@ CREATE TABLE media_homework_task (
 );
 
 CREATE TABLE media_homework_done (
-                                     id UUID DEFAULT gen_random_uuid() PRIMARY KEY NOT NULL,
+                                     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
                                      name TEXT NOT NULL,
                                      size BIGINT NOT NULL,
                                      type media_type NOT NULL,
