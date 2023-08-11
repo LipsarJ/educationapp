@@ -5,105 +5,105 @@ CREATE TYPE media_type AS ENUM ('photo', 'video', 'document', 'audio');
 CREATE TYPE homework_done_status AS ENUM ('pending', 'uploaded');
 
 CREATE TABLE users (
-                       id INT PRIMARY KEY,
-                       username TEXT,
-                       email TEXT,
-                       lastname TEXT,
+                       id INT PRIMARY KEY NOT NULL,
+                       username TEXT NOT NULL,
+                       email TEXT NOT NULL,
+                       lastname TEXT NOT NULL,
                        middlename TEXT,
-                       firstname TEXT,
-                       password TEXT,
-                       status user_status,
-                       create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                       update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                       firstname TEXT NOT NULL,
+                       password TEXT NOT NULL,
+                       status user_status NOT NULL,
+                       create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                       update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 CREATE TABLE roles (
-                    role_name TEXT PRIMARY KEY
+    role_name TEXT PRIMARY KEY NOT NULL
 );
 
 CREATE TABLE user_roles (
-                            user_id INT,
-                            role_name TEXT,
+                            user_id INT NOT NULL,
+                            role_name TEXT NOT NULL,
                             PRIMARY KEY (user_id, role_name),
                             FOREIGN KEY (user_id) REFERENCES Users(id),
                             FOREIGN KEY (role_name) REFERENCES roles(role_name)
 );
 
 CREATE TABLE courses (
-                         id INT PRIMARY KEY,
-                         course_name TEXT,
+                         id INT PRIMARY KEY NOT NULL,
+                         course_name TEXT NOT NULL,
                          teacher_id INT,
-                         status course_status,
-                         create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                         update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                         status course_status NOT NULL,
+                         create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                         update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                          FOREIGN KEY (teacher_id) REFERENCES users(id)
 );
 
 CREATE TABLE user_courses (
-                              user_id INT,
-                              course_id INT,
+                              user_id INT NOT NULL,
+                              course_id INT NOT NULL,
                               PRIMARY KEY (user_id, course_id),
                               FOREIGN KEY (user_id) REFERENCES users(id),
                               FOREIGN KEY (course_id) REFERENCES courses(id)
 );
 
 CREATE TABLE lessons (
-                         id INT PRIMARY KEY,
-                         course_id INT,
-                         lesson_name TEXT,
+                         id INT PRIMARY KEY NOT NULL,
+                         course_id INT NOT NULL,
+                         lesson_name TEXT NOT NULL,
                          content TEXT,
-                         status lesson_status,
-                         create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                         update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                         status lesson_status NOT NULL,
+                         create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                         update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                          FOREIGN KEY (course_id) REFERENCES Courses(id)
 );
 
 CREATE TABLE homework_task (
-                             id INT PRIMARY KEY,
-                             lesson_id INT,
-                             title TEXT,
-                             description TEXT,
-                             deadline_date timestamp,
-                             create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                             update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                             FOREIGN KEY (lesson_id) REFERENCES Lessons(id)
+                               id INT PRIMARY KEY NOT NULL,
+                               lesson_id INT NOT NULL,
+                               title TEXT NOT NULL,
+                               description TEXT NOT NULL,
+                               deadline_date TIMESTAMP,
+                               create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                               update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                               FOREIGN KEY (lesson_id) REFERENCES Lessons(id)
 );
 
 CREATE TABLE homework_done (
-                                       id INT PRIMARY KEY,
-                                       task_id INT,
-                                       student_id INT,
-                                       submission_date TIMESTAMP,
-                                       grade INT,
-                                       unique (task_id, student_id),
-                                       status homework_done_status,
-                                       FOREIGN KEY (task_id) REFERENCES homework_task(id),
-                                       FOREIGN KEY (student_id) REFERENCES Users(id)
+                               id INT PRIMARY KEY NOT NULL,
+                               task_id INT NOT NULL,
+                               student_id INT NOT NULL,
+                               submission_date TIMESTAMP,
+                               grade INT,
+                               unique (task_id, student_id),
+                               status homework_done_status NOT NULL,
+                               FOREIGN KEY (task_id) REFERENCES homework_task(id),
+                               FOREIGN KEY (student_id) REFERENCES Users(id)
 );
 
 CREATE TABLE media_lesson (
-                            id uuid PRIMARY KEY,
-                            name TEXT,
-                            size bigint,
-                            type media_type,
-                            lesson_id INT,
-                            FOREIGN KEY (lesson_id) REFERENCES lessons(id)
+                              id UUID DEFAULT gen_random_uuid() PRIMARY KEY NOT NULL,
+                              name TEXT NOT NULL,
+                              size BIGINT NOT NULL,
+                              type media_type NOT NULL,
+                              lesson_id INT NOT NULL,
+                              FOREIGN KEY (lesson_id) REFERENCES lessons(id)
 );
 
 CREATE TABLE media_homework_task (
-                                     id uuid PRIMARY KEY,
-                                     name TEXT,
-                                     size bigint,
-                                     type media_type,
-                                     task_id INT,
+                                     id UUID DEFAULT gen_random_uuid() PRIMARY KEY NOT NULL,
+                                     name TEXT NOT NULL,
+                                     size BIGINT NOT NULL,
+                                     type media_type NOT NULL,
+                                     task_id INT NOT NULL,
                                      FOREIGN KEY (task_id) REFERENCES homework_task(id)
 );
 
 CREATE TABLE media_homework_done (
-                              id uuid PRIMARY KEY,
-                              name TEXT,
-                              size bigint,
-                              type media_type,
-                              homework_done_id INT,
-                              FOREIGN KEY (homework_done_id) REFERENCES homework_done(id)
+                                     id UUID DEFAULT gen_random_uuid() PRIMARY KEY NOT NULL,
+                                     name TEXT NOT NULL,
+                                     size BIGINT NOT NULL,
+                                     type media_type NOT NULL,
+                                     homework_done_id INT NOT NULL,
+                                     FOREIGN KEY (homework_done_id) REFERENCES homework_done(id)
 );
