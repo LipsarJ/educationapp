@@ -39,11 +39,11 @@ CREATE TABLE courses (
                          FOREIGN KEY (teacher_id) REFERENCES users(id)
 );
 
-CREATE TABLE user_courses (
-                              user_id INT NOT NULL,
+CREATE TABLE student_courses (
+                              student_id INT NOT NULL,
                               course_id INT NOT NULL,
-                              PRIMARY KEY (user_id, course_id),
-                              FOREIGN KEY (user_id) REFERENCES users(id),
+                              PRIMARY KEY (student_id, course_id),
+                              FOREIGN KEY (student_id) REFERENCES users(id),
                               FOREIGN KEY (course_id) REFERENCES courses(id)
 );
 
@@ -79,6 +79,22 @@ CREATE TABLE homework_done (
                                status homework_done_status NOT NULL,
                                FOREIGN KEY (task_id) REFERENCES homework_task(id),
                                FOREIGN KEY (student_id) REFERENCES Users(id)
+);
+
+CREATE TABLE teacher_courses (
+                                 teacher_id INT NOT NULL,
+                                 course_id INT NOT NULL,
+                                 PRIMARY KEY (teacher_id, course_id),
+                                 FOREIGN KEY (teacher_id) REFERENCES users(id),
+                                 FOREIGN KEY (course_id) REFERENCES courses(id)
+);
+
+CREATE TABLE author_courses(
+                               author_id INT NOT NULL,
+                               course_id INT NOT NULL,
+                               PRIMARY KEY (author_id, course_id),
+                               FOREIGN KEY (author_id) REFERENCES users(id),
+                               FOREIGN KEY (course_id) REFERENCES courses(id)
 );
 
 CREATE TABLE media_lesson (
