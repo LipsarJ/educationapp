@@ -37,6 +37,6 @@ public class Role {
         return Objects.equals(roleName, other.getRoleName());
     }
 
-    @ManyToMany(mappedBy = "roles")
+    @ManyToMany(mappedBy = "roleSet")
     private Set<User> users = new HashSet<>();
 }
