@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.security.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "courses")
@@ -34,4 +36,13 @@ public class Course {
 
     @Column(nullable = false)
     private Timestamp update_date;
+
+    @ManyToMany(mappedBy = "courses")
+    private Set<User> students = new HashSet<>();
+
+    @ManyToMany(mappedBy = "taughtCourses")
+    private Set<User> teachers = new HashSet<>();
+
+    @ManyToMany(mappedBy = "authoredCourses")
+    private Set<User> authors = new HashSet<>();
 }
