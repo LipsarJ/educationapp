@@ -13,12 +13,12 @@ CREATE TABLE users (
                        firstname TEXT NOT NULL,
                        password TEXT NOT NULL,
                        status user_status NOT NULL,
-                       create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                       update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
+                       createDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                       updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL
 );
 
 CREATE TABLE roles (
-    role_name TEXT PRIMARY KEY
+    roleName TEXT PRIMARY KEY
 );
 
 CREATE TABLE user_roles (
@@ -26,7 +26,7 @@ CREATE TABLE user_roles (
                             role_name TEXT NOT NULL,
                             PRIMARY KEY (user_id, role_name),
                             FOREIGN KEY (user_id) REFERENCES Users(id),
-                            FOREIGN KEY (role_name) REFERENCES roles(role_name)
+                            FOREIGN KEY (role_name) REFERENCES roles(roleName)
 );
 
 CREATE TABLE courses (
@@ -50,11 +50,11 @@ CREATE TABLE student_courses (
 CREATE TABLE lessons (
                          id INT PRIMARY KEY,
                          course_id INT NOT NULL,
-                         lesson_name TEXT NOT NULL,
+                         lessonName TEXT NOT NULL,
                          content TEXT,
                          status lesson_status NOT NULL,
-                         create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                         update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                         createDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                         updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                          FOREIGN KEY (course_id) REFERENCES Courses(id)
 );
 
@@ -63,9 +63,9 @@ CREATE TABLE homework_task (
                                lesson_id INT NOT NULL,
                                title TEXT NOT NULL,
                                description TEXT NOT NULL,
-                               deadline_date TIMESTAMP,
-                               create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
-                               update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                               deadlineDate TIMESTAMP,
+                               createDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                               updateDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                                FOREIGN KEY (lesson_id) REFERENCES Lessons(id)
 );
 
@@ -73,7 +73,7 @@ CREATE TABLE homework_done (
                                id INT PRIMARY KEY,
                                task_id INT NOT NULL,
                                student_id INT NOT NULL,
-                               submission_date TIMESTAMP,
+                               submissionDate TIMESTAMP,
                                grade INT,
                                unique (task_id, student_id),
                                status homework_done_status NOT NULL,

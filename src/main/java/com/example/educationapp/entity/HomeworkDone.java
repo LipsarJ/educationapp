@@ -6,17 +6,25 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.security.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "homework_done")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class HomeworkDone {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
+
+    private Timestamp submission_date;
+    private Integer grade;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private HomeworkDoneStatus status;
 
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)
@@ -26,10 +34,6 @@ public class HomeworkDone {
     @JoinColumn(name = "student_id", nullable = false)
     private User student;
 
-    private Timestamp submission_date;
-    private Integer grade;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private HomeworkDoneStatus status;
+    @OneToMany(mappedBy = "homeworkDone")
+    private List<MediaHomeworkDone> mediaHomeworkDoneList = new ArrayList<MediaHomeworkDone>();
 }

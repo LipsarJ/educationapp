@@ -6,26 +6,23 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.security.Timestamp;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "courses")
-@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @Column(nullable = false)
     private String courseName;
-
-    @ManyToOne
-    @JoinColumn(name = "teacher_id")
-    private User teacher;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -37,12 +34,15 @@ public class Course {
     @Column(nullable = false)
     private Timestamp updateDate;
 
-    @ManyToMany(mappedBy = "courses")
+    @ManyToMany(mappedBy = "studentCourseSet")
     private Set<User> students = new HashSet<>();
 
-    @ManyToMany(mappedBy = "taughtCourses")
+    @ManyToMany(mappedBy = "teacherCourseSet")
     private Set<User> teachers = new HashSet<>();
 
-    @ManyToMany(mappedBy = "authoredCourses")
+    @ManyToMany(mappedBy = "authorCourseSet")
     private Set<User> authors = new HashSet<>();
+
+    @OneToMany(mappedBy = "lessonsCourse")
+    private List<Lesson> lessonList = new ArrayList<Lesson>();
 }
