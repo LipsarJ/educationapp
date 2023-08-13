@@ -4,3 +4,10 @@ spring:
     driver-class-name: org.postgresql.Driver
     username: ${DATABASE_USER:education}
     password: ${DATABASE_PASSWORD:password}
+  jpa:
+    hibernate:
+    ddl-auto: validate # Hibernate будет проверять схему, но не изменять ее
+    show-sql: true # Включение логирования SQL-запросов
+  properties:
+    hibernate:
+    format_sql: true
