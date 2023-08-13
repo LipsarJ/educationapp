@@ -28,11 +28,11 @@ public class HomeworkTask {
     @Column(nullable = false)
     private String description;
 
-    private Timestamp deadline_date;
+    private Timestamp deadlineDate;
 
     @Column(nullable = false)
-    private Timestamp create_date;
+    private Timestamp createDate;
 
     @Column(nullable = false)
-    private Timestamp update_date;
+    private Timestamp updateDate;
 }

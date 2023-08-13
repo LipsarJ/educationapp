@@ -42,10 +42,10 @@ public class User {
     private UserStatus status;
 
     @Column(nullable = false)
-    private Timestamp create_date;
+    private Timestamp createDate;
 
     @Column(nullable = false)
-    private Timestamp update_date;
+    private Timestamp updateDate;
 
     @ManyToMany
     @JoinTable(name = "user_roles",

@@ -23,7 +23,7 @@ public class Lesson {
     private Course course;
 
     @Column(nullable = false)
-    private String lesson_name;
+    private String lessonName;
 
     private String content;
 
@@ -32,8 +32,8 @@ public class Lesson {
     private LessonStatus status;
 
     @Column(nullable = false)
-    private Timestamp create_date;
+    private Timestamp createDate;
 
     @Column(nullable = false)
-    private Timestamp update_date;
+    private Timestamp updateDate;
 }

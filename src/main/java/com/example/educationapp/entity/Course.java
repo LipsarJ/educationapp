@@ -21,7 +21,7 @@ public class Course {
     private Integer id;
 
     @Column(nullable = false)
-    private String course_name;
+    private String courseName;
 
     @ManyToOne
     @JoinColumn(name = "teacher_id")
@@ -32,10 +32,10 @@ public class Course {
     private CourseStatus status;
 
     @Column(nullable = false)
-    private Timestamp create_date;
+    private Timestamp createDate;
 
     @Column(nullable = false)
-    private Timestamp update_date;
+    private Timestamp updateDate;
 
     @ManyToMany(mappedBy = "courses")
     private Set<User> students = new HashSet<>();
