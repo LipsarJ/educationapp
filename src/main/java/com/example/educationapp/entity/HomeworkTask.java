@@ -52,9 +52,9 @@ public class HomeworkTask {
     @JoinColumn(name = "lesson_id", nullable = false)
     private Lesson lesson;
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "taskMedia")
     private List<MediaHomeworkTask> homeworkTaskList = new ArrayList<MediaHomeworkTask>();
 
-    @OneToMany(mappedBy = "taskDone")
+    @OneToMany(mappedBy = "task")
     private List<HomeworkDone> homeworkDoneList = new ArrayList<HomeworkDone>();
 }

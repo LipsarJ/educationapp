@@ -46,5 +46,5 @@ public class MediaHomeworkTask {
 
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)
-    private HomeworkTask task;
+    private HomeworkTask taskMedia;
 }
