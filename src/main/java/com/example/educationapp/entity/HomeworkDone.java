@@ -49,6 +49,6 @@ public class HomeworkDone {
     @JoinColumn(name = "student_id", nullable = false)
     private User student;
 
-    @OneToMany(mappedBy = "homeworkDone")
+    @OneToMany(mappedBy = "taskDone")
     private List<MediaHomeworkDone> mediaHomeworkDoneList = new ArrayList<MediaHomeworkDone>();
 }
