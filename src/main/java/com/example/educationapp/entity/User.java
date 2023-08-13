@@ -1,8 +1,7 @@
 package com.example.educationapp.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.security.Timestamp;
 import java.util.HashSet;
@@ -10,6 +9,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
@@ -17,6 +19,20 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Override
+    public int hashCode() {
+        return 813;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(obj == null) return false;
+        if(getClass() != obj.getClass()) return false;
+        User other = (User) obj;
+        return id != null && id.equals(other.getId());
+    }
 
     @Column(nullable = false)
     private String username;

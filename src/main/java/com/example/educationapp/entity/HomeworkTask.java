@@ -1,9 +1,7 @@
 package com.example.educationapp.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.security.Timestamp;
 import java.util.ArrayList;
@@ -11,6 +9,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "homework_task")
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class HomeworkTask {
@@ -18,6 +19,20 @@ public class HomeworkTask {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Override
+    public int hashCode() {
+        return 738;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) return true;
+        if(obj == null) return false;
+        if(getClass() != obj.getClass()) return false;
+        HomeworkTask other = (HomeworkTask) obj;
+        return id != null && id.equals(other.getId());
+    }
 
     @Column(nullable = false)
     private String title;
