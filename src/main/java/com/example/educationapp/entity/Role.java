@@ -17,8 +17,11 @@ import java.util.Set;
 public class Role {
 
     @Id
-    @Column(name = "role_name")
-    private String roleName;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    @Column(name = "name")
+    @Enumerated(EnumType.STRING)
+    private ERole roleName;
 
     @Override
     public int hashCode() {

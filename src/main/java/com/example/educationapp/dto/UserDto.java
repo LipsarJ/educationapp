@@ -13,5 +13,4 @@ public class UserDto {
     private String firstname;
     private String password;
     private UserStatus status;
-    // Дополнительные поля, если необходимо
 }

@@ -3,7 +3,7 @@ package com.example.educationapp.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class HomeworkDone {
         return id != null && id.equals(other.getId());
     }
 
-    private Timestamp submission_date;
+    private Timestamp submissionDate;
     private Integer grade;
 
     @Enumerated(EnumType.STRING)

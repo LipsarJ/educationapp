@@ -3,7 +3,7 @@ package com.example.educationapp.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -43,6 +43,7 @@ public class User {
     @Column(nullable = false)
     private String lastname;
 
+    @Column
     private String middlename;
 
     @Column(nullable = false)
@@ -64,7 +65,7 @@ public class User {
     @ManyToMany
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_name"))
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roleSet = new HashSet<>();
 
     @ManyToMany

@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
-import javax.swing.plaf.metal.MetalDesktopIconUI;
 import java.util.UUID;
 
 @Entity
