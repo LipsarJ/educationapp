@@ -1,5 +1,6 @@
 package com.example.educationapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -14,6 +15,7 @@ import java.util.Set;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@JsonIgnoreProperties({"studentCourseSet", "authorCourseSet", "teacherCourseSet"})
 public class User {
 
     @Id

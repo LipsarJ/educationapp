@@ -3,7 +3,6 @@ package com.example.educationapp.payload.request;
 import java.sql.Timestamp;
 import java.util.Set;
 
-import com.example.educationapp.entity.UserStatus;
 import jakarta.validation.constraints.*;
 
 public class SignupRequest {
@@ -16,7 +15,7 @@ public class SignupRequest {
     @Email
     private String email;
 
-    private Set<String> role;
+    private Set<String> roles;
 
     @NotBlank
     @Size(min = 6, max = 40)
@@ -31,14 +30,14 @@ public class SignupRequest {
     @NotBlank
     private String lastname;
 
-    @NotBlank
+    @NotNull
     private Timestamp createDate;
 
-    @NotBlank
+    @NotNull
     private Timestamp updateDate;
 
-    @NotBlank
-    private UserStatus userStatus;
+    @NotNull
+    private String userStatus;
 
     public String getUsername() {
         return username;
@@ -48,8 +47,8 @@ public class SignupRequest {
         return email;
     }
 
-    public Set<String> getRole() {
-        return role;
+    public Set<String> getRoles() {
+        return  roles;
     }
 
     public String getPassword() {
@@ -76,48 +75,12 @@ public class SignupRequest {
         return updateDate;
     }
 
-    public UserStatus getUserStatus() {
+    public String getUserStatus() {
         return userStatus;
     }
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setRole(Set<String> role) {
-        this.role = role;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setMiddlename(String middlename) {
-        this.middlename = middlename;
-    }
-
-    public void setFirstname(String firstname) {
-        this.firstname = firstname;
-    }
-
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
-    public void setCreateDate(Timestamp createDate) {
-        this.createDate = createDate;
-    }
-
-    public void setUpdateDate(Timestamp updateDate) {
-        this.updateDate = updateDate;
-    }
-
-    public void setUserStatus(UserStatus userStatus) {
-        this.userStatus = userStatus;
     }
 }
 

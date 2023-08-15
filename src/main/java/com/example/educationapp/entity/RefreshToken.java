@@ -14,8 +14,7 @@ import java.time.Instant;
 public class RefreshToken {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "refresh_token_seq")
-    @SequenceGenerator(name = "refresh_token_seq", sequenceName = "refresh_token_seq", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @OneToOne

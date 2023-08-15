@@ -1,5 +1,6 @@
 package com.example.educationapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -50,12 +51,15 @@ public class Course {
     private Timestamp updateDate;
 
     @ManyToMany(mappedBy = "studentCourseSet")
+    @JsonIgnore
     private Set<User> students = new HashSet<>();
 
     @ManyToMany(mappedBy = "teacherCourseSet")
+    @JsonIgnore
     private Set<User> teachers = new HashSet<>();
 
     @ManyToMany(mappedBy = "authorCourseSet")
+    @JsonIgnore
     private Set<User> authors = new HashSet<>();
 
     @OneToMany(mappedBy = "lessonsCourse")

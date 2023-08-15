@@ -1,14 +1,12 @@
 package com.example.educationapp.controller;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import com.example.educationapp.entity.ERole;
-import com.example.educationapp.entity.RefreshToken;
-import com.example.educationapp.entity.Role;
-import com.example.educationapp.entity.User;
+import com.example.educationapp.entity.*;
 import com.example.educationapp.exception.TokenRefreshException;
 import com.example.educationapp.payload.request.LoginRequest;
 import com.example.educationapp.payload.request.SignupRequest;
@@ -108,9 +106,9 @@ public class AuthController {
         user.setLastname(signUpRequest.getLastname());
         user.setCreateDate(signUpRequest.getCreateDate());
         user.setUpdateDate(signUpRequest.getUpdateDate());
-        user.setStatus(signUpRequest.getUserStatus());
+        user.setStatus(UserStatus.valueOf(signUpRequest.getUserStatus()));
 
-        Set<String> strRoles = signUpRequest.getRole();
+        Set<String> strRoles= signUpRequest.getRoles();
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null) {
@@ -119,24 +117,34 @@ public class AuthController {
             roles.add(userRole);
         } else {
             strRoles.forEach(role -> {
+                Role roleEntity;
                 switch (role) {
-                    case "admin":
-                        Role adminRole = roleRepo.findByRoleName(ERole.ADMIN)
+                    case "ADMIN":
+                        roleEntity = roleRepo.findByRoleName(ERole.ADMIN)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(adminRole);
-
                         break;
-                    case "mod":
-                        Role modRole = roleRepo.findByRoleName(ERole.MODERATOR)
+                    case "MODERATOR":
+                        roleEntity = roleRepo.findByRoleName(ERole.MODERATOR)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(modRole);
-
                         break;
+                    case "STUDENT":
+                        roleEntity = roleRepo.findByRoleName(ERole.STUDENT)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        break;
+                    case "AUTHOR":
+                        roleEntity = roleRepo.findByRoleName(ERole.AUTHOR)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        break;
+                    case "TEACHER":
+                        roleEntity = roleRepo.findByRoleName(ERole.TEACHER)
+                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
+                        break;
+                    // Handle other roles similarly
                     default:
-                        Role userRole = roleRepo.findByRoleName(ERole.USER)
+                        roleEntity = roleRepo.findByRoleName(ERole.USER)
                                 .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        roles.add(userRole);
                 }
+                roles.add(roleEntity);
             });
         }
 
