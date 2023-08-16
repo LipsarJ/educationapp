@@ -1,6 +1,5 @@
 package com.example.educationapp.controller;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,10 +7,10 @@ import java.util.stream.Collectors;
 
 import com.example.educationapp.entity.*;
 import com.example.educationapp.exception.TokenRefreshException;
-import com.example.educationapp.payload.request.LoginRequest;
-import com.example.educationapp.payload.request.SignupRequest;
-import com.example.educationapp.payload.response.MessageResponse;
-import com.example.educationapp.payload.response.UserInfoResponse;
+import com.example.educationapp.dto.request.LoginDto;
+import com.example.educationapp.dto.request.SignupDto;
+import com.example.educationapp.dto.response.MessageDto;
+import com.example.educationapp.dto.response.UserInfoDto;
 import com.example.educationapp.repo.RoleRepo;
 import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.security.jwt.JwtUtils;
@@ -21,7 +20,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
     private final AuthenticationManager authenticationManager;
@@ -54,10 +52,10 @@ public class AuthController {
     private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDto loginDto) {
 
         Authentication authentication = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(loginDto.username(), loginDto.password()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -76,35 +74,35 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
-                .body(new UserInfoResponse(userDetails.getId(),
+                .body(new UserInfoDto(userDetails.getId(),
                         userDetails.getUsername(),
                         userDetails.getEmail(),
                         roles));
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-        if (userRepo.existsByUsername(signUpRequest.getUsername())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
+    public ResponseEntity<?> registerUser(@Valid @RequestBody SignupDto signUpDto) {
+        if (userRepo.existsByUsername(signUpDto.username())) {
+            return ResponseEntity.badRequest().body(new MessageDto("Error: Username is already taken!"));
         }
 
-        if (userRepo.existsByEmail(signUpRequest.getEmail())) {
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
+        if (userRepo.existsByEmail(signUpDto.email())) {
+            return ResponseEntity.badRequest().body(new MessageDto("Error: Email is already in use!"));
         }
 
         // Create new user's account
         User user = new User();
-        user.setUsername(signUpRequest.getUsername());
-        user.setEmail(signUpRequest.getEmail());
-        user.setPassword(encoder.encode(signUpRequest.getPassword()));
-        user.setMiddlename(signUpRequest.getMiddlename());
-        user.setFirstname(signUpRequest.getFirstname());
-        user.setLastname(signUpRequest.getLastname());
-        user.setCreateDate(signUpRequest.getCreateDate());
-        user.setUpdateDate(signUpRequest.getUpdateDate());
-        user.setStatus(UserStatus.valueOf(signUpRequest.getUserStatus()));
+        user.setUsername(signUpDto.username());
+        user.setEmail(signUpDto.email());
+        user.setPassword(encoder.encode(signUpDto.password()));
+        user.setMiddlename(signUpDto.middlename());
+        user.setFirstname(signUpDto.firstname());
+        user.setLastname(signUpDto.lastname());
+        user.setCreateDate(signUpDto.createDate());
+        user.setUpdateDate(signUpDto.updateDate());
+        user.setStatus(UserStatus.valueOf(signUpDto.userStatus()));
 
-        Set<String> strRoles= signUpRequest.getRoles();
+        Set<String> strRoles= signUpDto.roles();
         Set<Role> roles = new HashSet<>();
 
         if (strRoles == null) {
@@ -147,7 +145,7 @@ public class AuthController {
         user.setRoleSet(roles);
         userRepo.save(user);
 
-        return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+        return ResponseEntity.ok(new MessageDto("User registered successfully!"));
     }
 
     @PostMapping("/signout")
@@ -164,7 +162,7 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
-                .body(new MessageResponse("You've been signed out!"));
+                .body(new MessageDto("You've been signed out!"));
     }
 
     @PostMapping("/refreshtoken")
@@ -180,13 +178,13 @@ public class AuthController {
 
                         return ResponseEntity.ok()
                                 .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                                .body(new MessageResponse("Token is refreshed successfully!"));
+                                .body(new MessageDto("Token is refreshed successfully!"));
                     })
                     .orElseThrow(() -> new TokenRefreshException(refreshToken,
                             "Refresh token is not in database!"));
         }
 
-        return ResponseEntity.badRequest().body(new MessageResponse("Refresh Token is empty!"));
+        return ResponseEntity.badRequest().body(new MessageDto("Refresh Token is empty!"));
     }
 }
 
