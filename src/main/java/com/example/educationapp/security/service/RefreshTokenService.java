@@ -8,19 +8,19 @@ import com.example.educationapp.entity.RefreshToken;
 import com.example.educationapp.exception.TokenRefreshException;
 import com.example.educationapp.repo.RefreshTokenRepo;
 import com.example.educationapp.repo.UserRepo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@RequiredArgsConstructor
 public class RefreshTokenService {
     private final int refreshTokenDurationMs = 60000;
 
-    @Autowired
-    private RefreshTokenRepo refreshTokenRepo;
+    private final RefreshTokenRepo refreshTokenRepo;
 
-    @Autowired
-    private UserRepo userRepo;
+    private final UserRepo userRepo;
 
     public Optional<RefreshToken> findByToken(String token) {
         return refreshTokenRepo.findByToken(token);
