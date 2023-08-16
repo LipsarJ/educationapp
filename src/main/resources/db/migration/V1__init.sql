@@ -18,11 +18,10 @@ CREATE TABLE roles (
                        role_name TEXT
 );
 INSERT INTO roles (id, role_name) VALUES (1, 'ADMIN');
-INSERT INTO roles (id, role_name) VALUES (2, 'USER');
-INSERT INTO roles (id, role_name) VALUES (3, 'AUTHOR');
-INSERT INTO roles (id, role_name) VALUES (4, 'STUDENT');
-INSERT INTO roles (id, role_name) VALUES (5, 'TEACHER');
-INSERT INTO roles (id, role_name) VALUES (6, 'MODERATOR');
+INSERT INTO roles (id, role_name) VALUES (2, 'AUTHOR');
+INSERT INTO roles (id, role_name) VALUES (3, 'STUDENT');
+INSERT INTO roles (id, role_name) VALUES (4, 'TEACHER');
+INSERT INTO roles (id, role_name) VALUES (5, 'MODERATOR');
 
 -- Создание таблицы связей между пользователями и ролями
 CREATE TABLE user_roles (

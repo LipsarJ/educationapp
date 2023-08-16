@@ -43,7 +43,6 @@ public class AuthController {
 
     private final UserRepo userRepo;
 
-    private final RoleRepo roleRepo;
 
     private final PasswordEncoder encoder;
 
@@ -102,47 +101,6 @@ public class AuthController {
         user.setUpdateDate(signUpDto.updateDate());
         user.setStatus(UserStatus.valueOf(signUpDto.userStatus()));
 
-        Set<String> strRoles= signUpDto.roles();
-        Set<Role> roles = new HashSet<>();
-
-        if (strRoles == null) {
-            Role userRole = roleRepo.findByRoleName(ERole.USER)
-                    .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-            roles.add(userRole);
-        } else {
-            strRoles.forEach(role -> {
-                Role roleEntity;
-                switch (role) {
-                    case "ADMIN":
-                        roleEntity = roleRepo.findByRoleName(ERole.ADMIN)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        break;
-                    case "MODERATOR":
-                        roleEntity = roleRepo.findByRoleName(ERole.MODERATOR)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        break;
-                    case "STUDENT":
-                        roleEntity = roleRepo.findByRoleName(ERole.STUDENT)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        break;
-                    case "AUTHOR":
-                        roleEntity = roleRepo.findByRoleName(ERole.AUTHOR)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        break;
-                    case "TEACHER":
-                        roleEntity = roleRepo.findByRoleName(ERole.TEACHER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                        break;
-                    // Handle other roles similarly
-                    default:
-                        roleEntity = roleRepo.findByRoleName(ERole.USER)
-                                .orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-                }
-                roles.add(roleEntity);
-            });
-        }
-
-        user.setRoleSet(roles);
         userRepo.save(user);
 
         return ResponseEntity.ok(new MessageDto("User registered successfully!"));
