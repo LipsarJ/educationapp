@@ -8,6 +8,7 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
@@ -19,10 +20,17 @@ import java.util.Date;
 @Slf4j
 public class JwtUtils {
 
-    private final String jwtSecret = "======================Education=Spring===========================";
-    private final int jwtExpirationMs = 60000;
-    private final String jwtCookie = "education-jwt";
-    private final String jwtRefreshCookie = "education-jwt-refresh";
+    @Value("${app.security.jwtSecret}")
+    private String jwtSecret = "======================Education=Spring===========================";
+
+    @Value("${app.security.jwtExpirationMs}")
+    private int jwtExpirationMs = 60000;
+
+    @Value("${app.security.jwtCookie}")
+    private String jwtCookie = "education-jwt";
+
+    @Value("${app.security.jwtRefreshCookie}")
+    private String jwtRefreshCookie = "education-jwt-refresh";
 
     public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
         String jwt = generateTokenFromUsername(userPrincipal.getUsername());

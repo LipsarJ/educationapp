@@ -10,13 +10,15 @@ import com.example.educationapp.repo.RefreshTokenRepo;
 import com.example.educationapp.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
-    private final int refreshTokenDurationMs = 60000;
+    @Value("${app.security.refreshTokenDurationMs}")
+    private int refreshTokenDurationMs;
 
     private final RefreshTokenRepo refreshTokenRepo;
 

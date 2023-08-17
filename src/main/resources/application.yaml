@@ -11,7 +11,8 @@ spring:
   properties:
     hibernate:
     format_sql: true
-  app:
+app:
+  security:
     refreshTokenDurationMs: 60000
     jwtSecret: "======================Education=Spring==========================="
     jwtExpirationMs: 60000
