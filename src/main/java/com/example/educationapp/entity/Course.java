@@ -1,13 +1,17 @@
 package com.example.educationapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.security.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static java.time.ZoneOffset.UTC;
 
 @Entity
 @Table(name = "courses")
@@ -44,18 +48,32 @@ public class Course {
     private CourseStatus status;
 
     @Column(nullable = false)
-    private Timestamp createDate;
+    private LocalDateTime createDate;
 
     @Column(nullable = false)
-    private Timestamp updateDate;
+    private LocalDateTime updateDate;
+
+    @PrePersist
+    void onCreate() {
+        updateDate = LocalDateTime.now(ZoneId.from(UTC));
+        createDate = LocalDateTime.now(ZoneId.from(UTC));
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        updateDate = LocalDateTime.now(ZoneId.from(UTC));
+    }
 
     @ManyToMany(mappedBy = "studentCourseSet")
+    @JsonIgnore
     private Set<User> students = new HashSet<>();
 
     @ManyToMany(mappedBy = "teacherCourseSet")
+    @JsonIgnore
     private Set<User> teachers = new HashSet<>();
 
     @ManyToMany(mappedBy = "authorCourseSet")
+    @JsonIgnore
     private Set<User> authors = new HashSet<>();
 
     @OneToMany(mappedBy = "lessonsCourse")

@@ -1,5 +1,6 @@
 package com.example.educationapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,8 +18,11 @@ import java.util.Set;
 public class Role {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     @Column(name = "role_name")
-    private String roleName;
+    @Enumerated(EnumType.STRING)
+    private ERole roleName;
 
     @Override
     public int hashCode() {
@@ -38,5 +42,6 @@ public class Role {
     }
 
     @ManyToMany(mappedBy = "roleSet")
+    @JsonIgnore
     private Set<User> users = new HashSet<>();
 }
