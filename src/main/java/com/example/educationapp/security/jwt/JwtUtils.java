@@ -21,16 +21,16 @@ import java.util.Date;
 public class JwtUtils {
 
     @Value("${app.security.jwtSecret}")
-    private String jwtSecret = "======================Education=Spring===========================";
+    private String jwtSecret;
 
     @Value("${app.security.jwtExpirationMs}")
-    private int jwtExpirationMs = 60000;
+    private int jwtExpirationMs;
 
     @Value("${app.security.jwtCookie}")
-    private String jwtCookie = "education-jwt";
+    private String jwtCookie;
 
     @Value("${app.security.jwtRefreshCookie}")
-    private String jwtRefreshCookie = "education-jwt-refresh";
+    private String jwtRefreshCookie;
 
     public ResponseCookie generateJwtCookie(UserDetailsImpl userPrincipal) {
         String jwt = generateTokenFromUsername(userPrincipal.getUsername());
