@@ -4,8 +4,8 @@ import com.example.educationapp.security.jwt.AuthEntryPointJwt;
 import com.example.educationapp.security.jwt.AuthTokenFilter;
 import com.example.educationapp.security.jwt.JwtUtils;
 import com.example.educationapp.security.service.UserDetailsServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,7 +24,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
-
 
     private final AuthEntryPointJwt unauthorizedHandler;
 

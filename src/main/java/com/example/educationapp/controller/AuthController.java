@@ -1,24 +1,19 @@
 package com.example.educationapp.controller;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import com.example.educationapp.entity.*;
-import com.example.educationapp.exception.TokenRefreshException;
 import com.example.educationapp.dto.request.LoginDto;
 import com.example.educationapp.dto.request.SignupDto;
 import com.example.educationapp.dto.response.MessageDto;
 import com.example.educationapp.dto.response.UserInfoDto;
-import com.example.educationapp.repo.RoleRepo;
+import com.example.educationapp.entity.RefreshToken;
+import com.example.educationapp.entity.User;
+import com.example.educationapp.entity.UserStatus;
+import com.example.educationapp.exception.TokenRefreshException;
 import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.security.jwt.JwtUtils;
 import com.example.educationapp.security.service.RefreshTokenService;
 import com.example.educationapp.security.service.UserDetailsImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -28,11 +23,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
