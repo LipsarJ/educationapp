@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.Set;
+
+import static java.time.ZoneOffset.UTC;
 
 @Entity
 @Table(name = "users")
@@ -59,10 +62,21 @@ public class User {
     private UserStatus status;
 
     @Column(nullable = false)
-    private Timestamp createDate;
+    private LocalDateTime createDate;
 
     @Column(nullable = false)
-    private Timestamp updateDate;
+    private LocalDateTime updateDate;
+
+    @PrePersist
+    void onCreate() {
+        updateDate = LocalDateTime.now(ZoneId.from(UTC));
+        createDate = LocalDateTime.now(ZoneId.from(UTC));
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        updateDate = LocalDateTime.now(ZoneId.from(UTC));
+    }
 
     @ManyToMany
     @JoinTable(name = "user_roles",

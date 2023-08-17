@@ -1,18 +1,17 @@
 package com.example.educationapp.security.service;
 
-import java.time.Instant;
-import java.util.Optional;
-import java.util.UUID;
-
 import com.example.educationapp.entity.RefreshToken;
 import com.example.educationapp.exception.TokenRefreshException;
 import com.example.educationapp.repo.RefreshTokenRepo;
 import com.example.educationapp.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Instant;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

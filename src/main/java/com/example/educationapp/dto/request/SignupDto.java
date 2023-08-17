@@ -5,8 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.sql.Timestamp;
-import java.util.Set;
+import java.time.LocalDateTime;
 
 public record SignupDto(
         @NotBlank @Size(min = 3, max = 20) String username,
@@ -15,7 +14,7 @@ public record SignupDto(
         @NotBlank String middlename,
         @NotBlank String firstname,
         @NotBlank String lastname,
-        @NotNull Timestamp createDate,
-        @NotNull Timestamp updateDate,
+        @NotNull LocalDateTime createDate,
+        @NotNull LocalDateTime updateDate,
         @NotNull String userStatus
 ) {}
