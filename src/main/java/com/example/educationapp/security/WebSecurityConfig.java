@@ -1,5 +1,6 @@
 package com.example.educationapp.security;
 
+import com.example.educationapp.entity.ERole;
 import com.example.educationapp.security.jwt.AuthEntryPointJwt;
 import com.example.educationapp.security.jwt.AuthTokenFilter;
 import com.example.educationapp.security.jwt.JwtUtils;
@@ -61,6 +62,7 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/v1/auth/signin").permitAll()
+                                .requestMatchers("/api/v1/author/**").hasRole("AUTHOR")
                                 .requestMatchers("/api/v1/auth/signup").permitAll()
                                 .anyRequest().authenticated()
                 );
