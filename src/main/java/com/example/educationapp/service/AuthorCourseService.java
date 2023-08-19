@@ -27,7 +27,7 @@ public class AuthorCourseService {
     private final UserContext userContext;
 
 
-    public List<CourseDto> getAllCoursesForAuthor(String username) {
+    public List<CourseDto> getAllCoursesForAuthor() {
         User author = userContext.getUser();
         List<Course> courses = userRepo.findCoursesByAuthorCourseSet(author);
         return courses.stream()
@@ -41,7 +41,7 @@ public class AuthorCourseService {
         return courseDto;
     }
 
-    public CourseDto getCourse(Long id, String username) {
+    public CourseDto getCourse(Long id) {
         User user = userContext.getUser();
 
         Optional<Course> courseOptional = courseRepo.findById(id);
@@ -57,7 +57,7 @@ public class AuthorCourseService {
         return courseMapper.toDto(course);
     }
 
-    public CourseDto updateCourse(Long id, CourseDto courseDto, String username) {
+    public CourseDto updateCourse(Long id, CourseDto courseDto) {
         User user = userContext.getUser();
 
         Optional<Course> courseOptional = courseRepo.findById(id);
@@ -86,7 +86,7 @@ public class AuthorCourseService {
         }
     }
 
-    public void deleteCourse(Long id, String username) {
+    public void deleteCourse(Long id) {
         User user = userContext.getUser();
 
         Optional<Course> courseOptional = courseRepo.findById(id);

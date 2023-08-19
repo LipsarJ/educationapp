@@ -17,9 +17,7 @@ public class AuthorCourseController {
     private final AuthorCourseService authorCourseService;
     @GetMapping
     public ResponseEntity<List<CourseDto>> getAllCoursesForAuthor(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        List<CourseDto> courses = authorCourseService.getAllCoursesForAuthor(username);
+        List<CourseDto> courses = authorCourseService.getAllCoursesForAuthor();
         return ResponseEntity.ok(courses);
     }
 
@@ -31,28 +29,19 @@ public class AuthorCourseController {
 
     @GetMapping("/{id}")
     public ResponseEntity<CourseDto> getCourse(@PathVariable Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        CourseDto courseDto = authorCourseService.getCourse(id, username);
+        CourseDto courseDto = authorCourseService.getCourse(id);
         return ResponseEntity.ok(courseDto);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CourseDto> updateCourse(@PathVariable Long id, @RequestBody CourseDto courseDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        CourseDto updatedCourseDto = authorCourseService.updateCourse(id, courseDto, username);
+        CourseDto updatedCourseDto = authorCourseService.updateCourse(id, courseDto);
         return ResponseEntity.ok(updatedCourseDto);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        authorCourseService.deleteCourse(id, username);
+        authorCourseService.deleteCourse(id);
         return ResponseEntity.noContent().build();
     }
 }
