@@ -1,21 +1,18 @@
 package com.example.educationapp.service;
 
 import com.example.educationapp.dto.CourseDto;
-import com.example.educationapp.dto.UserDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.CourseStatus;
 import com.example.educationapp.entity.User;
 import com.example.educationapp.exception.CourseNotFoundException;
 import com.example.educationapp.exception.ForbiddenException;
-import com.example.educationapp.exception.UserNotFoundException;
 import com.example.educationapp.mapper.CourseMapper;
 import com.example.educationapp.repo.CourseRepo;
 import com.example.educationapp.repo.UserRepo;
+import com.example.educationapp.security.service.UserContext;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,17 +24,16 @@ public class AuthorCourseService {
     private final UserRepo userRepo;
     private final CourseMapper courseMapper;
 
+    private final UserContext userContext;
+
+
     public List<CourseDto> getAllCoursesForAuthor(String username) {
-        User author = userRepo.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        User author = userContext.getUser();
         List<Course> courses = userRepo.findCoursesByAuthorCourseSet(author);
-        if (!courses.isEmpty()) {
-            return courses.stream()
-                    .map(courseMapper::toDto)
-                    .collect(Collectors.toList());
-        } else {
-            return new ArrayList<>();
-        }
+        return courses.stream()
+                .map(courseMapper::toDto)
+                .collect(Collectors.toList());
+
     }
     public CourseDto createCourse(CourseDto courseDto){
         Course course = courseMapper.toEntity(courseDto);
@@ -46,8 +42,7 @@ public class AuthorCourseService {
     }
 
     public CourseDto getCourse(Long id, String username) {
-        User user = userRepo.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = userContext.getUser();
 
         Optional<Course> courseOptional = courseRepo.findById(id);
 
@@ -63,8 +58,7 @@ public class AuthorCourseService {
     }
 
     public CourseDto updateCourse(Long id, CourseDto courseDto, String username) {
-        User user = userRepo.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = userContext.getUser();
 
         Optional<Course> courseOptional = courseRepo.findById(id);
 
@@ -93,8 +87,7 @@ public class AuthorCourseService {
     }
 
     public void deleteCourse(Long id, String username) {
-        User user = userRepo.findByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        User user = userContext.getUser();
 
         Optional<Course> courseOptional = courseRepo.findById(id);
 
