@@ -28,8 +28,8 @@ public class AuthorCourseService {
 
 
     public List<CourseDto> getAllCoursesForAuthor() {
-        User author = userContext.getUser();
-        List<Course> courses = userRepo.findCoursesByAuthorCourseSet(author);
+        User user = userContext.getUser();
+        List<Course> courses = userRepo.findCoursesByAuthorCourseSet(user);
         return courses.stream()
                 .map(courseMapper::toDto)
                 .collect(Collectors.toList());
@@ -76,7 +76,7 @@ public class AuthorCourseService {
                 throw new IllegalArgumentException("Invalid status change.");
             }
 
-            courseDto.setId(id); // Make sure the ID is set for the mapping
+            courseDto.setId(id);
             Course updatedCourse = courseMapper.toEntity(courseDto);
             courseRepo.save(updatedCourse);
 
