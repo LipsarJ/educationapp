@@ -9,28 +9,16 @@ import com.example.educationapp.repo.CourseRepo;
 import com.example.educationapp.security.service.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-
-import java.util.Optional;
 @RequiredArgsConstructor
 @Component
 public class CourseUtils {
-
     private final UserContext userContext;
-
     private final CourseRepo courseRepo;
-
-    private Course course;
 
     public void validateCourse(Long courseId) {
         User user = userContext.getUser();
 
-        Optional<Course> courseOptional = courseRepo.findById(courseId);
-
-        if (!courseOptional.isPresent()) {
-            throw new CourseNotFoundException("Course is not found.");
-        }
-
-        course = courseOptional.get();
+        Course course = courseRepo.findById(courseId).orElseThrow(() -> new CourseNotFoundException("Course is not found."));
 
         if (!course.getAuthors().contains(user)) {
             throw new ForbiddenException("You are not the author of this course.");
@@ -39,7 +27,8 @@ public class CourseUtils {
 
     public Course getValidatedCourse(Long courseId) {
         validateCourse(courseId);
-        return course;
+
+        return courseRepo.findById(courseId).orElseThrow(() -> new CourseNotFoundException("Course is not found."));
     }
 
     public boolean isStatusChangeValid(CourseStatus currentStatus, CourseStatus newStatus) {
