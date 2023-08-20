@@ -8,9 +8,11 @@ import com.example.educationapp.exception.ForbiddenException;
 import com.example.educationapp.repo.CourseRepo;
 import com.example.educationapp.security.service.UserContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 @RequiredArgsConstructor
+@Component
 public class CourseUtils {
 
     private final UserContext userContext;

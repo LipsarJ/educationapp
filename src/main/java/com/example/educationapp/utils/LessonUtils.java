@@ -4,10 +4,12 @@ import com.example.educationapp.entity.Lesson;
 import com.example.educationapp.exception.LessonNotFoundException;
 import com.example.educationapp.repo.LessonRepo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @RequiredArgsConstructor
+@Component
 public class LessonUtils {
     private Lesson lesson;
 
