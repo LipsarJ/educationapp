@@ -4,15 +4,15 @@ import com.example.educationapp.dto.HomeworkTaskDto;
 import com.example.educationapp.entity.HomeworkTask;
 import com.example.educationapp.entity.Lesson;
 import com.example.educationapp.exception.HomeworkTaskNotFoundException;
+import com.example.educationapp.exception.LessonNotFoundException;
 import com.example.educationapp.mapper.HomeworkTaskMapper;
 import com.example.educationapp.repo.HomeworkTaskRepo;
+import com.example.educationapp.repo.LessonRepo;
 import com.example.educationapp.utils.CourseUtils;
-import com.example.educationapp.utils.LessonUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -24,12 +24,12 @@ public class AuthorHomeworkTaskService {
 
     private final CourseUtils courseUtils;
 
-    private final LessonUtils lessonUtils;
+    private final LessonRepo lessonRepo;
 
     public List<HomeworkTaskDto> getAllTasks(Long courseId, Long lessonId) {
         courseUtils.validateCourse(courseId);
 
-        Lesson lesson = lessonUtils.getValidatedLesson(lessonId);
+        Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
         List<HomeworkTask> tasks = lesson.getHomeworkTaskList();
         return tasks.stream()
@@ -40,40 +40,24 @@ public class AuthorHomeworkTaskService {
     public HomeworkTaskDto createTask(Long courseId, Long lessonId, HomeworkTaskDto homeworkTaskDto) {
         courseUtils.validateCourse(courseId);
 
-        Lesson lesson = lessonUtils.getValidatedLesson(lessonId);
+        Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework is not found."));
 
         HomeworkTask homeworkTask = homeworkTaskMapper.toEntity(homeworkTaskDto);
         homeworkTask.setLesson(lesson);
-        homeworkTaskRepo.save(homeworkTask);
-        return homeworkTaskDto;
+        homeworkTask = homeworkTaskRepo.save(homeworkTask);
+        return homeworkTaskMapper.toDto(homeworkTask);
     }
 
     public HomeworkTaskDto getTask(Long courseId, Long lessonId, Long id) {
         courseUtils.validateCourse(courseId);
 
-        lessonUtils.validateLesson(lessonId);
-
-        Optional<HomeworkTask> homeworkTaskOptional = homeworkTaskRepo.findById(id);
-
-        if(!homeworkTaskOptional.isPresent()) {
-            throw new HomeworkTaskNotFoundException("Homework Task is not found");
-        }
-
-        HomeworkTask homeworkTask = homeworkTaskOptional.get();
+        HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework is not found."));
 
         return homeworkTaskMapper.toDto(homeworkTask);
     }
 
     public HomeworkTaskDto updateTask(Long courseId, Long lessonId, Long id, HomeworkTaskDto homeworkTaskDto) {
         courseUtils.validateCourse(courseId);
-
-        lessonUtils.validateLesson(lessonId);
-
-        Optional<HomeworkTask> homeworkTaskOptional = homeworkTaskRepo.findById(id);
-
-        if(!homeworkTaskOptional.isPresent()) {
-            throw new HomeworkTaskNotFoundException("Homework Task is not found");
-        }
 
         homeworkTaskDto.setId(id);
         HomeworkTask updatedHomeworkTask = homeworkTaskMapper.toEntity(homeworkTaskDto);
@@ -86,15 +70,7 @@ public class AuthorHomeworkTaskService {
     public void deleteTask(Long courseId, Long lessonId, Long id) {
         courseUtils.validateCourse(courseId);
 
-        lessonUtils.validateLesson(lessonId);
-
-        Optional<HomeworkTask> homeworkTaskOptional = homeworkTaskRepo.findById(id);
-
-        if(!homeworkTaskOptional.isPresent()) {
-            throw new HomeworkTaskNotFoundException("Homework Task is not found");
-        }
-
-        HomeworkTask homeworkTask = homeworkTaskOptional.get();
+        HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Homework is not found."));
 
         homeworkTaskRepo.delete(homeworkTask);
     }

@@ -4,6 +4,7 @@ import com.example.educationapp.dto.CourseDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.CourseStatus;
 import com.example.educationapp.entity.User;
+import com.example.educationapp.exception.InvalidStatusException;
 import com.example.educationapp.mapper.CourseMapper;
 import com.example.educationapp.repo.CourseRepo;
 import com.example.educationapp.repo.UserRepo;
@@ -37,8 +38,8 @@ public class AuthorCourseService {
     }
     public CourseDto createCourse(CourseDto courseDto){
         Course course = courseMapper.toEntity(courseDto);
-        courseRepo.save(course);
-        return courseDto;
+        course = courseRepo.save(course);
+        return courseMapper.toDto(course);
     }
 
     public CourseDto getCourse(Long id) {
@@ -53,7 +54,7 @@ public class AuthorCourseService {
         CourseStatus newStatus = courseDto.getStatus();
 
         if (!courseUtils.isStatusChangeValid(currentStatus, newStatus)) {
-            throw new IllegalArgumentException("Invalid status change.");
+            throw new InvalidStatusException("Invalid status change.");
         }
 
         courseDto.setId(id);
@@ -67,7 +68,7 @@ public class AuthorCourseService {
         Course course = courseUtils.getValidatedCourse(id);
 
         if (course.getStatus() != CourseStatus.TEMPLATE) {
-            throw new IllegalArgumentException("Course can only be deleted if it's in TEMPLATE status.");
+            throw new InvalidStatusException("Course can only be deleted if it's in TEMPLATE status.");
         }
         courseRepo.delete(course);
     }

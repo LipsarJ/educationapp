@@ -2,9 +2,9 @@ package com.example.educationapp.service;
 
 import com.example.educationapp.dto.LessonDto;
 import com.example.educationapp.entity.Course;
-import com.example.educationapp.entity.CourseStatus;
 import com.example.educationapp.entity.Lesson;
 import com.example.educationapp.entity.LessonStatus;
+import com.example.educationapp.exception.InvalidStatusException;
 import com.example.educationapp.exception.LessonNotFoundException;
 import com.example.educationapp.mapper.LessonMapper;
 import com.example.educationapp.repo.LessonRepo;
@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,20 +38,14 @@ public class AuthorLessonService {
         Course course = courseUtils.getValidatedCourse(courseId);
         Lesson lesson = lessonMapper.toEntity(lessonDto);
         lesson.setLessonsCourse(course);
-        lessonRepo.save(lesson);
-        return lessonDto;
+        lesson = lessonRepo.save(lesson);
+        return lessonMapper.toDto(lesson);
     }
 
     public LessonDto getLesson(Long courseId, Long id) {
         courseUtils.validateCourse(courseId);
 
-        Optional<Lesson> lessonOptional = lessonRepo.findById(id);
-
-        if(!lessonOptional.isPresent()) {
-            throw new LessonNotFoundException("Lesson is not found.");
-        }
-
-        Lesson lesson = lessonOptional.get();
+        Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
         return lessonMapper.toDto(lesson);
     }
@@ -60,16 +53,10 @@ public class AuthorLessonService {
     public LessonDto updateLesson(Long courseId, Long id, LessonDto lessonDto) {
         courseUtils.validateCourse(courseId);
 
-        Optional<Lesson> lessonOptional = lessonRepo.findById(id);
-
-        if(!lessonOptional.isPresent()) {
-            throw new LessonNotFoundException("Lesson is not found.");
-        }
-
         LessonStatus newStatus = lessonDto.getStatus();
 
         if (!isStatusChangeValid(newStatus)) {
-            throw new IllegalArgumentException("Invalid status change.");
+            throw new InvalidStatusException("Invalid status change.");
         }
 
         lessonDto.setId(id);
@@ -80,17 +67,12 @@ public class AuthorLessonService {
 
     public void deleteLesson(Long courseId, Long id) {
         courseUtils.validateCourse(courseId);
-        Optional<Lesson> lessonOptional = lessonRepo.findById(id);
+        Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
-        if(!lessonOptional.isPresent()) {
-            throw new LessonNotFoundException("Lesson is not found.");
+        if (lesson.getStatus() != LessonStatus.NOT_ACTIVE) {
+            throw new InvalidStatusException("Lesson can only be deleted if it's in NOT_ACTIVE status.");
         }
 
-        Lesson lesson = lessonOptional.get();
-
-        if (lesson.getStatus() != LessonStatus.ACTIVE) {
-            throw new IllegalArgumentException("Lesson can only be deleted if it's in ACTIVE status.");
-        }
         lessonRepo.delete(lesson);
     }
 
