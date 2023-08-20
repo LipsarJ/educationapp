@@ -4,17 +4,15 @@ import com.example.educationapp.dto.CourseDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.CourseStatus;
 import com.example.educationapp.entity.User;
-import com.example.educationapp.exception.CourseNotFoundException;
-import com.example.educationapp.exception.ForbiddenException;
 import com.example.educationapp.mapper.CourseMapper;
 import com.example.educationapp.repo.CourseRepo;
 import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.security.service.UserContext;
+import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +23,8 @@ public class AuthorCourseService {
     private final CourseMapper courseMapper;
 
     private final UserContext userContext;
+
+    private final CourseUtils courseUtils;
 
 
     public List<CourseDto> getAllCoursesForAuthor() {
@@ -42,74 +42,33 @@ public class AuthorCourseService {
     }
 
     public CourseDto getCourse(Long id) {
-        User user = userContext.getUser();
-
-        Optional<Course> courseOptional = courseRepo.findById(id);
-
-        if (!courseOptional.isPresent()) {
-            throw new CourseNotFoundException("Course is not found.");
-        }
-        Course course = courseOptional.get();
-
-        if (!course.getAuthors().contains(user)) {
-            throw new ForbiddenException("You are not the author of this course.");
-        }
+        Course course = courseUtils.getValidatedCourse(id);
         return courseMapper.toDto(course);
     }
 
     public CourseDto updateCourse(Long id, CourseDto courseDto) {
-        User user = userContext.getUser();
+        Course course = courseUtils.getValidatedCourse(id);
 
-        Optional<Course> courseOptional = courseRepo.findById(id);
+        CourseStatus currentStatus = course.getStatus();
+        CourseStatus newStatus = courseDto.getStatus();
 
-        if (courseOptional.isPresent()) {
-            Course course = courseOptional.get();
-
-            if (!course.getAuthors().contains(user)) {
-                throw new ForbiddenException("You are not the author of this course.");
-            }
-
-            CourseStatus currentStatus = course.getStatus();
-            CourseStatus newStatus = courseDto.getStatus();
-
-            if (!isStatusChangeValid(currentStatus, newStatus)) {
-                throw new IllegalArgumentException("Invalid status change.");
-            }
-
-            courseDto.setId(id);
-            Course updatedCourse = courseMapper.toEntity(courseDto);
-            courseRepo.save(updatedCourse);
-
-            return courseMapper.toDto(updatedCourse);
-        } else {
-            throw new CourseNotFoundException("Course is not found.");
+        if (!courseUtils.isStatusChangeValid(currentStatus, newStatus)) {
+            throw new IllegalArgumentException("Invalid status change.");
         }
+
+        courseDto.setId(id);
+        Course updatedCourse = courseMapper.toEntity(courseDto);
+        courseRepo.save(updatedCourse);
+
+        return courseMapper.toDto(updatedCourse);
     }
 
     public void deleteCourse(Long id) {
-        User user = userContext.getUser();
+        Course course = courseUtils.getValidatedCourse(id);
 
-        Optional<Course> courseOptional = courseRepo.findById(id);
-
-        if (courseOptional.isPresent()) {
-            Course course = courseOptional.get();
-
-            if (!course.getAuthors().contains(user)) {
-                throw new ForbiddenException("You are not the author of this course.");
-            }
-
-            if (course.getStatus() != CourseStatus.TEMPLATE) {
-                throw new IllegalArgumentException("Course can only be deleted if it's in TEMPLATE status.");
-            }
-
-            courseRepo.delete(course);
-        } else {
-            throw new CourseNotFoundException("Course is not found.");
+        if (course.getStatus() != CourseStatus.TEMPLATE) {
+            throw new IllegalArgumentException("Course can only be deleted if it's in TEMPLATE status.");
         }
-    }
-    private boolean isStatusChangeValid(CourseStatus currentStatus, CourseStatus newStatus) {
-        if((currentStatus == CourseStatus.TEMPLATE && newStatus == CourseStatus.ONGOING)
-                || (currentStatus == CourseStatus.ONGOING && newStatus == CourseStatus.ENDED)) { return true;}
-        else { return false;}
+        courseRepo.delete(course);
     }
 }

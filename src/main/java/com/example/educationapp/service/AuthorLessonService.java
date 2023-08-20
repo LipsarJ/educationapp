@@ -1,15 +1,14 @@
 package com.example.educationapp.service;
 
 import com.example.educationapp.dto.LessonDto;
-import com.example.educationapp.entity.*;
-import com.example.educationapp.exception.CourseNotFoundException;
-import com.example.educationapp.exception.ForbiddenException;
+import com.example.educationapp.entity.Course;
+import com.example.educationapp.entity.CourseStatus;
+import com.example.educationapp.entity.Lesson;
+import com.example.educationapp.entity.LessonStatus;
 import com.example.educationapp.exception.LessonNotFoundException;
 import com.example.educationapp.mapper.LessonMapper;
-import com.example.educationapp.repo.CourseRepo;
 import com.example.educationapp.repo.LessonRepo;
-import com.example.educationapp.repo.UserRepo;
-import com.example.educationapp.security.service.UserContext;
+import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,25 +21,12 @@ import java.util.stream.Collectors;
 public class AuthorLessonService {
     private final LessonRepo lessonRepo;
 
+    private final CourseUtils courseUtils;
+
     private final LessonMapper lessonMapper;
 
-    private final CourseRepo courseRepo;
-
-    private final UserContext userContext;
-
     public List<LessonDto> getAllLessons(Long courseId) {
-        User user = userContext.getUser();
-
-        Optional<Course> courseOptional = courseRepo.findById(courseId);
-
-        if (!courseOptional.isPresent()) {
-            throw new CourseNotFoundException("Course is not found.");
-        }
-        Course course = courseOptional.get();
-
-        if (!course.getAuthors().contains(user)) {
-            throw new ForbiddenException("You are not the author of this course.");
-        }
+        Course course = courseUtils.getValidatedCourse(courseId);
 
         List<Lesson> lessons = lessonRepo.findAllByLessonsCourse(course);
         return lessons.stream()
@@ -50,18 +36,7 @@ public class AuthorLessonService {
     }
 
     public LessonDto createLesson(Long courseId, LessonDto lessonDto) {
-        User user = userContext.getUser();
-
-        Optional<Course> courseOptional = courseRepo.findById(courseId);
-
-        if (!courseOptional.isPresent()) {
-            throw new CourseNotFoundException("Course is not found.");
-        }
-        Course course = courseOptional.get();
-
-        if (!course.getAuthors().contains(user)) {
-            throw new ForbiddenException("You are not the author of this course.");
-        }
+        Course course = courseUtils.getValidatedCourse(courseId);
         Lesson lesson = lessonMapper.toEntity(lessonDto);
         lesson.setLessonsCourse(course);
         lessonRepo.save(lesson);
@@ -69,18 +44,7 @@ public class AuthorLessonService {
     }
 
     public LessonDto getLesson(Long courseId, Long id) {
-        User user = userContext.getUser();
-
-        Optional<Course> courseOptional = courseRepo.findById(courseId);
-
-        if (!courseOptional.isPresent()) {
-            throw new CourseNotFoundException("Course is not found.");
-        }
-        Course course = courseOptional.get();
-
-        if (!course.getAuthors().contains(user)) {
-            throw new ForbiddenException("You are not the author of this course.");
-        }
+        courseUtils.validateCourse(courseId);
 
         Optional<Lesson> lessonOptional = lessonRepo.findById(id);
 
@@ -94,18 +58,7 @@ public class AuthorLessonService {
     }
 
     public LessonDto updateLesson(Long courseId, Long id, LessonDto lessonDto) {
-        User user = userContext.getUser();
-
-        Optional<Course> courseOptional = courseRepo.findById(courseId);
-
-        if (!courseOptional.isPresent()) {
-            throw new CourseNotFoundException("Course is not found.");
-        }
-        Course course = courseOptional.get();
-
-        if (!course.getAuthors().contains(user)) {
-            throw new ForbiddenException("You are not the author of this course.");
-        }
+        courseUtils.validateCourse(courseId);
 
         Optional<Lesson> lessonOptional = lessonRepo.findById(id);
 
@@ -126,18 +79,7 @@ public class AuthorLessonService {
     }
 
     public void deleteLesson(Long courseId, Long id) {
-        User user = userContext.getUser();
-
-        Optional<Course> courseOptional = courseRepo.findById(courseId);
-
-        if (!courseOptional.isPresent()) {
-            throw new CourseNotFoundException("Course is not found.");
-        }
-        Course course = courseOptional.get();
-
-        if (!course.getAuthors().contains(user)) {
-            throw new ForbiddenException("You are not the author of this course.");
-        }
+        courseUtils.validateCourse(courseId);
         Optional<Lesson> lessonOptional = lessonRepo.findById(id);
 
         if(!lessonOptional.isPresent()) {
@@ -145,6 +87,10 @@ public class AuthorLessonService {
         }
 
         Lesson lesson = lessonOptional.get();
+
+        if (lesson.getStatus() != LessonStatus.ACTIVE) {
+            throw new IllegalArgumentException("Lesson can only be deleted if it's in ACTIVE status.");
+        }
         lessonRepo.delete(lesson);
     }
 
