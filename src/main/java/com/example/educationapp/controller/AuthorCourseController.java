@@ -14,32 +14,31 @@ import java.util.List;
 public class AuthorCourseController {
     private final AuthorCourseService authorCourseService;
     @GetMapping
-    public ResponseEntity<List<CourseDto>> getAllCoursesForAuthor(){
+    public List<CourseDto> getAllCoursesForAuthor(){
         List<CourseDto> courses = authorCourseService.getAllCoursesForAuthor();
-        return ResponseEntity.ok(courses);
+        return courses;
     }
 
     @PostMapping
-    public ResponseEntity<CourseDto> createCourse(@RequestBody CourseDto courseDto){
+    public CourseDto createCourse(@RequestBody CourseDto courseDto){
         authorCourseService.createCourse(courseDto);
-        return ResponseEntity.ok(courseDto);
+        return courseDto;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CourseDto> getCourse(@PathVariable Long id) {
+    public CourseDto getCourse(@PathVariable Long id) {
         CourseDto courseDto = authorCourseService.getCourse(id);
-        return ResponseEntity.ok(courseDto);
+        return courseDto;
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CourseDto> updateCourse(@PathVariable Long id, @RequestBody CourseDto courseDto) {
+    public CourseDto updateCourse(@PathVariable Long id, @RequestBody CourseDto courseDto) {
         CourseDto updatedCourseDto = authorCourseService.updateCourse(id, courseDto);
-        return ResponseEntity.ok(updatedCourseDto);
+        return updatedCourseDto;
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteCourse(@PathVariable Long id) {
+    public void deleteCourse(@PathVariable Long id) {
         authorCourseService.deleteCourse(id);
-        return ResponseEntity.noContent().build();
     }
 }
