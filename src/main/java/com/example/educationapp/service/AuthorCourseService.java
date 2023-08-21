@@ -43,12 +43,12 @@ public class AuthorCourseService {
     }
 
     public CourseDto getCourse(Long id) {
-        Course course = courseUtils.getValidatedCourse(id);
+        Course course = courseUtils.validateAndGetCourse(id);
         return courseMapper.toDto(course);
     }
 
     public CourseDto updateCourse(Long id, CourseDto courseDto) {
-        Course course = courseUtils.getValidatedCourse(id);
+        Course course = courseUtils.validateAndGetCourse(id);
 
         CourseStatus currentStatus = course.getStatus();
         CourseStatus newStatus = courseDto.getStatus();
@@ -65,7 +65,7 @@ public class AuthorCourseService {
     }
 
     public void deleteCourse(Long id) {
-        Course course = courseUtils.getValidatedCourse(id);
+        Course course = courseUtils.validateAndGetCourse(id);
 
         if (course.getStatus() != CourseStatus.TEMPLATE) {
             throw new InvalidStatusException("Course can only be deleted if it's in TEMPLATE status.");

@@ -27,7 +27,7 @@ public class AuthorHomeworkTaskService {
     private final LessonRepo lessonRepo;
 
     public List<HomeworkTaskDto> getAllTasks(Long courseId, Long lessonId) {
-        courseUtils.validateCourse(courseId);
+        courseUtils.validateAndGetCourse(courseId);
 
         Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
@@ -38,7 +38,7 @@ public class AuthorHomeworkTaskService {
     }
 
     public HomeworkTaskDto createTask(Long courseId, Long lessonId, HomeworkTaskDto homeworkTaskDto) {
-        courseUtils.validateCourse(courseId);
+        courseUtils.validateAndGetCourse(courseId);
 
         Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework is not found."));
 
@@ -49,7 +49,7 @@ public class AuthorHomeworkTaskService {
     }
 
     public HomeworkTaskDto getTask(Long courseId, Long lessonId, Long id) {
-        courseUtils.validateCourse(courseId);
+        courseUtils.validateAndGetCourse(courseId);
 
         HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework is not found."));
 
@@ -57,7 +57,7 @@ public class AuthorHomeworkTaskService {
     }
 
     public HomeworkTaskDto updateTask(Long courseId, Long lessonId, Long id, HomeworkTaskDto homeworkTaskDto) {
-        courseUtils.validateCourse(courseId);
+        courseUtils.validateAndGetCourse(courseId);
 
         homeworkTaskDto.setId(id);
         HomeworkTask updatedHomeworkTask = homeworkTaskMapper.toEntity(homeworkTaskDto);
@@ -68,7 +68,7 @@ public class AuthorHomeworkTaskService {
     }
 
     public void deleteTask(Long courseId, Long lessonId, Long id) {
-        courseUtils.validateCourse(courseId);
+        courseUtils.validateAndGetCourse(courseId);
 
         HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Homework is not found."));
 

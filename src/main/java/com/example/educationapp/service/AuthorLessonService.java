@@ -25,7 +25,7 @@ public class AuthorLessonService {
     private final LessonMapper lessonMapper;
 
     public List<LessonDto> getAllLessons(Long courseId) {
-        Course course = courseUtils.getValidatedCourse(courseId);
+        Course course = courseUtils.validateAndGetCourse(courseId);
 
         List<Lesson> lessons = lessonRepo.findAllByLessonsCourse(course);
         return lessons.stream()
@@ -35,7 +35,7 @@ public class AuthorLessonService {
     }
 
     public LessonDto createLesson(Long courseId, LessonDto lessonDto) {
-        Course course = courseUtils.getValidatedCourse(courseId);
+        Course course = courseUtils.validateAndGetCourse(courseId);
         Lesson lesson = lessonMapper.toEntity(lessonDto);
         lesson.setLessonsCourse(course);
         lesson = lessonRepo.save(lesson);
@@ -43,7 +43,7 @@ public class AuthorLessonService {
     }
 
     public LessonDto getLesson(Long courseId, Long id) {
-        courseUtils.validateCourse(courseId);
+        courseUtils.validateAndGetCourse(courseId);
 
         Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
@@ -51,7 +51,7 @@ public class AuthorLessonService {
     }
 
     public LessonDto updateLesson(Long courseId, Long id, LessonDto lessonDto) {
-        courseUtils.validateCourse(courseId);
+        courseUtils.validateAndGetCourse(courseId);
 
         LessonStatus newStatus = lessonDto.getStatus();
 
@@ -66,7 +66,7 @@ public class AuthorLessonService {
     }
 
     public void deleteLesson(Long courseId, Long id) {
-        courseUtils.validateCourse(courseId);
+        courseUtils.validateAndGetCourse(courseId);
         Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
         if (lesson.getStatus() != LessonStatus.NOT_ACTIVE) {

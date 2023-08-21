@@ -15,7 +15,7 @@ public class CourseUtils {
     private final UserContext userContext;
     private final CourseRepo courseRepo;
 
-    public void validateCourse(Long courseId) {
+    public Course validateAndGetCourse(Long courseId) {
         User user = userContext.getUser();
 
         Course course = courseRepo.findById(courseId).orElseThrow(() -> new CourseNotFoundException("Course is not found."));
@@ -23,12 +23,7 @@ public class CourseUtils {
         if (!course.getAuthors().contains(user)) {
             throw new ForbiddenException("You are not the author of this course.");
         }
-    }
-
-    public Course getValidatedCourse(Long courseId) {
-        validateCourse(courseId);
-
-        return courseRepo.findById(courseId).orElseThrow(() -> new CourseNotFoundException("Course is not found."));
+        return course;
     }
 
     public boolean isStatusChangeValid(CourseStatus currentStatus, CourseStatus newStatus) {
