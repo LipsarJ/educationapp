@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
@@ -13,7 +13,7 @@ public class HomeworkTaskDto {
     private Long id;
     private String title;
     private String description;
-    private LocalDateTime deadlineDate;
-    private LocalDateTime createDate;
-    private LocalDateTime updateDate;
+    private OffsetDateTime deadlineDate;
+    private OffsetDateTime createDate;
+    private OffsetDateTime updateDate;
 }

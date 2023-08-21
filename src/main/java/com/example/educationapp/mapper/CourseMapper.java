@@ -4,7 +4,7 @@ import com.example.educationapp.dto.CourseDto;
 import com.example.educationapp.entity.Course;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = BaseLocalDateTimeOffsetDateTimeMapper.class)
 public interface CourseMapper {
     Course toEntity(CourseDto courseDto);
 

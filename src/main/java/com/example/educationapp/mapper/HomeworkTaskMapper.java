@@ -4,7 +4,7 @@ import com.example.educationapp.dto.HomeworkTaskDto;
 import com.example.educationapp.entity.HomeworkTask;
 import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = BaseLocalDateTimeOffsetDateTimeMapper.class)
 public interface HomeworkTaskMapper {
     HomeworkTask toEntity(HomeworkTaskDto homeworkTaskDto);
 

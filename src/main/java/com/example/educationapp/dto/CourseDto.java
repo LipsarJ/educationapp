@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 
 @Data
 @AllArgsConstructor
@@ -14,6 +14,6 @@ public class CourseDto {
     private Long id;
     private String courseName;
     private CourseStatus status;
-    private LocalDateTime createDate;
-    private LocalDateTime updateDate;
+    private OffsetDateTime createDate;
+    private OffsetDateTime updateDate;
 }
