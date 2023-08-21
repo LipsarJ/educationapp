@@ -99,7 +99,7 @@ public class AuthorCourseServiceTest {
     @Test
     public void testGetCourse() {
         CourseDto courseDto = createCourseDto();
-        when(courseUtils.getValidatedCourse(anyLong())).thenReturn(createCourseEntity());
+        when(courseUtils.validateAndGetCourse(anyLong())).thenReturn(createCourseEntity());
         when(courseMapper.toDto(any())).thenReturn(courseDto);
 
         CourseDto retrievedCourse = authorCourseService.getCourse(1L);
@@ -115,7 +115,7 @@ public class AuthorCourseServiceTest {
     @Test
     public void testUpdateCourse() {
         CourseDto courseDto = createCourseDto();
-        when(courseUtils.getValidatedCourse(anyLong())).thenReturn(createCourseEntity());
+        when(courseUtils.validateAndGetCourse(anyLong())).thenReturn(createCourseEntity());
         when(courseUtils.isStatusChangeValid(any(), any())).thenReturn(true);
         when(courseRepo.save(any())).thenReturn(createCourseEntity());
         when(courseMapper.toDto(any())).thenReturn(courseDto);
@@ -136,14 +136,13 @@ public class AuthorCourseServiceTest {
         Long courseId = 1L;
         Course courseEntity = createCourseEntity();
 
-        when(courseUtils.getValidatedCourse(courseId)).thenReturn(courseEntity);
-        doNothing().when(courseUtils).validateCourse(courseId);
+        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(courseEntity);
         doNothing().when(courseRepo).delete(courseEntity);
 
         // Act & Assert
         assertDoesNotThrow(() -> authorCourseService.deleteCourse(courseId));
 
-        verify(courseUtils, times(1)).getValidatedCourse(courseId);
+        verify(courseUtils, times(1)).validateAndGetCourse(courseId);
         verify(courseRepo, times(1)).delete(courseEntity);
     }
 
