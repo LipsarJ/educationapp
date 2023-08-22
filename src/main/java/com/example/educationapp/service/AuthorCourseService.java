@@ -1,6 +1,7 @@
 package com.example.educationapp.service;
 
-import com.example.educationapp.dto.CourseDto;
+import com.example.educationapp.dto.request.RequestCourseDto;
+import com.example.educationapp.dto.response.ResponseCourseDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.CourseStatus;
 import com.example.educationapp.entity.User;
@@ -13,6 +14,8 @@ import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,40 +31,41 @@ public class AuthorCourseService {
     private final CourseUtils courseUtils;
 
 
-    public List<CourseDto> getAllCoursesForAuthor() {
+    public List<ResponseCourseDto> getAllCoursesForAuthor() {
         User user = userContext.getUser();
         List<Course> courses = userRepo.findCoursesByAuthorCourseSet(user);
         return courses.stream()
-                .map(courseMapper::toDto)
+                .map(courseMapper::toResponseDto)
                 .collect(Collectors.toList());
 
     }
-    public CourseDto createCourse(CourseDto courseDto){
-        Course course = courseMapper.toEntity(courseDto);
+    public ResponseCourseDto createCourse(RequestCourseDto requestCourseDto){
+        Course course = courseMapper.toEntity(requestCourseDto);
         course = courseRepo.save(course);
-        return courseMapper.toDto(course);
+        return courseMapper.toResponseDto(course);
     }
 
-    public CourseDto getCourse(Long id) {
+    public ResponseCourseDto getCourse(Long id) {
         Course course = courseUtils.validateAndGetCourse(id);
-        return courseMapper.toDto(course);
+        return courseMapper.toResponseDto(course);
     }
 
-    public CourseDto updateCourse(Long id, CourseDto courseDto) {
+    public ResponseCourseDto updateCourse(Long id, RequestCourseDto requestCourseDto) {
         Course course = courseUtils.validateAndGetCourse(id);
 
         CourseStatus currentStatus = course.getStatus();
-        CourseStatus newStatus = courseDto.getStatus();
+        CourseStatus newStatus = requestCourseDto.getCourseStatus();
 
         if (!courseUtils.isStatusChangeValid(currentStatus, newStatus)) {
             throw new InvalidStatusException("Invalid status change.");
         }
 
-        courseDto.setId(id);
-        Course updatedCourse = courseMapper.toEntity(courseDto);
+        requestCourseDto.setId(id);
+        requestCourseDto.setUpdateDate(OffsetDateTime.now(ZoneOffset.UTC));
+        Course updatedCourse = courseMapper.toEntity(requestCourseDto);
         courseRepo.save(updatedCourse);
 
-        return courseMapper.toDto(updatedCourse);
+        return courseMapper.toResponseDto(updatedCourse);
     }
 
     public void deleteCourse(Long id) {

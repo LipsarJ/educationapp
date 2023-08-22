@@ -1,6 +1,7 @@
 package com.example.educationapp.service;
 
-import com.example.educationapp.dto.LessonDto;
+import com.example.educationapp.dto.request.RequestLessonDto;
+import com.example.educationapp.dto.response.ResponseLessonDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.Lesson;
 import com.example.educationapp.entity.LessonStatus;
@@ -24,45 +25,45 @@ public class AuthorLessonService {
 
     private final LessonMapper lessonMapper;
 
-    public List<LessonDto> getAllLessons(Long courseId) {
+    public List<ResponseLessonDto> getAllLessons(Long courseId) {
         Course course = courseUtils.validateAndGetCourse(courseId);
 
         List<Lesson> lessons = lessonRepo.findAllByLessonsCourse(course);
         return lessons.stream()
-                .map(lessonMapper::toDto)
+                .map(lessonMapper::toResponseDto)
                 .collect(Collectors.toList());
 
     }
 
-    public LessonDto createLesson(Long courseId, LessonDto lessonDto) {
+    public ResponseLessonDto createLesson(Long courseId, RequestLessonDto requestLessonDto) {
         Course course = courseUtils.validateAndGetCourse(courseId);
-        Lesson lesson = lessonMapper.toEntity(lessonDto);
+        Lesson lesson = lessonMapper.toEntity(requestLessonDto);
         lesson.setLessonsCourse(course);
         lesson = lessonRepo.save(lesson);
-        return lessonMapper.toDto(lesson);
+        return lessonMapper.toResponseDto(lesson);
     }
 
-    public LessonDto getLesson(Long courseId, Long id) {
+    public ResponseLessonDto getLesson(Long courseId, Long id) {
         courseUtils.validateAndGetCourse(courseId);
 
         Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
-        return lessonMapper.toDto(lesson);
+        return lessonMapper.toResponseDto(lesson);
     }
 
-    public LessonDto updateLesson(Long courseId, Long id, LessonDto lessonDto) {
+    public ResponseLessonDto updateLesson(Long courseId, Long id, RequestLessonDto requestLessonDto) {
         courseUtils.validateAndGetCourse(courseId);
 
-        LessonStatus newStatus = lessonDto.getStatus();
+        LessonStatus newStatus = requestLessonDto.getLessonStatus();
 
         if (!isStatusChangeValid(newStatus)) {
             throw new InvalidStatusException("Invalid status change.");
         }
 
-        lessonDto.setId(id);
-        Lesson updatedLesson = lessonMapper.toEntity(lessonDto);
+        requestLessonDto.setId(id);
+        Lesson updatedLesson = lessonMapper.toEntity(requestLessonDto);
         lessonRepo.save(updatedLesson);
-        return lessonDto;
+        return lessonMapper.toResponseDto(updatedLesson);
     }
 
     public void deleteLesson(Long courseId, Long id) {

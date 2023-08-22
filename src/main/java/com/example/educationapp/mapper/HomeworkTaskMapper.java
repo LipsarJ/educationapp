@@ -1,12 +1,13 @@
 package com.example.educationapp.mapper;
 
-import com.example.educationapp.dto.HomeworkTaskDto;
+import com.example.educationapp.dto.request.RequestHomeworkTaskDto;
+import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
 import com.example.educationapp.entity.HomeworkTask;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", uses = BaseLocalDateTimeOffsetDateTimeMapper.class)
 public interface HomeworkTaskMapper {
-    HomeworkTask toEntity(HomeworkTaskDto homeworkTaskDto);
+    HomeworkTask toEntity(RequestHomeworkTaskDto requestHomeworkTaskDto);
 
-    HomeworkTaskDto toDto(HomeworkTask homeworkTask);
+    ResponseHomeworkTaskDto toResponseDto(HomeworkTask homeworkTask);
 }

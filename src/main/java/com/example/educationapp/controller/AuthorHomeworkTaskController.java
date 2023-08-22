@@ -1,6 +1,7 @@
 package com.example.educationapp.controller;
 
-import com.example.educationapp.dto.HomeworkTaskDto;
+import com.example.educationapp.dto.request.RequestHomeworkTaskDto;
+import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
 import com.example.educationapp.service.AuthorHomeworkTaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,30 +17,29 @@ public class AuthorHomeworkTaskController {
     private final AuthorHomeworkTaskService authorHomeworkTaskService;
 
     @GetMapping("/{courseId}/{lessonId}")
-    public List<HomeworkTaskDto> getAllTasks(@PathVariable Long courseId, @PathVariable Long lessonId) {
-        List<HomeworkTaskDto> tasks = authorHomeworkTaskService.getAllTasks(courseId, lessonId);
-        return tasks;
+    public ResponseEntity<List<ResponseHomeworkTaskDto>> getAllTasks(@PathVariable Long courseId, @PathVariable Long lessonId) {
+        List<ResponseHomeworkTaskDto> tasks = authorHomeworkTaskService.getAllTasks(courseId, lessonId);
+        return ResponseEntity.ok(tasks);
     }
 
     @PostMapping("/{courseId}/{lessonId}")
-    public HomeworkTaskDto createTask(@PathVariable Long courseId, @PathVariable Long lessonId,
-                                                      @RequestBody HomeworkTaskDto homeworkTaskDto) {
-        authorHomeworkTaskService.createTask(courseId, lessonId, homeworkTaskDto);
-        return homeworkTaskDto;
+    public ResponseEntity<ResponseHomeworkTaskDto> createTask(@PathVariable Long courseId, @PathVariable Long lessonId,
+                                                        @RequestBody RequestHomeworkTaskDto requestHomeworkTaskDto) {
+        return ResponseEntity.ok(authorHomeworkTaskService.createTask(courseId, lessonId, requestHomeworkTaskDto));
     }
 
     @GetMapping("/{courseId}/{lessonId}/{id}")
-    public HomeworkTaskDto getTask(@PathVariable Long courseId, @PathVariable Long lessonId,
+    public ResponseEntity<ResponseHomeworkTaskDto> getTask(@PathVariable Long courseId, @PathVariable Long lessonId,
                                                    @PathVariable Long id) {
-        HomeworkTaskDto homeworkTaskDto = authorHomeworkTaskService.getTask(courseId, lessonId, id);
-        return homeworkTaskDto;
+        ResponseHomeworkTaskDto responseHomeworkTaskDto = authorHomeworkTaskService.getTask(courseId, lessonId, id);
+        return ResponseEntity.ok(responseHomeworkTaskDto);
     }
 
     @PutMapping("/{courseId}/{lessonId}/{id}")
-    public HomeworkTaskDto updateTask(@PathVariable Long courseId, @PathVariable Long lessonId,
-                                                      @PathVariable Long id, @RequestBody HomeworkTaskDto homeworkTaskDto) {
-        HomeworkTaskDto updatedHomeworkTask = authorHomeworkTaskService.updateTask(courseId, lessonId, id, homeworkTaskDto);
-        return updatedHomeworkTask;
+    public ResponseEntity<ResponseHomeworkTaskDto> updateTask(@PathVariable Long courseId, @PathVariable Long lessonId,
+                                                      @PathVariable Long id, @RequestBody RequestHomeworkTaskDto requestHomeworkTaskDto) {
+        ResponseHomeworkTaskDto updatedHomeworkTask = authorHomeworkTaskService.updateTask(courseId, lessonId, id, requestHomeworkTaskDto);
+        return ResponseEntity.ok(updatedHomeworkTask);
     }
 
     @DeleteMapping("/{courseId}/{lessonId}/{id}")

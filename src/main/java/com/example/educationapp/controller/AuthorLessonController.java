@@ -1,6 +1,7 @@
 package com.example.educationapp.controller;
 
-import com.example.educationapp.dto.LessonDto;
+import com.example.educationapp.dto.request.RequestLessonDto;
+import com.example.educationapp.dto.response.ResponseLessonDto;
 import com.example.educationapp.service.AuthorLessonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,27 +16,26 @@ public class AuthorLessonController {
     private final AuthorLessonService authorLessonService;
 
     @GetMapping("{courseId}")
-    public List<LessonDto> getAllLessons(@PathVariable Long courseId) {
-        List<LessonDto> lessons = authorLessonService.getAllLessons(courseId);
-        return lessons;
+    public ResponseEntity<List<ResponseLessonDto>> getAllLessons(@PathVariable Long courseId) {
+        List<ResponseLessonDto> lessons = authorLessonService.getAllLessons(courseId);
+        return ResponseEntity.ok(lessons);
     }
 
     @PostMapping("/{courseId}")
-    public LessonDto createLesson(@PathVariable Long courseId, @RequestBody LessonDto lessonDto) {
-        authorLessonService.createLesson(courseId, lessonDto);
-        return lessonDto;
+    public ResponseEntity<ResponseLessonDto> createLesson(@PathVariable Long courseId, @RequestBody RequestLessonDto requestLessonDto) {
+        return ResponseEntity.ok(authorLessonService.createLesson(courseId, requestLessonDto));
     }
 
     @GetMapping("/{courseId}/{id}")
-    public LessonDto getLesson(@PathVariable Long courseId, @PathVariable Long id) {
-        LessonDto lessonDto = authorLessonService.getLesson(courseId, id);
-        return lessonDto;
+    public ResponseEntity<ResponseLessonDto> getLesson(@PathVariable Long courseId, @PathVariable Long id) {
+        ResponseLessonDto responseLessonDto = authorLessonService.getLesson(courseId, id);
+        return ResponseEntity.ok(responseLessonDto);
     }
 
     @PutMapping("/{courseId}/{id}")
-    public LessonDto updateLesson(@PathVariable Long courseId, @PathVariable Long id, @RequestBody LessonDto lessonDto) {
-        LessonDto updatedLessonDto = authorLessonService.updateLesson(courseId, id, lessonDto);
-        return updatedLessonDto;
+    public ResponseEntity<ResponseLessonDto> updateLesson(@PathVariable Long courseId, @PathVariable Long id, @RequestBody RequestLessonDto requestLessonDto) {
+        ResponseLessonDto updatedLessonDto = authorLessonService.updateLesson(courseId, id, requestLessonDto);
+        return ResponseEntity.ok(updatedLessonDto);
     }
 
     @DeleteMapping("/{courseId}/{id}")

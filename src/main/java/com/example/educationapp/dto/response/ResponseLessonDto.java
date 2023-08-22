@@ -1,20 +1,15 @@
-package com.example.educationapp.dto;
+package com.example.educationapp.dto.response;
 
 import com.example.educationapp.entity.LessonStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.OffsetDateTime;
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LessonDto {
-    private Long id;
+public class ResponseLessonDto {
     private String lessonName;
     private String content;
-    private LessonStatus status;
-    private OffsetDateTime createDate;
-    private OffsetDateTime updateDate;
+    private LessonStatus lessonStatus;
 }

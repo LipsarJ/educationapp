@@ -1,6 +1,7 @@
 package com.example.educationapp.service;
 
-import com.example.educationapp.dto.HomeworkTaskDto;
+import com.example.educationapp.dto.request.RequestHomeworkTaskDto;
+import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
 import com.example.educationapp.entity.HomeworkTask;
 import com.example.educationapp.entity.Lesson;
 import com.example.educationapp.exception.HomeworkTaskNotFoundException;
@@ -12,6 +13,8 @@ import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,45 +29,46 @@ public class AuthorHomeworkTaskService {
 
     private final LessonRepo lessonRepo;
 
-    public List<HomeworkTaskDto> getAllTasks(Long courseId, Long lessonId) {
+    public List<ResponseHomeworkTaskDto> getAllTasks(Long courseId, Long lessonId) {
         courseUtils.validateAndGetCourse(courseId);
 
         Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
-        List<HomeworkTask> tasks = lesson.getHomeworkTaskList();
+        List<HomeworkTask> tasks = homeworkTaskRepo.findAllByLesson(lesson);
         return tasks.stream()
-                .map(homeworkTaskMapper::toDto)
+                .map(homeworkTaskMapper::toResponseDto)
                 .collect(Collectors.toList());
     }
 
-    public HomeworkTaskDto createTask(Long courseId, Long lessonId, HomeworkTaskDto homeworkTaskDto) {
+    public ResponseHomeworkTaskDto createTask(Long courseId, Long lessonId, RequestHomeworkTaskDto requestHomeworkTaskDto) {
         courseUtils.validateAndGetCourse(courseId);
 
         Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework is not found."));
 
-        HomeworkTask homeworkTask = homeworkTaskMapper.toEntity(homeworkTaskDto);
+        HomeworkTask homeworkTask = homeworkTaskMapper.toEntity(requestHomeworkTaskDto);
         homeworkTask.setLesson(lesson);
         homeworkTask = homeworkTaskRepo.save(homeworkTask);
-        return homeworkTaskMapper.toDto(homeworkTask);
+        return homeworkTaskMapper.toResponseDto(homeworkTask);
     }
 
-    public HomeworkTaskDto getTask(Long courseId, Long lessonId, Long id) {
+    public ResponseHomeworkTaskDto getTask(Long courseId, Long lessonId, Long id) {
         courseUtils.validateAndGetCourse(courseId);
 
         HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework is not found."));
 
-        return homeworkTaskMapper.toDto(homeworkTask);
+        return homeworkTaskMapper.toResponseDto(homeworkTask);
     }
 
-    public HomeworkTaskDto updateTask(Long courseId, Long lessonId, Long id, HomeworkTaskDto homeworkTaskDto) {
+    public ResponseHomeworkTaskDto updateTask(Long courseId, Long lessonId, Long id, RequestHomeworkTaskDto requestHomeworkTaskDto) {
         courseUtils.validateAndGetCourse(courseId);
 
-        homeworkTaskDto.setId(id);
-        HomeworkTask updatedHomeworkTask = homeworkTaskMapper.toEntity(homeworkTaskDto);
+        requestHomeworkTaskDto.setId(id);
+        requestHomeworkTaskDto.setUpdateDate(OffsetDateTime.now(ZoneOffset.UTC));
+        HomeworkTask updatedHomeworkTask = homeworkTaskMapper.toEntity(requestHomeworkTaskDto);
 
         homeworkTaskRepo.save(updatedHomeworkTask);
 
-        return homeworkTaskDto;
+        return homeworkTaskMapper.toResponseDto(updatedHomeworkTask);
     }
 
     public void deleteTask(Long courseId, Long lessonId, Long id) {

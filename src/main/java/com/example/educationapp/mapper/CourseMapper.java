@@ -1,12 +1,13 @@
 package com.example.educationapp.mapper;
 
-import com.example.educationapp.dto.CourseDto;
+import com.example.educationapp.dto.request.RequestCourseDto;
+import com.example.educationapp.dto.response.ResponseCourseDto;
 import com.example.educationapp.entity.Course;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", uses = BaseLocalDateTimeOffsetDateTimeMapper.class)
 public interface CourseMapper {
-    Course toEntity(CourseDto courseDto);
+    Course toEntity(RequestCourseDto requestCourseDto);
 
-    CourseDto toDto(Course course);
+    ResponseCourseDto toResponseDto(Course course);
 }

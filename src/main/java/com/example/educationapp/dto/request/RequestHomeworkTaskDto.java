@@ -1,6 +1,5 @@
-package com.example.educationapp.dto;
+package com.example.educationapp.dto.request;
 
-import com.example.educationapp.entity.CourseStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,10 +9,9 @@ import java.time.OffsetDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CourseDto {
+public class RequestHomeworkTaskDto {
     private Long id;
-    private String courseName;
-    private CourseStatus status;
-    private OffsetDateTime createDate;
+    private String title;
+    private String description;
     private OffsetDateTime updateDate;
 }

@@ -1,6 +1,7 @@
 package com.example.educationapp.controller;
 
-import com.example.educationapp.dto.CourseDto;
+import com.example.educationapp.dto.request.RequestCourseDto;
+import com.example.educationapp.dto.response.ResponseCourseDto;
 import com.example.educationapp.service.AuthorCourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -15,26 +16,25 @@ public class AuthorCourseController {
     private final AuthorCourseService authorCourseService;
 
     @GetMapping
-    public ResponseEntity<List<CourseDto>> getAllCoursesForAuthor(){
-        List<CourseDto> courses = authorCourseService.getAllCoursesForAuthor();
+    public ResponseEntity<List<ResponseCourseDto>> getAllCoursesForAuthor(){
+        List<ResponseCourseDto> courses = authorCourseService.getAllCoursesForAuthor();
         return ResponseEntity.ok(courses);
     }
 
     @PostMapping
-    public ResponseEntity<CourseDto> createCourse(@RequestBody CourseDto courseDto){
-        authorCourseService.createCourse(courseDto);
-        return ResponseEntity.ok(courseDto);
+    public ResponseEntity<ResponseCourseDto> createCourse(@RequestBody RequestCourseDto requestCourseDto){
+        return ResponseEntity.ok(authorCourseService.createCourse(requestCourseDto));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CourseDto> getCourse(@PathVariable Long id) {
-        CourseDto courseDto = authorCourseService.getCourse(id);
-        return ResponseEntity.ok(courseDto);
+    public ResponseEntity<ResponseCourseDto> getCourse(@PathVariable Long id) {
+        ResponseCourseDto responseCourseDto = authorCourseService.getCourse(id);
+        return ResponseEntity.ok(responseCourseDto);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CourseDto> updateCourse(@PathVariable Long id, @RequestBody CourseDto courseDto) {
-        CourseDto updatedCourseDto = authorCourseService.updateCourse(id, courseDto);
+    public ResponseEntity<ResponseCourseDto> updateCourse(@PathVariable Long id, @RequestBody RequestCourseDto requestCourseDto) {
+        ResponseCourseDto updatedCourseDto = authorCourseService.updateCourse(id, requestCourseDto);
         return ResponseEntity.ok(updatedCourseDto);
     }
 
