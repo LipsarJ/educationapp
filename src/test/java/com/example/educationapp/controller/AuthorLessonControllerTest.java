@@ -1,5 +1,6 @@
 package com.example.educationapp.controller;
 
+import com.example.educationapp.dto.request.RequestLessonDto;
 import com.example.educationapp.dto.response.ResponseLessonDto;
 import com.example.educationapp.entity.LessonStatus;
 import com.example.educationapp.service.AuthorLessonService;
@@ -7,7 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -16,11 +19,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@WebMvcTest(AuthorLessonController.class)
 public class AuthorLessonControllerTest {
+
     @MockBean
     private AuthorLessonService authorLessonService;
 
@@ -44,16 +50,63 @@ public class AuthorLessonControllerTest {
 
         when(authorLessonService.getAllLessons(anyLong())).thenReturn(lessons);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/author/homework-tasks/1/2"))
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/author/lessons/1"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(lessons.size()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].lessonName").value(lesson1.getLessonName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].description").value(lesson1.getContent()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].content").value(lesson1.getContent()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].lessonStatus").value(lesson1.getLessonStatus().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].deadlineDate").exists())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].lessonName").value(lesson2.getLessonName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].description").value(lesson2.getContent()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].lessonStatus").value(lesson2.getLessonStatus().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].deadlineDate").exists());
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].content").value(lesson2.getContent()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].lessonStatus").value(lesson2.getLessonStatus().toString()));
+    }
+
+    @Test
+    public void testCreateLesson() throws Exception {
+        ResponseLessonDto responseLessonDto = new ResponseLessonDto("New Lesson", "New Content", LessonStatus.ACTIVE);
+
+        when(authorLessonService.createLesson(anyLong(), any(RequestLessonDto.class))).thenReturn(responseLessonDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/author/lessons/1")
+                        .content("{\"lessonName\":\"New Lesson\",\"content\":\"New Content\"}")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lessonName").value(responseLessonDto.getLessonName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(responseLessonDto.getContent()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lessonStatus").value(responseLessonDto.getLessonStatus().toString()));
+    }
+
+    @Test
+    public void testGetLesson() throws Exception {
+        ResponseLessonDto lessonDto = new ResponseLessonDto("Lesson 1", "Content 1", LessonStatus.ACTIVE);
+
+        when(authorLessonService.getLesson(anyLong(), anyLong())).thenReturn(lessonDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/author/lessons/1/2"))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lessonName").value(lessonDto.getLessonName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(lessonDto.getContent()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lessonStatus").value(lessonDto.getLessonStatus().toString()));
+    }
+
+    @Test
+    public void testUpdateLesson() throws Exception {
+        ResponseLessonDto lessonDto = new ResponseLessonDto("Updated Lesson", "Updated Content", LessonStatus.ACTIVE);
+
+        when(authorLessonService.updateLesson(anyLong(), anyLong(), any(RequestLessonDto.class))).thenReturn(lessonDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/author/lessons/1/2")
+                        .content("{\"lessonName\":\"Updated Lesson\",\"content\":\"Updated Content\"}")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lessonName").value(lessonDto.getLessonName()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(lessonDto.getContent()))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.lessonStatus").value(lessonDto.getLessonStatus().toString()));
+    }
+
+    @Test
+    public void testDeleteLesson() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/author/lessons/1/2"))
+                .andExpect(status().isOk());
     }
 }
