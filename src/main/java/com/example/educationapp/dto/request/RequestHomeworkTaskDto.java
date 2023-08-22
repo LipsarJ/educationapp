@@ -10,8 +10,6 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestHomeworkTaskDto {
-    private Long id;
     private String title;
     private String description;
-    private OffsetDateTime updateDate;
 }

@@ -13,8 +13,6 @@ import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,13 +60,14 @@ public class AuthorHomeworkTaskService {
     public ResponseHomeworkTaskDto updateTask(Long courseId, Long lessonId, Long id, RequestHomeworkTaskDto requestHomeworkTaskDto) {
         courseUtils.validateAndGetCourse(courseId);
 
-        requestHomeworkTaskDto.setId(id);
-        requestHomeworkTaskDto.setUpdateDate(OffsetDateTime.now(ZoneOffset.UTC));
         HomeworkTask updatedHomeworkTask = homeworkTaskMapper.toEntity(requestHomeworkTaskDto);
 
         homeworkTaskRepo.save(updatedHomeworkTask);
 
-        return homeworkTaskMapper.toResponseDto(updatedHomeworkTask);
+        ResponseHomeworkTaskDto responseHomeworkTaskDto = homeworkTaskMapper.toResponseDto(updatedHomeworkTask);
+        responseHomeworkTaskDto.setId(id);
+
+        return responseHomeworkTaskDto;
     }
 
     public void deleteTask(Long courseId, Long lessonId, Long id) {

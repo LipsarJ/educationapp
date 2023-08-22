@@ -14,8 +14,6 @@ import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,12 +58,14 @@ public class AuthorCourseService {
             throw new InvalidStatusException("Invalid status change.");
         }
 
-        requestCourseDto.setId(id);
-        requestCourseDto.setUpdateDate(OffsetDateTime.now(ZoneOffset.UTC));
+
         Course updatedCourse = courseMapper.toEntity(requestCourseDto);
         courseRepo.save(updatedCourse);
 
-        return courseMapper.toResponseDto(updatedCourse);
+        ResponseCourseDto responseCourseDto = courseMapper.toResponseDto(updatedCourse);
+        responseCourseDto.setId(id);
+
+        return responseCourseDto;
     }
 
     public void deleteCourse(Long id) {

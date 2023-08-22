@@ -60,10 +60,13 @@ public class AuthorLessonService {
             throw new InvalidStatusException("Invalid status change.");
         }
 
-        requestLessonDto.setId(id);
         Lesson updatedLesson = lessonMapper.toEntity(requestLessonDto);
         lessonRepo.save(updatedLesson);
-        return lessonMapper.toResponseDto(updatedLesson);
+
+        ResponseLessonDto responseLessonDto = lessonMapper.toResponseDto(updatedLesson);
+        responseLessonDto.setId(id);
+
+        return responseLessonDto;
     }
 
     public void deleteLesson(Long courseId, Long id) {

@@ -136,8 +136,6 @@ public class AuthorHomeworkTaskServiceTest {
         Long taskId = 3L;
 
         RequestHomeworkTaskDto requestHomeworkTaskDto = new RequestHomeworkTaskDto();
-        requestHomeworkTaskDto.setId(taskId);
-        requestHomeworkTaskDto.setUpdateDate(OffsetDateTime.now(ZoneOffset.UTC));
 
         HomeworkTask homeworkTask = new HomeworkTask();
         ResponseHomeworkTaskDto responseHomeworkTaskDto = createResponseHomeworkTaskDto();
@@ -181,9 +179,12 @@ public class AuthorHomeworkTaskServiceTest {
 
     private ResponseHomeworkTaskDto createResponseHomeworkTaskDto() {
         ResponseHomeworkTaskDto responseHomeworkTaskDto = new ResponseHomeworkTaskDto();
+        responseHomeworkTaskDto.setId(1L);
         responseHomeworkTaskDto.setDescription("Descr");
         responseHomeworkTaskDto.setTitle("New HW");
         responseHomeworkTaskDto.setDeadlineDate(OffsetDateTime.now(ZoneOffset.UTC));
+        responseHomeworkTaskDto.setCreateDate(OffsetDateTime.now());
+        responseHomeworkTaskDto.setUpdateDate(OffsetDateTime.now());
         return responseHomeworkTaskDto;
     }
 }

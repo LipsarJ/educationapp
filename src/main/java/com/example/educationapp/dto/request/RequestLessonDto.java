@@ -11,9 +11,7 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RequestLessonDto {
-    private Long id;
     private String lessonName;
     private String content;
     private LessonStatus lessonStatus;
-    private OffsetDateTime updateDate;
 }

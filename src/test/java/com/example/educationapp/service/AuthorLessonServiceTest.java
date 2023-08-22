@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -154,15 +155,17 @@ public class AuthorLessonServiceTest {
 
     private ResponseLessonDto createResponseLessonDto() {
         ResponseLessonDto responseLessonDto = new ResponseLessonDto();
+        responseLessonDto.setId(1L);
         responseLessonDto.setLessonName("Lesson 1");
         responseLessonDto.setContent("Content of Lesson 1");
         responseLessonDto.setLessonStatus(LessonStatus.ACTIVE);
+        responseLessonDto.setCreateDate(OffsetDateTime.now());
+        responseLessonDto.setUpdateDate(OffsetDateTime.now());
         return responseLessonDto;
     }
 
     private RequestLessonDto createRequestLessonDto() {
         RequestLessonDto requestLessonDto = new RequestLessonDto();
-        requestLessonDto.setId(1L);
         requestLessonDto.setLessonName("Lesson 1");
         requestLessonDto.setContent("Content of Lesson 1");
         requestLessonDto.setLessonStatus(LessonStatus.ACTIVE);

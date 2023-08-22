@@ -113,7 +113,6 @@ public class AuthorCourseServiceTest {
     @Test
     public void testUpdateCourse() {
         RequestCourseDto requestCourseDto = createRequestCourseDto();
-        requestCourseDto.setUpdateDate(OffsetDateTime.now(ZoneOffset.UTC));
         ResponseCourseDto responseCourseDto = createResponseCourseDto();
         when(courseUtils.validateAndGetCourse(anyLong())).thenReturn(createCourseEntity());
         when(courseUtils.isStatusChangeValid(any(), any())).thenReturn(true);
@@ -129,14 +128,12 @@ public class AuthorCourseServiceTest {
 
     @Test
     public void testDeleteCourse() {
-        // Arrange
         Long courseId = 1L;
         Course courseEntity = createCourseEntity();
 
         when(courseUtils.validateAndGetCourse(courseId)).thenReturn(courseEntity);
         doNothing().when(courseRepo).delete(courseEntity);
 
-        // Act & Assert
         assertDoesNotThrow(() -> authorCourseService.deleteCourse(courseId));
 
         verify(courseUtils, times(1)).validateAndGetCourse(courseId);
@@ -173,8 +170,11 @@ public class AuthorCourseServiceTest {
 
     private ResponseCourseDto createResponseCourseDto() {
         ResponseCourseDto responseCourseDto = new ResponseCourseDto();
+        responseCourseDto.setId(1L);
         responseCourseDto.setCourseName("Introduction to Programming");
         responseCourseDto.setCourseStatus(CourseStatus.TEMPLATE);
+        responseCourseDto.setCreateDate(OffsetDateTime.now());
+        responseCourseDto.setUpdateDate(OffsetDateTime.now());
         return responseCourseDto;
     }
 
