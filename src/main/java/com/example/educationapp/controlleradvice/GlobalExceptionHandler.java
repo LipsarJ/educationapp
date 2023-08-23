@@ -3,43 +3,87 @@ package com.example.educationapp.controlleradvice;
 import com.example.educationapp.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@ControllerAdvice
+import java.util.ArrayList;
+import java.util.List;
+
+@RestControllerAdvice
 public class GlobalExceptionHandler {
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ValidationErrorResponse> handleValidationException(MethodArgumentNotValidException ex) {
+        List<ValidationErrorResponse.ValidationError> errors = new ArrayList<>();
+
+        for (FieldError fieldError : ex.getBindingResult().getFieldErrors()) {
+            String fieldName = fieldError.getField();
+            String message = fieldError.getDefaultMessage();
+            errors.add(new ValidationErrorResponse.ValidationError(fieldName, message));
+        }
+
+        for (ObjectError objectError : ex.getBindingResult().getGlobalErrors()) {
+            String message = objectError.getDefaultMessage();
+            errors.add(new ValidationErrorResponse.ValidationError("", message));
+        }
+
+        ValidationErrorResponse errorResponse = new ValidationErrorResponse("Ошибка валидации", errors);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    }
+    public record ValidationErrorResponse(
+            String message,
+            List<ValidationError> errors
+    ) {
+        public record ValidationError(
+                String field,
+                String message
+        ) {
+        }
+    }
+
     @ExceptionHandler(InvalidStatusException.class)
-    public ResponseEntity<String> handleInvalidStatusException(InvalidStatusException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleInvalidStatusException(InvalidStatusException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 
     @ExceptionHandler(CourseNotFoundException.class)
-    public ResponseEntity<String> handleCourseNotFoundException(CourseNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleCourseNotFoundException(CourseNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(HomeworkTaskNotFoundException.class)
-    public ResponseEntity<String> handleHomeworkNotFoundException(HomeworkTaskNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleHomeworkNotFoundException(HomeworkTaskNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(LessonNotFoundException.class)
-    public ResponseEntity<String> handleLessonNotFoundException(LessonNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleLessonNotFoundException(LessonNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<String> handleUserNotFoundException(UserNotFoundException ex) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<String> handleForbiddenException(ForbiddenException ex) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleForbiddenException(ForbiddenException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
 
     @ExceptionHandler(TokenRefreshException.class)
-    public ResponseEntity<String> handleTokenRefreshException(TokenRefreshException ex) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
+    public ResponseEntity<ErrorResponse> handleTokenRefreshException(TokenRefreshException ex) {
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 }

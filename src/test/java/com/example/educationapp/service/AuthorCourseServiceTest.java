@@ -17,12 +17,14 @@ import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
+import static java.time.ZoneOffset.UTC;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -151,8 +153,8 @@ public class AuthorCourseServiceTest {
                 "Firstname",            // firstname
                 "password",             // password
                 UserStatus.PENDING,      // status
-                LocalDateTime.now(),    // createDate
-                LocalDateTime.now(),    // updateDate
+                LocalDateTime.now(ZoneId.from(UTC)),    // createDate
+                LocalDateTime.now(ZoneId.from(UTC)),    // updateDate
                 new HashSet<>(Collections.singletonList(role)),        // roleSet
                 new HashSet<>(),        // studentCourseSet
                 new HashSet<>(),        // authorCourseSet
@@ -183,8 +185,8 @@ public class AuthorCourseServiceTest {
         course.setId(1L);
         course.setCourseName("Introduction to Programming");
         course.setStatus(CourseStatus.TEMPLATE);
-        course.setCreateDate(LocalDateTime.now().minusDays(30));
-        course.setUpdateDate(LocalDateTime.now().minusDays(10));
+        course.setCreateDate(LocalDateTime.now(ZoneId.from(UTC)));
+        course.setUpdateDate(LocalDateTime.now(ZoneId.from(UTC)));
         return course;
     }
 }

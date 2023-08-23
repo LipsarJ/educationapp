@@ -37,6 +37,11 @@ public class AuthorLessonService {
 
     public ResponseLessonDto createLesson(Long courseId, RequestLessonDto requestLessonDto) {
         Course course = courseUtils.validateAndGetCourse(courseId);
+        if(requestLessonDto.getLessonStatus() == LessonStatus.NOT_ACTIVE) {
+            throw new InvalidStatusException("Lesson can be only created with Active status.");
+        } else {
+            requestLessonDto.setLessonStatus(LessonStatus.ACTIVE);
+        }
         Lesson lesson = lessonMapper.toEntity(requestLessonDto);
         lesson.setLessonsCourse(course);
         lesson = lessonRepo.save(lesson);

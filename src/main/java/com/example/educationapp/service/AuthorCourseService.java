@@ -14,6 +14,7 @@ import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,7 +39,14 @@ public class AuthorCourseService {
 
     }
     public ResponseCourseDto createCourse(RequestCourseDto requestCourseDto){
+        User user = userContext.getUser();
+        if(requestCourseDto.getCourseStatus() != null && requestCourseDto.getCourseStatus() != CourseStatus.TEMPLATE) {
+            throw new InvalidStatusException("Course can only be created with Template status.");
+        } else {
+            requestCourseDto.setCourseStatus(CourseStatus.TEMPLATE);
+        }
         Course course = courseMapper.toEntity(requestCourseDto);
+        course.setAuthors(Collections.singleton(user));
         course = courseRepo.save(course);
         return courseMapper.toResponseDto(course);
     }

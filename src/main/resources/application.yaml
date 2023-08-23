@@ -13,8 +13,8 @@ spring:
     format_sql: true
 app:
   security:
-    refreshTokenDurationMs: 60000
+    refreshTokenDurationMs: 600000000
     jwtSecret: "======================Education=Spring==========================="
-    jwtExpirationMs: 60000
+    jwtExpirationMs: 600000000
     jwtCookie: "education-jwt"
     jwtRefreshCookie: "education-jwt-refresh"

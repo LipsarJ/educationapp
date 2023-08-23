@@ -10,9 +10,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -20,6 +22,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +32,8 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthorLessonController.class)
+@AutoConfigureMockMvc
+@WithMockUser(username = "lipsar", roles = "AUTHOR")
 public class AuthorLessonControllerTest {
 
     @MockBean
@@ -40,7 +45,6 @@ public class AuthorLessonControllerTest {
     @BeforeEach
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        mockMvc = MockMvcBuilders.standaloneSetup(new AuthorLessonController(authorLessonService)).build();
     }
 
     @Test
@@ -54,22 +58,19 @@ public class AuthorLessonControllerTest {
 
         when(authorLessonService.getAllLessons(anyLong())).thenReturn(lessons);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/author/lessons/1"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(lessons.size()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].lessonName").value(responseLessonDto1.getLessonName()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].content").value(responseLessonDto1.getContent()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].lessonStatus").value(responseLessonDto1.getLessonStatus().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].createDate").value(objectMapper.writeValueAsString(responseLessonDto1.getCreateDate())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].updateDate").value(objectMapper.writeValueAsString(responseLessonDto1.getUpdateDate())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].createDate").value(responseLessonDto1.getCreateDate().format(DateTimeFormatter.ISO_DATE_TIME)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].updateDate").value(responseLessonDto1.getUpdateDate().format(DateTimeFormatter.ISO_DATE_TIME)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].lessonName").value(responseLessonDto2.getLessonName()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].content").value(responseLessonDto2.getContent()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[1].lessonStatus").value(responseLessonDto2.getLessonStatus().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].createDate").value(objectMapper.writeValueAsString(responseLessonDto2.getCreateDate())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].updateDate").value(objectMapper.writeValueAsString(responseLessonDto2.getUpdateDate())));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].createDate").value(responseLessonDto2.getCreateDate().format(DateTimeFormatter.ISO_DATE_TIME)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].updateDate").value(responseLessonDto2.getUpdateDate().format(DateTimeFormatter.ISO_DATE_TIME)));
     }
 
     @Test
@@ -78,9 +79,6 @@ public class AuthorLessonControllerTest {
 
         when(authorLessonService.createLesson(anyLong(), any(RequestLessonDto.class))).thenReturn(responseLessonDto);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/author/lessons/1")
                         .content("{\"lessonName\":\"New Lesson\",\"content\":\"New Content\"}")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -88,8 +86,8 @@ public class AuthorLessonControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lessonName").value(responseLessonDto.getLessonName()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(responseLessonDto.getContent()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lessonStatus").value(responseLessonDto.getLessonStatus().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.createDate").value(objectMapper.writeValueAsString(responseLessonDto.getCreateDate())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.updateDate").value(objectMapper.writeValueAsString(responseLessonDto.getUpdateDate())));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.createDate").value(responseLessonDto.getCreateDate().format(DateTimeFormatter.ISO_DATE_TIME)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.updateDate").value(responseLessonDto.getUpdateDate().format(DateTimeFormatter.ISO_DATE_TIME)));
     }
 
     @Test
@@ -98,16 +96,13 @@ public class AuthorLessonControllerTest {
 
         when(authorLessonService.getLesson(anyLong(), anyLong())).thenReturn(responseLessonDto);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/author/lessons/1/2"))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lessonName").value(responseLessonDto.getLessonName()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(responseLessonDto.getContent()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lessonStatus").value(responseLessonDto.getLessonStatus().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.createDate").value(objectMapper.writeValueAsString(responseLessonDto.getCreateDate())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.updateDate").value(objectMapper.writeValueAsString(responseLessonDto.getUpdateDate())));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.createDate").value(responseLessonDto.getCreateDate().format(DateTimeFormatter.ISO_DATE_TIME)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.updateDate").value(responseLessonDto.getUpdateDate().format(DateTimeFormatter.ISO_DATE_TIME)));
     }
 
     @Test
@@ -116,9 +111,6 @@ public class AuthorLessonControllerTest {
 
         when(authorLessonService.updateLesson(anyLong(), anyLong(), any(RequestLessonDto.class))).thenReturn(responseLessonDto);
 
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(new JavaTimeModule());
-
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/author/lessons/1/2")
                         .content("{\"lessonName\":\"Updated Lesson\",\"content\":\"Updated Content\"}")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -126,8 +118,8 @@ public class AuthorLessonControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lessonName").value(responseLessonDto.getLessonName()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content").value(responseLessonDto.getContent()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lessonStatus").value(responseLessonDto.getLessonStatus().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.createDate").value(objectMapper.writeValueAsString(responseLessonDto.getCreateDate())))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.updateDate").value(objectMapper.writeValueAsString(responseLessonDto.getUpdateDate())));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.createDate").value(responseLessonDto.getCreateDate().format(DateTimeFormatter.ISO_DATE_TIME)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.updateDate").value(responseLessonDto.getUpdateDate().format(DateTimeFormatter.ISO_DATE_TIME)));
     }
 
     @Test
