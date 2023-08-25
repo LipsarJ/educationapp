@@ -68,7 +68,7 @@ public class HomeworkTask {
     private Lesson lesson;
 
     @OneToMany(mappedBy = "taskMedia")
-    private List<MediaHomeworkTask> homeworkTaskList = new ArrayList<MediaHomeworkTask>();
+    private List<MediaHomeworkTask> homeworkTaskMediaList = new ArrayList<MediaHomeworkTask>();
 
     @OneToMany(mappedBy = "task")
     private List<HomeworkDone> homeworkDoneList = new ArrayList<HomeworkDone>();

@@ -13,7 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/author/courses")
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('ROLE_AUTHOR')")
+@PreAuthorize("hasAuthority('AUTHOR')")
 public class AuthorCourseController {
     private final AuthorCourseService authorCourseService;
 

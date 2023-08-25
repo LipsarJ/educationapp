@@ -45,7 +45,7 @@ public class Course {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CourseStatus status;
+    private CourseStatus courseStatus;
 
     @Column(nullable = false)
     private LocalDateTime createDate;
@@ -76,6 +76,17 @@ public class Course {
     @JsonIgnore
     private Set<User> authors = new HashSet<>();
 
-    @OneToMany(mappedBy = "lessonsCourse", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "lessonsCourse")
     private List<Lesson> lessonList = new ArrayList<Lesson>();
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "id=" + id +
+                ", courseName='" + courseName + '\'' +
+                ", courseStatus=" + courseStatus +
+                ", createDate=" + createDate +
+                ", updateDate=" + updateDate +
+                '}';
+    }
 }

@@ -5,6 +5,7 @@ import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
 import com.example.educationapp.service.AuthorHomeworkTaskService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1/author/homework-tasks")
 @RequiredArgsConstructor
+@PreAuthorize("hasAuthority('AUTHOR')")
 public class AuthorHomeworkTaskController {
 
     private final AuthorHomeworkTaskService authorHomeworkTaskService;

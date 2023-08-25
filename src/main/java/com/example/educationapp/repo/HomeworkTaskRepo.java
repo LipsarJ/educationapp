@@ -8,4 +8,8 @@ import java.util.List;
 
 public interface HomeworkTaskRepo extends JpaRepository<HomeworkTask, Long> {
     List<HomeworkTask> findAllByLesson (Lesson lesson);
+
+    boolean existsByTitle(String title);
+
+    HomeworkTask findByTitle(String title);
 }

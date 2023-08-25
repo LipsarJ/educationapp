@@ -9,4 +9,8 @@ import java.util.List;
 public interface LessonRepo extends JpaRepository<Lesson, Long> {
 
     List<Lesson> findAllByLessonsCourse(Course course);
+
+    boolean existsByLessonName(String lessonName);
+
+    Lesson findByLessonName(String lessonName);
 }

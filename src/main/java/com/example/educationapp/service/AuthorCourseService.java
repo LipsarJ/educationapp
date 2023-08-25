@@ -4,17 +4,20 @@ import com.example.educationapp.dto.request.RequestCourseDto;
 import com.example.educationapp.dto.response.ResponseCourseDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.CourseStatus;
+import com.example.educationapp.entity.Lesson;
 import com.example.educationapp.entity.User;
+import com.example.educationapp.exception.CourseNameException;
 import com.example.educationapp.exception.InvalidStatusException;
+import com.example.educationapp.exception.UserNotFoundException;
 import com.example.educationapp.mapper.CourseMapper;
 import com.example.educationapp.repo.CourseRepo;
+import com.example.educationapp.repo.LessonRepo;
 import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.security.service.UserContext;
 import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +32,8 @@ public class AuthorCourseService {
 
     private final CourseUtils courseUtils;
 
+    private final LessonRepo lessonRepo;
+
 
     public List<ResponseCourseDto> getAllCoursesForAuthor() {
         User user = userContext.getUser();
@@ -38,6 +43,7 @@ public class AuthorCourseService {
                 .collect(Collectors.toList());
 
     }
+
     public ResponseCourseDto createCourse(RequestCourseDto requestCourseDto){
         User user = userContext.getUser();
         if(requestCourseDto.getCourseStatus() != null && requestCourseDto.getCourseStatus() != CourseStatus.TEMPLATE) {
@@ -45,9 +51,15 @@ public class AuthorCourseService {
         } else {
             requestCourseDto.setCourseStatus(CourseStatus.TEMPLATE);
         }
+        if(courseRepo.existsByCourseName(requestCourseDto.getCourseName())) {
+            throw new CourseNameException("Course name is already exists");
+        }
         Course course = courseMapper.toEntity(requestCourseDto);
-        course.setAuthors(Collections.singleton(user));
+        user = userRepo.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("User not found"));
+        course.getAuthors().add(user);
         course = courseRepo.save(course);
+        user.getAuthorCourseSet().add(course);
+        userRepo.save(user);
         return courseMapper.toResponseDto(course);
     }
 
@@ -58,8 +70,11 @@ public class AuthorCourseService {
 
     public ResponseCourseDto updateCourse(Long id, RequestCourseDto requestCourseDto) {
         Course course = courseUtils.validateAndGetCourse(id);
+        if(courseRepo.existsByCourseNameAndIdNot(requestCourseDto.getCourseName(), id)) {
+            throw new CourseNameException("Course name is already exists");
+        }
 
-        CourseStatus currentStatus = course.getStatus();
+        CourseStatus currentStatus = course.getCourseStatus();
         CourseStatus newStatus = requestCourseDto.getCourseStatus();
 
         if (!courseUtils.isStatusChangeValid(currentStatus, newStatus)) {
@@ -67,21 +82,33 @@ public class AuthorCourseService {
         }
 
 
-        Course updatedCourse = courseMapper.toEntity(requestCourseDto);
-        courseRepo.save(updatedCourse);
+        course.setCourseName(requestCourseDto.getCourseName());
+        course.setCourseStatus(requestCourseDto.getCourseStatus());
+        courseRepo.save(course);
 
-        ResponseCourseDto responseCourseDto = courseMapper.toResponseDto(updatedCourse);
-        responseCourseDto.setId(id);
-
-        return responseCourseDto;
+        return courseMapper.toResponseDto(course);
     }
 
     public void deleteCourse(Long id) {
         Course course = courseUtils.validateAndGetCourse(id);
-
-        if (course.getStatus() != CourseStatus.TEMPLATE) {
+        User user = userContext.getUser();
+        if (course.getCourseStatus() != CourseStatus.TEMPLATE) {
             throw new InvalidStatusException("Course can only be deleted if it's in TEMPLATE status.");
         }
+        user = userRepo.findById(user.getId()).orElseThrow(() -> new UserNotFoundException("User not found"));
+        user.getAuthorCourseSet().remove(course);
+        userRepo.save(user);
+        if(!course.getLessonList().isEmpty()){
+            for (Lesson lesson : course.getLessonList()) {
+                lesson.setLessonsCourse(null);
+                lessonRepo.save(lesson);
+            }
+        }
+        course.getStudents().clear();
+        course.getTeachers().clear();
+        course.getAuthors().clear();
+        course.getLessonList().clear();
+
         courseRepo.delete(course);
     }
 }

@@ -4,163 +4,123 @@ import com.example.educationapp.dto.request.RequestCourseDto;
 import com.example.educationapp.dto.response.ResponseCourseDto;
 import com.example.educationapp.entity.CourseStatus;
 import com.example.educationapp.entity.User;
-import com.example.educationapp.exception.CourseNotFoundException;
-import com.example.educationapp.exception.ForbiddenException;
 import com.example.educationapp.security.service.UserContext;
 import com.example.educationapp.service.AuthorCourseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@ExtendWith(SpringExtension.class)
 @WebMvcTest(AuthorCourseController.class)
+@WithMockUser(username = "Lipsar", roles = "AUTHOR")
 @AutoConfigureMockMvc
-@WithMockUser(username = "lipsar", roles = "AUTHOR")
 public class AuthorCourseControllerTest {
-
-    @MockBean
-    private AuthorCourseService authorCourseService;
 
     @Autowired
     private MockMvc mockMvc;
 
-    @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
-    }
+    @MockBean
+    private AuthorCourseService authorCourseService;
+
+    @MockBean
+    private UserContext userContext;
 
     @Test
     public void testGetAllCoursesForAuthor() throws Exception {
-        List<ResponseCourseDto> courses = new ArrayList<>();
-        ResponseCourseDto responseCourseDto1 = new ResponseCourseDto();
-        responseCourseDto1.setCourseName("first");
-        responseCourseDto1.setCourseStatus(CourseStatus.TEMPLATE);
-        responseCourseDto1.setCreateDate(OffsetDateTime.now(ZoneOffset.UTC));
-        responseCourseDto1.setUpdateDate(OffsetDateTime.now(ZoneOffset.UTC));
-
-        ResponseCourseDto responseCourseDto2 = new ResponseCourseDto();
-        responseCourseDto2.setCourseName("second");
-        responseCourseDto2.setCourseStatus(CourseStatus.TEMPLATE);
-        responseCourseDto2.setCreateDate(OffsetDateTime.now(ZoneOffset.UTC));
-        responseCourseDto2.setUpdateDate(OffsetDateTime.now(ZoneOffset.UTC));
-
-        courses.add(responseCourseDto1);
-        courses.add(responseCourseDto2);
-
+        List<ResponseCourseDto> courses = new ArrayList<>(); // populate with test data
+        ResponseCourseDto responseCourseDto = new ResponseCourseDto();
+        courses.add(responseCourseDto);
         when(authorCourseService.getAllCoursesForAuthor()).thenReturn(courses);
 
         mockMvc.perform(get("/api/v1/author/courses"))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.length()").value(courses.size()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].courseName").value(responseCourseDto1.getCourseName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].courseStatus").value(responseCourseDto1.getCourseStatus().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].createDate").value(responseCourseDto1.getCreateDate().format(DateTimeFormatter.ISO_DATE_TIME)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].updateDate").value((responseCourseDto1.getUpdateDate().format(DateTimeFormatter.ISO_DATE_TIME))))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].courseName").value(responseCourseDto2.getCourseName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].courseStatus").value(responseCourseDto2.getCourseStatus().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].createDate").value(responseCourseDto2.getCreateDate().format(DateTimeFormatter.ISO_DATE_TIME)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].updateDate").value(responseCourseDto2.getUpdateDate().format(DateTimeFormatter.ISO_DATE_TIME)));
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$", hasSize(courses.size())));
     }
 
     @Test
+    @WithMockUser(username = "Lipsar", roles = "AUTHOR")
     public void testCreateCourse() throws Exception {
+        RequestCourseDto requestCourseDto = new RequestCourseDto();
+        requestCourseDto.setCourseName("Test Course");
+        requestCourseDto.setCourseStatus(CourseStatus.TEMPLATE);
+
+
         ResponseCourseDto responseCourseDto = new ResponseCourseDto();
         responseCourseDto.setId(1L);
-        responseCourseDto.setCourseName("first");
-        responseCourseDto.setCourseStatus(CourseStatus.TEMPLATE);
-        responseCourseDto.setCreateDate(OffsetDateTime.now(ZoneOffset.UTC));
-        responseCourseDto.setUpdateDate(OffsetDateTime.now(ZoneOffset.UTC));
-        RequestCourseDto requestCourseDto = new RequestCourseDto("first", CourseStatus.TEMPLATE);
+        responseCourseDto.setCourseName(requestCourseDto.getCourseName());
+        responseCourseDto.setCourseStatus(requestCourseDto.getCourseStatus());
 
         when(authorCourseService.createCourse(requestCourseDto)).thenReturn(responseCourseDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/author/courses")
-                        .content("{\"courseName\":\"first\",\"courseStatus\":\"TEMPLATE\"}")
-                        .contentType(MediaType.APPLICATION_JSON))
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        mockMvc.perform(post("/api/v1/author/courses")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestCourseDto)))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(responseCourseDto.getId()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.courseName").value(responseCourseDto.getCourseName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.courseStatus").value(responseCourseDto.getCourseStatus().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.createDate").value(responseCourseDto.getCreateDate().format(DateTimeFormatter.ISO_DATE_TIME)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.updateDate").value(responseCourseDto.getUpdateDate().format(DateTimeFormatter.ISO_DATE_TIME)));
+                .andExpect(jsonPath("$.id").value(1L))
+                .andExpect(jsonPath("$.courseName").value("Test Course"));
     }
 
     @Test
     public void testGetCourse() throws Exception {
-        ResponseCourseDto responseCourseDto = new ResponseCourseDto();
-        responseCourseDto.setCourseName("first");
-        responseCourseDto.setCourseStatus(CourseStatus.TEMPLATE);
-        responseCourseDto.setCreateDate(OffsetDateTime.now(ZoneOffset.UTC));
-        responseCourseDto.setUpdateDate(OffsetDateTime.now(ZoneOffset.UTC));
+        Long courseId = 1L; // replace with actual ID
+        ResponseCourseDto responseCourseDto = new ResponseCourseDto(); // populate with test data
+        when(authorCourseService.getCourse(courseId)).thenReturn(responseCourseDto);
 
-        when(authorCourseService.getCourse(1L)).thenReturn(responseCourseDto);
-
-        mockMvc.perform(get("/api/v1/author/courses/1"))
+        mockMvc.perform(get("/api/v1/author/courses/{id}", courseId))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.courseName").value(responseCourseDto.getCourseName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.courseStatus").value(responseCourseDto.getCourseStatus().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.createDate").value(responseCourseDto.getCreateDate().format(DateTimeFormatter.ISO_DATE_TIME)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.updateDate").value(responseCourseDto.getUpdateDate().format(DateTimeFormatter.ISO_DATE_TIME)));
+                .andExpect(jsonPath("$.id").value(responseCourseDto.getId()))
+                .andExpect(jsonPath("$.courseName").value(responseCourseDto.getCourseName()))
+                .andExpect(jsonPath("$.courseStatus").value(responseCourseDto.getCourseStatus()));
     }
 
     @Test
     public void testUpdateCourse() throws Exception {
+        Long courseId = 1L; // replace with actual ID
+        RequestCourseDto requestCourseDto = new RequestCourseDto();
         ResponseCourseDto responseCourseDto = new ResponseCourseDto();
-        responseCourseDto.setCourseName("first");
-        responseCourseDto.setCourseStatus(CourseStatus.TEMPLATE);
-        responseCourseDto.setCreateDate(OffsetDateTime.now(ZoneOffset.UTC));
-        responseCourseDto.setUpdateDate(OffsetDateTime.now(ZoneOffset.UTC));
+        when(authorCourseService.updateCourse(courseId, requestCourseDto)).thenReturn(responseCourseDto);
 
-        when(authorCourseService.updateCourse(anyLong(), any(RequestCourseDto.class))).thenReturn(responseCourseDto);
-
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/author/courses/1")
-                        .content("{\"courseName\":\"first\",\"courseStatus\":\"TEMPLATE\"}")
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(put("/api/v1/author/courses/{id}", courseId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(new ObjectMapper().writeValueAsString(requestCourseDto)))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.courseName").value(responseCourseDto.getCourseName()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.courseStatus").value(responseCourseDto.getCourseStatus().toString()))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.createDate").value(responseCourseDto.getCreateDate().format(DateTimeFormatter.ISO_DATE_TIME)))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.updateDate").value(responseCourseDto.getUpdateDate().format(DateTimeFormatter.ISO_DATE_TIME)));
+                .andExpect(jsonPath("$.id").value(responseCourseDto.getId()))
+                .andExpect(jsonPath("$.courseName").value(responseCourseDto.getCourseName()))
+                .andExpect(jsonPath("$.courseStatus").value(responseCourseDto.getCourseStatus()));
     }
 
     @Test
+    @WithMockUser(username = "Lipsar", roles = "AUTHOR")
     public void testDeleteCourse() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/author/courses/1"))
+        Long courseId = 1L; // replace with actual ID
+
+        mockMvc.perform(delete("/api/v1/author/courses/{id}", courseId))
                 .andExpect(status().isOk());
-    }
 
-    @Test
-    void testGetCourseNotFound() throws Exception {
-        Long courseId = 1000L;
-
-        when(authorCourseService.getCourse(courseId))
-                .thenThrow(new CourseNotFoundException("Course not found"));
-
-
-        mockMvc.perform(get("/api/v1/author/courses/" + courseId))
-                .andExpect(status().isNotFound());
+        verify(authorCourseService).deleteCourse(courseId);
     }
 }

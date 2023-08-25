@@ -4,11 +4,15 @@ import com.example.educationapp.dto.request.RequestHomeworkTaskDto;
 import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
 import com.example.educationapp.entity.HomeworkTask;
 import com.example.educationapp.entity.Lesson;
+import com.example.educationapp.entity.MediaHomeworkTask;
+import com.example.educationapp.exception.HomeworkTaskNameException;
 import com.example.educationapp.exception.HomeworkTaskNotFoundException;
 import com.example.educationapp.exception.LessonNotFoundException;
+import com.example.educationapp.mapper.BaseLocalDateTimeOffsetDateTimeMapper;
 import com.example.educationapp.mapper.HomeworkTaskMapper;
 import com.example.educationapp.repo.HomeworkTaskRepo;
 import com.example.educationapp.repo.LessonRepo;
+import com.example.educationapp.repo.MediaHomeworkTaskRepo;
 import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,6 +31,8 @@ public class AuthorHomeworkTaskService {
 
     private final LessonRepo lessonRepo;
 
+    private final MediaHomeworkTaskRepo mediaHomeworkTaskRepo;
+
     public List<ResponseHomeworkTaskDto> getAllTasks(Long courseId, Long lessonId) {
         courseUtils.validateAndGetCourse(courseId);
 
@@ -41,11 +47,17 @@ public class AuthorHomeworkTaskService {
     public ResponseHomeworkTaskDto createTask(Long courseId, Long lessonId, RequestHomeworkTaskDto requestHomeworkTaskDto) {
         courseUtils.validateAndGetCourse(courseId);
 
-        Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework is not found."));
+        Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
+
+        if(homeworkTaskRepo.existsByTitle(requestHomeworkTaskDto.getTitle())) {
+            throw new HomeworkTaskNameException("Homework Task with this name is already exists.");
+        }
 
         HomeworkTask homeworkTask = homeworkTaskMapper.toEntity(requestHomeworkTaskDto);
         homeworkTask.setLesson(lesson);
         homeworkTask = homeworkTaskRepo.save(homeworkTask);
+        lesson.getHomeworkTaskList().add(homeworkTask);
+        lessonRepo.save(lesson);
         return homeworkTaskMapper.toResponseDto(homeworkTask);
     }
 
@@ -60,21 +72,34 @@ public class AuthorHomeworkTaskService {
     public ResponseHomeworkTaskDto updateTask(Long courseId, Long lessonId, Long id, RequestHomeworkTaskDto requestHomeworkTaskDto) {
         courseUtils.validateAndGetCourse(courseId);
 
+        HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework Task is not found"));
+
+        if(homeworkTaskRepo.existsByTitle(requestHomeworkTaskDto.getTitle()) && homeworkTaskRepo.findByTitle(requestHomeworkTaskDto.getTitle()).getId() != id){
+            throw new HomeworkTaskNameException("Homework task with this name is already exists.");
+        }
         HomeworkTask updatedHomeworkTask = homeworkTaskMapper.toEntity(requestHomeworkTaskDto);
+        homeworkTask.setTitle(updatedHomeworkTask.getTitle());
+        homeworkTask.setDescription(updatedHomeworkTask.getDescription());
+        homeworkTask.setDeadlineDate(updatedHomeworkTask.getDeadlineDate());
+        homeworkTaskRepo.save(homeworkTask);
 
-        homeworkTaskRepo.save(updatedHomeworkTask);
-
-        ResponseHomeworkTaskDto responseHomeworkTaskDto = homeworkTaskMapper.toResponseDto(updatedHomeworkTask);
-        responseHomeworkTaskDto.setId(id);
-
-        return responseHomeworkTaskDto;
+        return homeworkTaskMapper.toResponseDto(homeworkTask);
     }
 
     public void deleteTask(Long courseId, Long lessonId, Long id) {
         courseUtils.validateAndGetCourse(courseId);
+        Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
-        HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Homework is not found."));
-
+        HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework is not found."));
+        if(!homeworkTask.getHomeworkTaskMediaList().isEmpty()) {
+            for(MediaHomeworkTask mediaHomeworkTask : homeworkTask.getHomeworkTaskMediaList()) {
+                mediaHomeworkTask.setTaskMedia(null);
+                mediaHomeworkTaskRepo.save(mediaHomeworkTask);
+            }
+        }
+        lesson.getHomeworkTaskList().remove(homeworkTask);
+        lessonRepo.save(lesson);
+        homeworkTask.getHomeworkTaskMediaList().clear();
         homeworkTaskRepo.delete(homeworkTask);
     }
 }

@@ -101,4 +101,20 @@ public class User {
             joinColumns = @JoinColumn(name = "teacher_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
     private Set<Course> teacherCourseSet = new HashSet<>();
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", email='" + email + '\'' +
+                ", lastname='" + lastname + '\'' +
+                ", middlename='" + middlename + '\'' +
+                ", firstname='" + firstname + '\'' +
+                ", password='" + password + '\'' +
+                ", status=" + status +
+                ", createDate=" + createDate +
+                ", updateDate=" + updateDate +
+                '}';
+    }
 }

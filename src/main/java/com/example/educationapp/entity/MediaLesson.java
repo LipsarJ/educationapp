@@ -42,7 +42,7 @@ public class MediaLesson {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MediaType type;
+    private MediaType mediaType;
 
     @ManyToOne
     @JoinColumn(name = "lesson_id")

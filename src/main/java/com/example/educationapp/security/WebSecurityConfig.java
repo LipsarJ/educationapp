@@ -1,11 +1,8 @@
 package com.example.educationapp.security;
 
-import com.example.educationapp.entity.ERole;
-import com.example.educationapp.security.jwt.AuthEntryPointJwt;
 import com.example.educationapp.security.jwt.AuthTokenFilter;
 import com.example.educationapp.security.jwt.JwtUtils;
 import com.example.educationapp.security.service.UserDetailsServiceImpl;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +24,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class WebSecurityConfig {
     private final UserDetailsServiceImpl userDetailsService;
-
-    private final AuthEntryPointJwt unauthorizedHandler;
 
     private final JwtUtils jwtUtils;
 
@@ -60,7 +55,6 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-                .exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth ->
                         auth.requestMatchers("/api/v1/auth/signin").permitAll()

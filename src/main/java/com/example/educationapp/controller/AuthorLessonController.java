@@ -5,6 +5,7 @@ import com.example.educationapp.dto.response.ResponseLessonDto;
 import com.example.educationapp.service.AuthorLessonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,10 +13,11 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("api/v1/author/lessons")
+@PreAuthorize("hasAuthority('AUTHOR')")
 public class AuthorLessonController {
     private final AuthorLessonService authorLessonService;
 
-    @GetMapping("{courseId}")
+    @GetMapping("/{courseId}")
     public ResponseEntity<List<ResponseLessonDto>> getAllLessons(@PathVariable Long courseId) {
         List<ResponseLessonDto> lessons = authorLessonService.getAllLessons(courseId);
         return ResponseEntity.ok(lessons);

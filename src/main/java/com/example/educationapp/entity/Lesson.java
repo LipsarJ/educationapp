@@ -44,7 +44,7 @@ public class Lesson {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private LessonStatus status;
+    private LessonStatus lessonStatus;
 
     @Column(nullable = false)
     private LocalDateTime createDate;

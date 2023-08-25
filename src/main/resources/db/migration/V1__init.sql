@@ -37,7 +37,7 @@ CREATE TABLE courses (
                          id BIGSERIAL PRIMARY KEY,
                          course_name TEXT NOT NULL,
                          teacher_id bigint,  -- Заменен тип данных INT на bigint
-                         status TEXT NOT NULL,
+                         course_status TEXT NOT NULL,
                          create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                          update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                          FOREIGN KEY (teacher_id) REFERENCES users(id)
@@ -58,7 +58,7 @@ CREATE TABLE lessons (
                          course_id bigint NOT NULL,
                          lesson_name TEXT NOT NULL,
                          content TEXT,
-                         status TEXT NOT NULL,
+                         lesson_status TEXT NOT NULL,
                          create_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                          update_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                          FOREIGN KEY (course_id) REFERENCES courses(id)
