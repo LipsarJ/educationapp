@@ -64,6 +64,8 @@ public class AuthorHomeworkTaskService {
     public ResponseHomeworkTaskDto getTask(Long courseId, Long lessonId, Long id) {
         courseUtils.validateAndGetCourse(courseId);
 
+        Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
+
         HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework is not found."));
 
         return homeworkTaskMapper.toResponseDto(homeworkTask);
@@ -72,9 +74,11 @@ public class AuthorHomeworkTaskService {
     public ResponseHomeworkTaskDto updateTask(Long courseId, Long lessonId, Long id, RequestHomeworkTaskDto requestHomeworkTaskDto) {
         courseUtils.validateAndGetCourse(courseId);
 
+        Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
+
         HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework Task is not found"));
 
-        if(homeworkTaskRepo.existsByTitle(requestHomeworkTaskDto.getTitle()) && homeworkTaskRepo.findByTitle(requestHomeworkTaskDto.getTitle()).getId() != id){
+        if(homeworkTaskRepo.existsByTitleAndIdNot(requestHomeworkTaskDto.getTitle(), id)){
             throw new HomeworkTaskNameException("Homework task with this name is already exists.");
         }
         HomeworkTask updatedHomeworkTask = homeworkTaskMapper.toEntity(requestHomeworkTaskDto);

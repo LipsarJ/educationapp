@@ -3,18 +3,23 @@ package com.example.educationapp.controller;
 import com.example.educationapp.dto.request.RequestLessonDto;
 import com.example.educationapp.dto.response.ResponseLessonDto;
 import com.example.educationapp.entity.LessonStatus;
+import com.example.educationapp.exception.InvalidStatusException;
+import com.example.educationapp.exception.LessonNotFoundException;
 import com.example.educationapp.service.AuthorLessonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -26,14 +31,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthorLessonController.class)
+@ExtendWith(SpringExtension.class)
+@WithMockUser(username = "Lipsar", authorities = "AUTHOR")
 @AutoConfigureMockMvc
-@WithMockUser(username = "lipsar", roles = "AUTHOR")
+@EnableMethodSecurity
 public class AuthorLessonControllerTest {
 
     @MockBean
@@ -79,7 +87,7 @@ public class AuthorLessonControllerTest {
 
         when(authorLessonService.createLesson(anyLong(), any(RequestLessonDto.class))).thenReturn(responseLessonDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/author/lessons/1")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/author/lessons/1").with(csrf())
                         .content("{\"lessonName\":\"New Lesson\",\"content\":\"New Content\"}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -111,7 +119,7 @@ public class AuthorLessonControllerTest {
 
         when(authorLessonService.updateLesson(anyLong(), anyLong(), any(RequestLessonDto.class))).thenReturn(responseLessonDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/author/lessons/1/2")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/author/lessons/1/2").with(csrf())
                         .content("{\"lessonName\":\"Updated Lesson\",\"content\":\"Updated Content\"}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -124,7 +132,38 @@ public class AuthorLessonControllerTest {
 
     @Test
     public void testDeleteLesson() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/author/lessons/1/2"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/author/lessons/1/2").with(csrf()))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testCreateLesson_InvalidStatusException() throws Exception {
+        RequestLessonDto requestDto = new RequestLessonDto();
+        requestDto.setLessonName("Test Lesson");
+        requestDto.setLessonStatus(LessonStatus.NOT_ACTIVE);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        when(authorLessonService.createLesson(anyLong(), eq(requestDto)))
+                .thenThrow(new InvalidStatusException("Lesson can be only created with Active status."));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/author/lessons/{courseId}", 1L).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Lesson can be only created with Active status."));
+    }
+
+    @Test
+    public void testDeleteLesson_LessonNotFoundException() throws Exception {
+        Long courseId = 1L;
+        Long id = 2L;
+
+        doThrow(new LessonNotFoundException("Lesson is not found."))
+                .when(authorLessonService).deleteLesson(courseId,id);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/author/lessons/{courseId}/{id}", courseId, id).with(csrf()))
+                .andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Lesson is not found."));
     }
 }

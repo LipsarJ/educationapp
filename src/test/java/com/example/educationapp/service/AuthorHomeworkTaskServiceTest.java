@@ -2,12 +2,13 @@ package com.example.educationapp.service;
 
 import com.example.educationapp.dto.request.RequestHomeworkTaskDto;
 import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
-import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.HomeworkTask;
 import com.example.educationapp.entity.Lesson;
+import com.example.educationapp.entity.MediaHomeworkTask;
 import com.example.educationapp.mapper.HomeworkTaskMapper;
 import com.example.educationapp.repo.HomeworkTaskRepo;
 import com.example.educationapp.repo.LessonRepo;
+import com.example.educationapp.repo.MediaHomeworkTaskRepo;
 import com.example.educationapp.utils.CourseUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,12 +17,13 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class AuthorHomeworkTaskServiceTest {
@@ -38,153 +40,170 @@ public class AuthorHomeworkTaskServiceTest {
     @Mock
     private LessonRepo lessonRepo;
 
+    @Mock
+    private MediaHomeworkTaskRepo mediaHomeworkTaskRepo;
+
     @InjectMocks
-    private AuthorHomeworkTaskService authorHomeworkTaskService;
+    private AuthorHomeworkTaskService homeworkTaskService;
 
     @BeforeEach
-    public void setUp() {
-        MockitoAnnotations.initMocks(this);
+    void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
-
     @Test
     void testGetAllTasks() {
         Long courseId = 1L;
         Long lessonId = 2L;
-
         Lesson lesson = new Lesson();
         lesson.setId(lessonId);
-
-        HomeworkTask homeworkTask = new HomeworkTask();
-        ResponseHomeworkTaskDto responseHomeworkTaskDto = createResponseHomeworkTaskDto();
-        Course course = new Course();
-        course.setId(courseId);
-
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(course);
         when(lessonRepo.findById(lessonId)).thenReturn(Optional.of(lesson));
-        when(homeworkTaskRepo.findAllByLesson(lesson)).thenReturn(Collections.singletonList(homeworkTask));
-        when(homeworkTaskMapper.toResponseDto(homeworkTask)).thenReturn(responseHomeworkTaskDto);
 
-        List<ResponseHomeworkTaskDto> tasks = authorHomeworkTaskService.getAllTasks(courseId, lessonId);
+        List<HomeworkTask> tasks = new ArrayList<>();
+        tasks.add(new HomeworkTask());
+        tasks.add(new HomeworkTask());
+        when(homeworkTaskRepo.findAllByLesson(lesson)).thenReturn(tasks);
 
-        assertNotNull(tasks);
-        assertEquals(1, tasks.size());
-        assertEquals(responseHomeworkTaskDto, tasks.get(0));
-        verify(courseUtils, times(1)).validateAndGetCourse(courseId);
-        verify(lessonRepo, times(1)).findById(lessonId);
-        verify(homeworkTaskMapper, times(1)).toResponseDto(homeworkTask);
+        when(homeworkTaskMapper.toResponseDto(any(HomeworkTask.class)))
+                .thenReturn(new ResponseHomeworkTaskDto());
+
+        // Execute
+        List<ResponseHomeworkTaskDto> result = homeworkTaskService.getAllTasks(courseId, lessonId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(tasks.size(), result.size());
+        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(lessonRepo).findById(lessonId);
+        verify(homeworkTaskRepo).findAllByLesson(lesson);
+        verify(homeworkTaskMapper, times(tasks.size())).toResponseDto(any(HomeworkTask.class));
     }
 
     @Test
-    public void testCreateTask() {
+    void testCreateTask() {
+        // Prepare
         Long courseId = 1L;
         Long lessonId = 2L;
-
+        RequestHomeworkTaskDto requestDto = new RequestHomeworkTaskDto();
         Lesson lesson = new Lesson();
         lesson.setId(lessonId);
 
-        RequestHomeworkTaskDto requestHomeworkTaskDto = new RequestHomeworkTaskDto();
-        HomeworkTask homeworkTask = new HomeworkTask();
-        ResponseHomeworkTaskDto responseHomeworkTaskDto = createResponseHomeworkTaskDto();
-
-        Course course = new Course();
-
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(course);
         when(lessonRepo.findById(lessonId)).thenReturn(Optional.of(lesson));
-        when(homeworkTaskMapper.toEntity(requestHomeworkTaskDto)).thenReturn(homeworkTask);
-        when(homeworkTaskRepo.save(homeworkTask)).thenReturn(homeworkTask);
-        when(homeworkTaskMapper.toResponseDto(homeworkTask)).thenReturn(responseHomeworkTaskDto);
+        when(homeworkTaskRepo.existsByTitle(requestDto.getTitle())).thenReturn(false);
+        when(homeworkTaskMapper.toEntity(requestDto)).thenReturn(new HomeworkTask());
+        when(homeworkTaskRepo.save(any(HomeworkTask.class))).thenReturn(new HomeworkTask());
+        when(homeworkTaskMapper.toResponseDto(any(HomeworkTask.class)))
+                .thenReturn(new ResponseHomeworkTaskDto());
 
-        ResponseHomeworkTaskDto createdTask = authorHomeworkTaskService.createTask(courseId, lessonId, requestHomeworkTaskDto);
+        // Execute
+        ResponseHomeworkTaskDto result = homeworkTaskService.createTask(courseId, lessonId, requestDto);
 
-        assertNotNull(createdTask);
-        assertEquals(responseHomeworkTaskDto, createdTask);
-        verify(courseUtils, times(1)).validateAndGetCourse(courseId);
-        verify(lessonRepo, times(1)).findById(lessonId);
-        verify(homeworkTaskMapper, times(1)).toEntity(requestHomeworkTaskDto);
-        verify(homeworkTaskRepo, times(1)).save(homeworkTask);
-        verify(homeworkTaskMapper, times(1)).toResponseDto(homeworkTask);
+        // Assert
+        assertNotNull(result);
+        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(lessonRepo).findById(lessonId);
+        verify(homeworkTaskRepo).existsByTitle(requestDto.getTitle());
+        verify(homeworkTaskMapper).toEntity(requestDto);
+        verify(homeworkTaskRepo).save(any(HomeworkTask.class));
+        verify(lessonRepo).save(lesson);
+        verify(homeworkTaskMapper).toResponseDto(any(HomeworkTask.class));
     }
 
     @Test
-    public void testGetTask() {
+    void testGetTask() {
+        Long courseId = 1L;
+        Long lessonId = 2L;
+        Long taskId = 3L;
+        HomeworkTask task = new HomeworkTask();
+        task.setId(taskId);
+
+        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(null);
+        when(lessonRepo.findById(lessonId)).thenReturn(Optional.of(new Lesson()));
+        when(homeworkTaskRepo.findById(taskId)).thenReturn(Optional.of(task));
+        when(homeworkTaskMapper.toResponseDto(any(HomeworkTask.class)))
+                .thenReturn(new ResponseHomeworkTaskDto());
+
+        ResponseHomeworkTaskDto result = homeworkTaskService.getTask(courseId, lessonId, taskId);
+
+        assertNotNull(result);
+        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(lessonRepo).findById(lessonId);
+        verify(homeworkTaskRepo).findById(taskId);
+        verify(homeworkTaskMapper).toResponseDto(any(HomeworkTask.class));
+    }
+
+    @Test
+    void testUpdateTask() {
         Long courseId = 1L;
         Long lessonId = 2L;
         Long taskId = 3L;
 
-        HomeworkTask homeworkTask = new HomeworkTask();
-        ResponseHomeworkTaskDto responseHomeworkTaskDto = createResponseHomeworkTaskDto();
+        RequestHomeworkTaskDto requestDto = new RequestHomeworkTaskDto();
+        requestDto.setTitle("New Task Title");
+        requestDto.setDescription("New Task Description");
+        requestDto.setDeadlineDate(OffsetDateTime.now());
 
-        Course course = new Course();
+        HomeworkTask existingTask = new HomeworkTask();
+        existingTask.setId(taskId);
+        existingTask.setTitle("Existing Task Title");
 
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(course);
-        when(homeworkTaskRepo.findById(taskId)).thenReturn(Optional.of(homeworkTask));
-        when(homeworkTaskMapper.toResponseDto(homeworkTask)).thenReturn(responseHomeworkTaskDto);
+        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(null);
+        when(lessonRepo.findById(lessonId)).thenReturn(Optional.of(new Lesson()));
+        when(homeworkTaskRepo.findById(taskId)).thenReturn(Optional.of(existingTask));
+        when(homeworkTaskRepo.existsByTitleAndIdNot(requestDto.getTitle(), taskId)).thenReturn(false);
+        when(homeworkTaskMapper.toEntity(requestDto)).thenReturn(existingTask);
+        when(homeworkTaskRepo.save(existingTask)).thenReturn(existingTask);
 
-        ResponseHomeworkTaskDto retrievedTask = authorHomeworkTaskService.getTask(courseId, lessonId, taskId);
+        ResponseHomeworkTaskDto responseDto = new ResponseHomeworkTaskDto();
+        responseDto.setId(taskId);
+        responseDto.setTitle(requestDto.getTitle());
+        responseDto.setDescription(requestDto.getDescription());
+        responseDto.setDeadlineDate(requestDto.getDeadlineDate());
 
-        assertNotNull(retrievedTask);
-        assertEquals(responseHomeworkTaskDto, retrievedTask);
-        verify(courseUtils, times(1)).validateAndGetCourse(courseId);
-        verify(homeworkTaskRepo, times(1)).findById(taskId);
-        verify(homeworkTaskMapper, times(1)).toResponseDto(homeworkTask);
-    }
+        when(homeworkTaskMapper.toResponseDto(existingTask)).thenReturn(responseDto);
 
-    @Test
-    public void testUpdateTask() {
-        Long courseId = 1L;
-        Long lessonId = 2L;
-        Long taskId = 3L;
-
-        RequestHomeworkTaskDto requestHomeworkTaskDto = new RequestHomeworkTaskDto();
-
-        HomeworkTask homeworkTask = new HomeworkTask();
-        ResponseHomeworkTaskDto responseHomeworkTaskDto = createResponseHomeworkTaskDto();
-
-        Course course = new Course();
-
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(course);
-        when(homeworkTaskRepo.save(homeworkTask)).thenReturn(homeworkTask);
-        when(homeworkTaskMapper.toEntity(requestHomeworkTaskDto)).thenReturn(homeworkTask);
-        when(homeworkTaskMapper.toResponseDto(homeworkTask)).thenReturn(responseHomeworkTaskDto);
-
-        ResponseHomeworkTaskDto updatedTask = authorHomeworkTaskService.updateTask(courseId, lessonId, taskId, requestHomeworkTaskDto);
+        ResponseHomeworkTaskDto updatedTask = homeworkTaskService.updateTask(courseId, lessonId, taskId, requestDto);
 
         assertNotNull(updatedTask);
-        assertEquals(responseHomeworkTaskDto, updatedTask);
-        verify(courseUtils, times(1)).validateAndGetCourse(courseId);
-        verify(homeworkTaskRepo, times(1)).save(homeworkTask);
-        verify(homeworkTaskMapper, times(1)).toEntity(requestHomeworkTaskDto);
-        verify(homeworkTaskMapper, times(1)).toResponseDto(homeworkTask);
-    }
+        assertEquals(responseDto.getId(), updatedTask.getId());
+        assertEquals(responseDto.getTitle(), updatedTask.getTitle());
+        assertEquals(responseDto.getDescription(), updatedTask.getDescription());
+        assertEquals(responseDto.getDeadlineDate(), updatedTask.getDeadlineDate());
 
+        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(lessonRepo).findById(lessonId);
+        verify(homeworkTaskRepo).findById(taskId);
+        verify(homeworkTaskRepo).existsByTitleAndIdNot(requestDto.getTitle(), taskId);
+        verify(homeworkTaskMapper).toEntity(requestDto);
+        verify(homeworkTaskRepo).save(existingTask);
+        verify(homeworkTaskMapper).toResponseDto(existingTask);
+    }
     @Test
-    public void testDeleteTask() {
+    void testDeleteTask() {
+        // Prepare
         Long courseId = 1L;
         Long lessonId = 2L;
         Long taskId = 3L;
+        Lesson lesson = new Lesson();
+        lesson.setId(lessonId);
+        HomeworkTask task = new HomeworkTask();
+        task.setId(taskId);
+        MediaHomeworkTask mediaHomeworkTask = new MediaHomeworkTask();
 
-        HomeworkTask homeworkTask = new HomeworkTask();
+        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(null);
+        when(lessonRepo.findById(lessonId)).thenReturn(Optional.of(lesson));
+        when(homeworkTaskRepo.findById(taskId)).thenReturn(Optional.of(task));
+        when(mediaHomeworkTaskRepo.save(any(MediaHomeworkTask.class))).thenReturn(mediaHomeworkTask);
 
-        Course course = new Course();
+        // Execute
+        homeworkTaskService.deleteTask(courseId, lessonId, taskId);
 
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(course);
-        when(homeworkTaskRepo.findById(taskId)).thenReturn(Optional.of(homeworkTask));
-
-        assertDoesNotThrow(() -> authorHomeworkTaskService.deleteTask(courseId, lessonId, taskId));
-
-        verify(courseUtils, times(1)).validateAndGetCourse(courseId);
-        verify(homeworkTaskRepo, times(1)).findById(taskId);
-        verify(homeworkTaskRepo, times(1)).delete(homeworkTask);
+        // Assert
+        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(lessonRepo).findById(lessonId);
+        verify(homeworkTaskRepo).findById(taskId);
+        verify(mediaHomeworkTaskRepo, times(0)).save(any(MediaHomeworkTask.class));
+        verify(lessonRepo).save(lesson);
+        verify(homeworkTaskRepo).delete(task);
     }
 
-    private ResponseHomeworkTaskDto createResponseHomeworkTaskDto() {
-        ResponseHomeworkTaskDto responseHomeworkTaskDto = new ResponseHomeworkTaskDto();
-        responseHomeworkTaskDto.setId(1L);
-        responseHomeworkTaskDto.setDescription("Descr");
-        responseHomeworkTaskDto.setTitle("New HW");
-        responseHomeworkTaskDto.setDeadlineDate(OffsetDateTime.now(ZoneOffset.UTC));
-        responseHomeworkTaskDto.setCreateDate(OffsetDateTime.now());
-        responseHomeworkTaskDto.setUpdateDate(OffsetDateTime.now());
-        return responseHomeworkTaskDto;
-    }
 }

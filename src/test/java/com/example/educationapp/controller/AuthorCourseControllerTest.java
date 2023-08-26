@@ -3,8 +3,9 @@ package com.example.educationapp.controller;
 import com.example.educationapp.dto.request.RequestCourseDto;
 import com.example.educationapp.dto.response.ResponseCourseDto;
 import com.example.educationapp.entity.CourseStatus;
-import com.example.educationapp.entity.User;
-import com.example.educationapp.security.service.UserContext;
+import com.example.educationapp.exception.CourseNameException;
+import com.example.educationapp.exception.InvalidStatusException;
+import com.example.educationapp.exception.UserNotFoundException;
 import com.example.educationapp.service.AuthorCourseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -14,28 +15,26 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(AuthorCourseController.class)
-@WithMockUser(username = "Lipsar", roles = "AUTHOR")
+@WithMockUser(username = "Lipsar", authorities = "AUTHOR")
 @AutoConfigureMockMvc
+@EnableMethodSecurity
 public class AuthorCourseControllerTest {
 
     @Autowired
@@ -44,23 +43,19 @@ public class AuthorCourseControllerTest {
     @MockBean
     private AuthorCourseService authorCourseService;
 
-    @MockBean
-    private UserContext userContext;
-
     @Test
     public void testGetAllCoursesForAuthor() throws Exception {
-        List<ResponseCourseDto> courses = new ArrayList<>(); // populate with test data
+        List<ResponseCourseDto> courses = new ArrayList<>();
         ResponseCourseDto responseCourseDto = new ResponseCourseDto();
         courses.add(responseCourseDto);
         when(authorCourseService.getAllCoursesForAuthor()).thenReturn(courses);
 
         mockMvc.perform(get("/api/v1/author/courses"))
-                .andExpect(status().isNotFound())
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(courses.size())));
     }
 
     @Test
-    @WithMockUser(username = "Lipsar", roles = "AUTHOR")
     public void testCreateCourse() throws Exception {
         RequestCourseDto requestCourseDto = new RequestCourseDto();
         requestCourseDto.setCourseName("Test Course");
@@ -76,7 +71,7 @@ public class AuthorCourseControllerTest {
 
         ObjectMapper objectMapper = new ObjectMapper();
 
-        mockMvc.perform(post("/api/v1/author/courses")
+        mockMvc.perform(post("/api/v1/author/courses").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(requestCourseDto)))
                 .andExpect(status().isOk())
@@ -99,12 +94,12 @@ public class AuthorCourseControllerTest {
 
     @Test
     public void testUpdateCourse() throws Exception {
-        Long courseId = 1L; // replace with actual ID
+        Long courseId = 1L;
         RequestCourseDto requestCourseDto = new RequestCourseDto();
         ResponseCourseDto responseCourseDto = new ResponseCourseDto();
         when(authorCourseService.updateCourse(courseId, requestCourseDto)).thenReturn(responseCourseDto);
 
-        mockMvc.perform(put("/api/v1/author/courses/{id}", courseId)
+        mockMvc.perform(put("/api/v1/author/courses/{id}", courseId).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(requestCourseDto)))
                 .andExpect(status().isOk())
@@ -114,13 +109,59 @@ public class AuthorCourseControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "Lipsar", roles = "AUTHOR")
     public void testDeleteCourse() throws Exception {
-        Long courseId = 1L; // replace with actual ID
+        Long courseId = 1L;
 
-        mockMvc.perform(delete("/api/v1/author/courses/{id}", courseId))
+        mockMvc.perform(delete("/api/v1/author/courses/{id}", courseId).with(csrf()))
                 .andExpect(status().isOk());
 
         verify(authorCourseService).deleteCourse(courseId);
+    }
+
+    @Test
+    public void testCreateCourse_CourseNameException() throws Exception {
+        RequestCourseDto requestCourseDto = new RequestCourseDto();
+        requestCourseDto.setCourseName("Test Course");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        when(authorCourseService.createCourse(requestCourseDto))
+                .thenThrow(new CourseNameException("Course name is already exists"));
+
+        mockMvc.perform(post("/api/v1/author/courses").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestCourseDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Course name is already exists"));
+    }
+
+    @Test
+    public void testCreateCourse_InvalidStatusException() throws Exception {
+        RequestCourseDto requestCourseDto = new RequestCourseDto();
+        requestCourseDto.setCourseName("Test Course");
+        requestCourseDto.setCourseStatus(CourseStatus.ONGOING);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        when(authorCourseService.createCourse(requestCourseDto))
+                .thenThrow(new InvalidStatusException("Course can only be created with Template status."));
+
+        mockMvc.perform(post("/api/v1/author/courses").with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestCourseDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("Course can only be created with Template status."));
+    }
+
+    @Test
+    public void testDeleteCourse_UserNotFoundException() throws Exception {
+        Long courseId = 1L;
+
+        doThrow(new UserNotFoundException("User not found"))
+                .when(authorCourseService).deleteCourse(courseId);
+
+        mockMvc.perform(delete("/api/v1/author/courses/{id}", courseId).with(csrf()))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("User not found"));
     }
 }

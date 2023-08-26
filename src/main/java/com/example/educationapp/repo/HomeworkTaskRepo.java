@@ -12,4 +12,6 @@ public interface HomeworkTaskRepo extends JpaRepository<HomeworkTask, Long> {
     boolean existsByTitle(String title);
 
     HomeworkTask findByTitle(String title);
+
+    boolean existsByTitleAndIdNot(String title, Long id);
 }

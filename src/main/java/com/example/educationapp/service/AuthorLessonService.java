@@ -71,9 +71,9 @@ public class AuthorLessonService {
 
     public ResponseLessonDto updateLesson(Long courseId, Long id, RequestLessonDto requestLessonDto) {
         courseUtils.validateAndGetCourse(courseId);
-
+        Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found"));
         LessonStatus newStatus = requestLessonDto.getLessonStatus();
-        if(lessonRepo.existsByLessonName(requestLessonDto.getLessonName()) && lessonRepo.findByLessonName(requestLessonDto.getLessonName()).getId() != id){
+        if(lessonRepo.existsByLessonNameAndIdNot(requestLessonDto.getLessonName(), id)){
             throw new LessonNameException("Lesson with this name is already exists.");
         }
 
@@ -81,7 +81,6 @@ public class AuthorLessonService {
             throw new InvalidStatusException("Invalid status change.");
         }
 
-        Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found"));
         lesson.setLessonName(requestLessonDto.getLessonName());
         lesson.setLessonStatus(requestLessonDto.getLessonStatus());
         lesson.setContent(requestLessonDto.getContent());

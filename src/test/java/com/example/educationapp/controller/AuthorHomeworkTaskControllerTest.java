@@ -2,37 +2,46 @@ package com.example.educationapp.controller;
 
 import com.example.educationapp.dto.request.RequestHomeworkTaskDto;
 import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
+import com.example.educationapp.entity.HomeworkTask;
+import com.example.educationapp.exception.HomeworkTaskNameException;
+import com.example.educationapp.exception.LessonNotFoundException;
+import com.example.educationapp.repo.HomeworkTaskRepo;
 import com.example.educationapp.service.AuthorHomeworkTaskService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AuthorHomeworkTaskController.class)
+@ExtendWith(SpringExtension.class)
+@WithMockUser(username = "Lipsar", authorities = "AUTHOR")
 @AutoConfigureMockMvc
-@WithMockUser(username = "lipsar", roles = "AUTHOR")
+@EnableMethodSecurity
 public class AuthorHomeworkTaskControllerTest {
 
     @MockBean
@@ -78,7 +87,7 @@ public class AuthorHomeworkTaskControllerTest {
 
         when(authorHomeworkTaskService.createTask(anyLong(), anyLong(), any(RequestHomeworkTaskDto.class))).thenReturn(responseHomeworkTaskDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/author/homework-tasks/1/2")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/author/homework-tasks/1/2").with(csrf())
                         .content("{\"title\":\"New Task\",\"description\":\"New Description\",\"updateDate\":\"2023-08-16T12:00:00Z\"}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -110,7 +119,7 @@ public class AuthorHomeworkTaskControllerTest {
 
         when(authorHomeworkTaskService.updateTask(anyLong(), anyLong(), anyLong(), any(RequestHomeworkTaskDto.class))).thenReturn(responseHomeworkTaskDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/author/homework-tasks/1/2/3")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/author/homework-tasks/1/2/3").with(csrf())
                         .content("{\"title\":\"Updated Task\",\"description\":\"Updated Description\",\"updateDate\":\"2023-08-16T12:00:00Z\"}")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -123,7 +132,38 @@ public class AuthorHomeworkTaskControllerTest {
 
     @Test
     public void testDeleteTask() throws Exception {
-        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/author/homework-tasks/1/2/3"))
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/author/homework-tasks/1/2/3").with(csrf()))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testCreateTask_InvalidTaskNameException() throws Exception {
+        RequestHomeworkTaskDto requestDto = new RequestHomeworkTaskDto();
+        requestDto.setTitle("Existing Task Title");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        when(authorHomeworkTaskService.createTask(anyLong(), anyLong(), eq(requestDto)))
+                .thenThrow(new HomeworkTaskNameException("Homework Task with this name is already exists."));
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/author/homework-tasks/{courseId}/{lessonId}", 1L, 2L).with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Homework Task with this name is already exists."));
+    }
+
+    @Test
+    public void testDeleteTask_LessonNotFoundException() throws Exception {
+        Long courseId = 1L;
+        Long lessonId = 2L;
+        Long id = 3L;
+
+        doThrow(new LessonNotFoundException("Lesson is not found."))
+                .when(authorHomeworkTaskService).deleteTask(courseId, lessonId, id);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/author/homework-tasks/{courseId}/{lessonId}/{id}", courseId, lessonId, id).with(csrf()))
+                .andExpect(status().isNotFound())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Lesson is not found."));
     }
 }
