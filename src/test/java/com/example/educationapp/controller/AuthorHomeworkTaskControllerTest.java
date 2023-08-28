@@ -166,4 +166,26 @@ public class AuthorHomeworkTaskControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Lesson is not found."));
     }
+
+    @Test
+    @WithMockUser(username = "studentTest", authorities = "STUDENT")
+    public void testGetTaskAuthoritiesCheckStudent() throws Exception {
+        ResponseHomeworkTaskDto responseHomeworkTaskDto = new ResponseHomeworkTaskDto(1L, "Task 1", "Description 1", OffsetDateTime.now(), OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
+
+        when(authorHomeworkTaskService.getTask(anyLong(), anyLong(), anyLong())).thenReturn(responseHomeworkTaskDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/author/homework-tasks/1/2/3"))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "teacherTest", authorities = "TEACHER")
+    public void testGetTaskAuthoritiesCheckTeacher() throws Exception {
+        ResponseHomeworkTaskDto responseHomeworkTaskDto = new ResponseHomeworkTaskDto(1L, "Task 1", "Description 1", OffsetDateTime.now(), OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
+
+        when(authorHomeworkTaskService.getTask(anyLong(), anyLong(), anyLong())).thenReturn(responseHomeworkTaskDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/author/homework-tasks/1/2/3"))
+                .andExpect(status().isForbidden());
+    }
 }

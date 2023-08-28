@@ -166,4 +166,26 @@ public class AuthorLessonControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.message").value("Lesson is not found."));
     }
+
+    @Test
+    @WithMockUser(username = "studentTest", authorities = "STUDENT")
+    public void testGetLessonAuthoritiesCheckStudent() throws Exception {
+        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L,"Lesson 1", "Content 1", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
+
+        when(authorLessonService.getLesson(anyLong(), anyLong())).thenReturn(responseLessonDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/author/lessons/1/2"))
+                .andExpect(status().isForbidden());;
+    }
+
+    @Test
+    @WithMockUser(username = "teacherTest", authorities = "TEACHER")
+    public void testGetLessonAuthoritiesCheckTeacher() throws Exception {
+        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L,"Lesson 1", "Content 1", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
+
+        when(authorLessonService.getLesson(anyLong(), anyLong())).thenReturn(responseLessonDto);
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/author/lessons/1/2"))
+                .andExpect(status().isForbidden());
+    }
 }

@@ -37,7 +37,7 @@ public class AuthorCourseService {
 
     public List<ResponseCourseDto> getAllCoursesForAuthor() {
         User user = userContext.getUser();
-        List<Course> courses = userRepo.findCoursesByAuthorCourseSet(user);
+        List<Course> courses = userRepo.findCoursesByAuthor(user);
         return courses.stream()
                 .map(courseMapper::toResponseDto)
                 .collect(Collectors.toList());

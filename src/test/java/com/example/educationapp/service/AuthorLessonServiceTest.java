@@ -54,11 +54,34 @@ class AuthorLessonServiceTest {
     }
 
     @Test
-    void testGetAllLessons() {
+    void testGetAllLessonsWithTwoLessons() {
         Long courseId = 1L;
         Course course = new Course();
         List<Lesson> lessons = new ArrayList<>();
         lessons.add(new Lesson());
+        lessons.add(new Lesson());
+
+        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(course);
+        when(lessonRepo.findAllByLessonsCourse(course)).thenReturn(lessons);
+        when(lessonMapper.toResponseDto(any(Lesson.class))).thenReturn(new ResponseLessonDto());
+
+        List<ResponseLessonDto> responseLessonDtos = authorLessonService.getAllLessons(courseId);
+
+        assertEquals(lessons.size(), responseLessonDtos.size());
+        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(lessonRepo).findAllByLessonsCourse(course);
+        verify(lessonMapper, times(lessons.size())).toResponseDto(any(Lesson.class));
+    }
+
+    @Test
+    void testGetAllLessonsWithThreeLessons() {
+        Long courseId = 1L;
+        Course course = new Course();
+        List<Lesson> lessons = new ArrayList<>();
+        lessons.add(new Lesson());
+        lessons.add(new Lesson());
+        lessons.add(new Lesson());
+
         when(courseUtils.validateAndGetCourse(courseId)).thenReturn(course);
         when(lessonRepo.findAllByLessonsCourse(course)).thenReturn(lessons);
         when(lessonMapper.toResponseDto(any(Lesson.class))).thenReturn(new ResponseLessonDto());

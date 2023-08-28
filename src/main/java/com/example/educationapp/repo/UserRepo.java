@@ -16,5 +16,5 @@ public interface UserRepo extends JpaRepository<User, Long> {
     Boolean existsByEmail(String email);
 
     @Query("select c from Course c join c.authors a where a = :author")
-    List<Course> findCoursesByAuthorCourseSet(User author);
+    List<Course> findCoursesByAuthor(User author);
 }

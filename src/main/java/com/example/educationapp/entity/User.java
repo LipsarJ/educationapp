@@ -115,6 +115,7 @@ public class User {
                 ", status=" + status +
                 ", createDate=" + createDate +
                 ", updateDate=" + updateDate +
+                ", roles=" + roleSet +
                 '}';
     }
 }

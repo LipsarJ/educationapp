@@ -50,8 +50,9 @@ public class AuthorHomeworkTaskServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
+
     @Test
-    void testGetAllTasks() {
+    void testGetAllTasksWithTwoTasks() {
         Long courseId = 1L;
         Long lessonId = 2L;
         Lesson lesson = new Lesson();
@@ -66,10 +67,35 @@ public class AuthorHomeworkTaskServiceTest {
         when(homeworkTaskMapper.toResponseDto(any(HomeworkTask.class)))
                 .thenReturn(new ResponseHomeworkTaskDto());
 
-        // Execute
         List<ResponseHomeworkTaskDto> result = homeworkTaskService.getAllTasks(courseId, lessonId);
 
-        // Assert
+        assertNotNull(result);
+        assertEquals(tasks.size(), result.size());
+        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(lessonRepo).findById(lessonId);
+        verify(homeworkTaskRepo).findAllByLesson(lesson);
+        verify(homeworkTaskMapper, times(tasks.size())).toResponseDto(any(HomeworkTask.class));
+    }
+
+    @Test
+    void testGetAllTasksWithThreeTasks() {
+        Long courseId = 1L;
+        Long lessonId = 2L;
+        Lesson lesson = new Lesson();
+        lesson.setId(lessonId);
+        when(lessonRepo.findById(lessonId)).thenReturn(Optional.of(lesson));
+
+        List<HomeworkTask> tasks = new ArrayList<>();
+        tasks.add(new HomeworkTask());
+        tasks.add(new HomeworkTask());
+        tasks.add(new HomeworkTask());
+        when(homeworkTaskRepo.findAllByLesson(lesson)).thenReturn(tasks);
+
+        when(homeworkTaskMapper.toResponseDto(any(HomeworkTask.class)))
+                .thenReturn(new ResponseHomeworkTaskDto());
+
+        List<ResponseHomeworkTaskDto> result = homeworkTaskService.getAllTasks(courseId, lessonId);
+
         assertNotNull(result);
         assertEquals(tasks.size(), result.size());
         verify(courseUtils).validateAndGetCourse(courseId);
@@ -80,7 +106,6 @@ public class AuthorHomeworkTaskServiceTest {
 
     @Test
     void testCreateTask() {
-        // Prepare
         Long courseId = 1L;
         Long lessonId = 2L;
         RequestHomeworkTaskDto requestDto = new RequestHomeworkTaskDto();
@@ -94,10 +119,8 @@ public class AuthorHomeworkTaskServiceTest {
         when(homeworkTaskMapper.toResponseDto(any(HomeworkTask.class)))
                 .thenReturn(new ResponseHomeworkTaskDto());
 
-        // Execute
         ResponseHomeworkTaskDto result = homeworkTaskService.createTask(courseId, lessonId, requestDto);
 
-        // Assert
         assertNotNull(result);
         verify(courseUtils).validateAndGetCourse(courseId);
         verify(lessonRepo).findById(lessonId);
@@ -179,7 +202,6 @@ public class AuthorHomeworkTaskServiceTest {
     }
     @Test
     void testDeleteTask() {
-        // Prepare
         Long courseId = 1L;
         Long lessonId = 2L;
         Long taskId = 3L;
@@ -194,10 +216,8 @@ public class AuthorHomeworkTaskServiceTest {
         when(homeworkTaskRepo.findById(taskId)).thenReturn(Optional.of(task));
         when(mediaHomeworkTaskRepo.save(any(MediaHomeworkTask.class))).thenReturn(mediaHomeworkTask);
 
-        // Execute
         homeworkTaskService.deleteTask(courseId, lessonId, taskId);
 
-        // Assert
         verify(courseUtils).validateAndGetCourse(courseId);
         verify(lessonRepo).findById(lessonId);
         verify(homeworkTaskRepo).findById(taskId);

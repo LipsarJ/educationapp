@@ -164,4 +164,26 @@ public class AuthorCourseControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message").value("User not found"));
     }
+
+    @Test
+    @WithMockUser(username = "studentTest", authorities = "STUDENT")
+    public void testGetCourseAuthoritiesCheckStudent() throws Exception {
+        Long courseId = 1L;
+        ResponseCourseDto responseCourseDto = new ResponseCourseDto();
+        when(authorCourseService.getCourse(courseId)).thenReturn(responseCourseDto);
+
+        mockMvc.perform(get("/api/v1/author/courses/{id}", courseId))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "teacherTest", authorities = "TEACHER")
+    public void testGetCourseAuthoritiesCheckTeacher() throws Exception {
+        Long courseId = 1L;
+        ResponseCourseDto responseCourseDto = new ResponseCourseDto();
+        when(authorCourseService.getCourse(courseId)).thenReturn(responseCourseDto);
+
+        mockMvc.perform(get("/api/v1/author/courses/{id}", courseId))
+                .andExpect(status().isForbidden());
+    }
 }

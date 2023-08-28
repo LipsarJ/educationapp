@@ -37,15 +37,14 @@ public class AuthorCourseServiceTest {
     );
 
     @Test
-    public void testGetAllCoursesForAuthor() {
-        // Mock user and courses
+    public void testGetAllCoursesForAuthorWithTwoCourses() {
         User user = new User();
         List<Course> courses = new ArrayList<>();
         courses.add(new Course());
         courses.add(new Course());
 
         when(userContext.getUser()).thenReturn(user);
-        when(userRepo.findCoursesByAuthorCourseSet(user)).thenReturn(courses);
+        when(userRepo.findCoursesByAuthor(user)).thenReturn(courses);
         when(courseMapper.toResponseDto(any(Course.class))).thenReturn(new ResponseCourseDto());
 
         List<ResponseCourseDto> responseCourses = authorCourseService.getAllCoursesForAuthor();
@@ -53,10 +52,25 @@ public class AuthorCourseServiceTest {
     }
 
     @Test
-    @WithMockUser(username = "Lipsar", roles = "AUTHOR")
+    public void testGetAllCoursesForAuthorWithThreeCourses() {
+        User user = new User();
+        List<Course> courses = new ArrayList<>();
+        courses.add(new Course());
+        courses.add(new Course());
+        courses.add(new Course());
+
+        when(userContext.getUser()).thenReturn(user);
+        when(userRepo.findCoursesByAuthor(user)).thenReturn(courses);
+        when(courseMapper.toResponseDto(any(Course.class))).thenReturn(new ResponseCourseDto());
+
+        List<ResponseCourseDto> responseCourses = authorCourseService.getAllCoursesForAuthor();
+        assertEquals(courses.size(), responseCourses.size());
+    }
+
+    @Test
     public void testCreateCourse() {
         User user = new User();
-        user.setId(1L); // Set the user's ID for testing purposes
+        user.setId(1L);
 
         RequestCourseDto requestCourseDto = new RequestCourseDto();
         requestCourseDto.setCourseName("Test Course");
@@ -112,7 +126,6 @@ public class AuthorCourseServiceTest {
     }
 
     @Test
-    @WithMockUser(username = "Lipsar", roles = "AUTHOR")
     public void testDeleteCourse() {
         Long courseId = 1L;
         Course course = new Course();
