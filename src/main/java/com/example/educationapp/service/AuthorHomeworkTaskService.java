@@ -8,7 +8,6 @@ import com.example.educationapp.entity.MediaHomeworkTask;
 import com.example.educationapp.exception.HomeworkTaskNameException;
 import com.example.educationapp.exception.HomeworkTaskNotFoundException;
 import com.example.educationapp.exception.LessonNotFoundException;
-import com.example.educationapp.mapper.BaseLocalDateTimeOffsetDateTimeMapper;
 import com.example.educationapp.mapper.HomeworkTaskMapper;
 import com.example.educationapp.repo.HomeworkTaskRepo;
 import com.example.educationapp.repo.LessonRepo;
@@ -16,6 +15,7 @@ import com.example.educationapp.repo.MediaHomeworkTaskRepo;
 import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -44,6 +44,7 @@ public class AuthorHomeworkTaskService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public ResponseHomeworkTaskDto createTask(Long courseId, Long lessonId, RequestHomeworkTaskDto requestHomeworkTaskDto) {
         courseUtils.validateAndGetCourse(courseId);
 
@@ -71,6 +72,7 @@ public class AuthorHomeworkTaskService {
         return homeworkTaskMapper.toResponseDto(homeworkTask);
     }
 
+    @Transactional
     public ResponseHomeworkTaskDto updateTask(Long courseId, Long lessonId, Long id, RequestHomeworkTaskDto requestHomeworkTaskDto) {
         courseUtils.validateAndGetCourse(courseId);
 
@@ -90,6 +92,7 @@ public class AuthorHomeworkTaskService {
         return homeworkTaskMapper.toResponseDto(homeworkTask);
     }
 
+    @Transactional
     public void deleteTask(Long courseId, Long lessonId, Long id) {
         courseUtils.validateAndGetCourse(courseId);
         Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
@@ -97,8 +100,7 @@ public class AuthorHomeworkTaskService {
         HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework is not found."));
         if(!homeworkTask.getHomeworkTaskMediaList().isEmpty()) {
             for(MediaHomeworkTask mediaHomeworkTask : homeworkTask.getHomeworkTaskMediaList()) {
-                mediaHomeworkTask.setTaskMedia(null);
-                mediaHomeworkTaskRepo.save(mediaHomeworkTask);
+                mediaHomeworkTaskRepo.delete(mediaHomeworkTask);
             }
         }
         lesson.getHomeworkTaskList().remove(homeworkTask);

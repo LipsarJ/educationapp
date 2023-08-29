@@ -17,6 +17,7 @@ import com.example.educationapp.security.service.UserContext;
 import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,6 +35,8 @@ public class AuthorCourseService {
 
     private final LessonRepo lessonRepo;
 
+    private final AuthorLessonService authorLessonService;
+
 
     public List<ResponseCourseDto> getAllCoursesForAuthor() {
         User user = userContext.getUser();
@@ -44,6 +47,7 @@ public class AuthorCourseService {
 
     }
 
+    @Transactional
     public ResponseCourseDto createCourse(RequestCourseDto requestCourseDto){
         User user = userContext.getUser();
         if(requestCourseDto.getCourseStatus() != null && requestCourseDto.getCourseStatus() != CourseStatus.TEMPLATE) {
@@ -68,6 +72,7 @@ public class AuthorCourseService {
         return courseMapper.toResponseDto(course);
     }
 
+    @Transactional
     public ResponseCourseDto updateCourse(Long id, RequestCourseDto requestCourseDto) {
         Course course = courseUtils.validateAndGetCourse(id);
         if(courseRepo.existsByCourseNameAndIdNot(requestCourseDto.getCourseName(), id)) {
@@ -89,6 +94,7 @@ public class AuthorCourseService {
         return courseMapper.toResponseDto(course);
     }
 
+    @Transactional
     public void deleteCourse(Long id) {
         Course course = courseUtils.validateAndGetCourse(id);
         User user = userContext.getUser();
@@ -100,8 +106,7 @@ public class AuthorCourseService {
         userRepo.save(user);
         if(!course.getLessonList().isEmpty()){
             for (Lesson lesson : course.getLessonList()) {
-                lesson.setLessonsCourse(null);
-                lessonRepo.save(lesson);
+                authorLessonService.deleteLesson(id, lesson.getId());
             }
         }
         course.getStudents().clear();

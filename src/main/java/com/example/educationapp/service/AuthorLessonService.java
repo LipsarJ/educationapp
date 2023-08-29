@@ -14,6 +14,7 @@ import com.example.educationapp.repo.MediaLessonRepo;
 import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +34,8 @@ public class AuthorLessonService {
 
     private final MediaLessonRepo mediaLessonRepo;
 
+    private final AuthorHomeworkTaskService authorHomeworkTaskService;
+
     public List<ResponseLessonDto> getAllLessons(Long courseId) {
         Course course = courseUtils.validateAndGetCourse(courseId);
 
@@ -43,6 +46,7 @@ public class AuthorLessonService {
 
     }
 
+    @Transactional
     public ResponseLessonDto createLesson(Long courseId, RequestLessonDto requestLessonDto) {
         Course course = courseUtils.validateAndGetCourse(courseId);
         if(requestLessonDto.getLessonStatus() == LessonStatus.NOT_ACTIVE) {
@@ -69,6 +73,7 @@ public class AuthorLessonService {
         return lessonMapper.toResponseDto(lesson);
     }
 
+    @Transactional
     public ResponseLessonDto updateLesson(Long courseId, Long id, RequestLessonDto requestLessonDto) {
         courseUtils.validateAndGetCourse(courseId);
         Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found"));
@@ -88,6 +93,7 @@ public class AuthorLessonService {
         return lessonMapper.toResponseDto(lesson);
     }
 
+    @Transactional
     public void deleteLesson(Long courseId, Long id) {
         Course course = courseUtils.validateAndGetCourse(courseId);
         Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
@@ -97,14 +103,12 @@ public class AuthorLessonService {
         }
         if(!lesson.getHomeworkTaskList().isEmpty()){
             for(HomeworkTask homeworkTask : lesson.getHomeworkTaskList()){
-                homeworkTask.setLesson(null);
-                homeworkTaskRepo.save(homeworkTask);
+                authorHomeworkTaskService.deleteTask(courseId, id, homeworkTask.getId());
             }
         }
         if(!lesson.getMediaLessonSet().isEmpty()){
             for(MediaLesson mediaLesson : lesson.getMediaLessonSet()){
-                mediaLesson.setMediaLesson(null);
-                mediaLessonRepo.save(mediaLesson);
+                mediaLessonRepo.delete(mediaLesson);
             }
         }
         course.getLessonList().remove(lesson);
