@@ -8,7 +8,6 @@ import com.example.educationapp.exception.LessonNameException;
 import com.example.educationapp.exception.LessonNotFoundException;
 import com.example.educationapp.mapper.LessonMapper;
 import com.example.educationapp.repo.CourseRepo;
-import com.example.educationapp.repo.HomeworkTaskRepo;
 import com.example.educationapp.repo.LessonRepo;
 import com.example.educationapp.repo.MediaLessonRepo;
 import com.example.educationapp.utils.CourseUtils;
@@ -23,17 +22,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuthorLessonService {
     private final LessonRepo lessonRepo;
-
     private final CourseUtils courseUtils;
-
     private final LessonMapper lessonMapper;
-
     private final CourseRepo courseRepo;
-
-    private final HomeworkTaskRepo homeworkTaskRepo;
-
     private final MediaLessonRepo mediaLessonRepo;
-
     private final AuthorHomeworkTaskService authorHomeworkTaskService;
 
     public List<ResponseLessonDto> getAllLessons(Long courseId) {
@@ -49,12 +41,12 @@ public class AuthorLessonService {
     @Transactional
     public ResponseLessonDto createLesson(Long courseId, RequestLessonDto requestLessonDto) {
         Course course = courseUtils.validateAndGetCourse(courseId);
-        if(requestLessonDto.getLessonStatus() == LessonStatus.NOT_ACTIVE) {
+        if (requestLessonDto.getLessonStatus() == LessonStatus.NOT_ACTIVE) {
             throw new InvalidStatusException("Lesson can be only created with Active status.");
         } else {
             requestLessonDto.setLessonStatus(LessonStatus.ACTIVE);
         }
-        if(lessonRepo.existsByLessonName(requestLessonDto.getLessonName())){
+        if (lessonRepo.existsByLessonName(requestLessonDto.getLessonName())) {
             throw new LessonNameException("Lesson with this name is already exists.");
         }
         Lesson lesson = lessonMapper.toEntity(requestLessonDto);
@@ -78,7 +70,7 @@ public class AuthorLessonService {
         courseUtils.validateAndGetCourse(courseId);
         Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found"));
         LessonStatus newStatus = requestLessonDto.getLessonStatus();
-        if(lessonRepo.existsByLessonNameAndIdNot(requestLessonDto.getLessonName(), id)){
+        if (lessonRepo.existsByLessonNameAndIdNot(requestLessonDto.getLessonName(), id)) {
             throw new LessonNameException("Lesson with this name is already exists.");
         }
 
@@ -101,15 +93,11 @@ public class AuthorLessonService {
         if (lesson.getLessonStatus() != LessonStatus.NOT_ACTIVE) {
             throw new InvalidStatusException("Lesson can only be deleted if it's in NOT_ACTIVE status.");
         }
-        if(!lesson.getHomeworkTaskList().isEmpty()){
-            for(HomeworkTask homeworkTask : lesson.getHomeworkTaskList()){
-                authorHomeworkTaskService.deleteTask(courseId, id, homeworkTask.getId());
-            }
+        for (HomeworkTask homeworkTask : lesson.getHomeworkTaskList()) {
+            authorHomeworkTaskService.deleteTask(courseId, id, homeworkTask.getId());
         }
-        if(!lesson.getMediaLessonSet().isEmpty()){
-            for(MediaLesson mediaLesson : lesson.getMediaLessonSet()){
-                mediaLessonRepo.delete(mediaLesson);
-            }
+        for (MediaLesson mediaLesson : lesson.getMediaLessonSet()) {
+            mediaLessonRepo.delete(mediaLesson);
         }
         course.getLessonList().remove(lesson);
         courseRepo.save(course);
@@ -119,7 +107,7 @@ public class AuthorLessonService {
     }
 
     private boolean isStatusChangeValid(LessonStatus newStatus) {
-        if(newStatus == LessonStatus.ACTIVE) return true;
+        if (newStatus == LessonStatus.ACTIVE) return true;
         else return false;
     }
 }

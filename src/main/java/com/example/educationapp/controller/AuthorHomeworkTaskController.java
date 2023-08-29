@@ -26,27 +26,27 @@ public class AuthorHomeworkTaskController {
 
     @PostMapping("/{courseId}/{lessonId}")
     public ResponseEntity<ResponseHomeworkTaskDto> createTask(@PathVariable Long courseId, @PathVariable Long lessonId,
-                                                        @RequestBody RequestHomeworkTaskDto requestHomeworkTaskDto) {
+                                                              @RequestBody RequestHomeworkTaskDto requestHomeworkTaskDto) {
         return ResponseEntity.ok(authorHomeworkTaskService.createTask(courseId, lessonId, requestHomeworkTaskDto));
     }
 
     @GetMapping("/{courseId}/{lessonId}/{id}")
     public ResponseEntity<ResponseHomeworkTaskDto> getTask(@PathVariable Long courseId, @PathVariable Long lessonId,
-                                                   @PathVariable Long id) {
+                                                           @PathVariable Long id) {
         ResponseHomeworkTaskDto responseHomeworkTaskDto = authorHomeworkTaskService.getTask(courseId, lessonId, id);
         return ResponseEntity.ok(responseHomeworkTaskDto);
     }
 
     @PutMapping("/{courseId}/{lessonId}/{id}")
     public ResponseEntity<ResponseHomeworkTaskDto> updateTask(@PathVariable Long courseId, @PathVariable Long lessonId,
-                                                      @PathVariable Long id, @RequestBody RequestHomeworkTaskDto requestHomeworkTaskDto) {
+                                                              @PathVariable Long id, @RequestBody RequestHomeworkTaskDto requestHomeworkTaskDto) {
         ResponseHomeworkTaskDto updatedHomeworkTask = authorHomeworkTaskService.updateTask(courseId, lessonId, id, requestHomeworkTaskDto);
         return ResponseEntity.ok(updatedHomeworkTask);
     }
 
     @DeleteMapping("/{courseId}/{lessonId}/{id}")
     public void deleteTask(@PathVariable Long courseId, @PathVariable Long lessonId,
-                                          @PathVariable Long id) {
+                           @PathVariable Long id) {
         authorHomeworkTaskService.deleteTask(courseId, lessonId, id);
     }
 }

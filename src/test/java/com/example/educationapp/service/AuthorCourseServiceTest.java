@@ -2,6 +2,7 @@ package com.example.educationapp.service;
 
 import com.example.educationapp.dto.request.RequestCourseDto;
 import com.example.educationapp.dto.response.ResponseCourseDto;
+import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.CourseStatus;
 import com.example.educationapp.entity.Lesson;
@@ -40,11 +41,17 @@ public class AuthorCourseServiceTest {
     @Test
     public void testGetAllCoursesForAuthorWithTwoCourses() {
         User user = new User();
+        user.setId(1L);
+
+        ResponseUserDto responseUserDto = new ResponseUserDto();
+        responseUserDto.setId(1L);
+
         List<Course> courses = new ArrayList<>();
         courses.add(new Course());
         courses.add(new Course());
 
-        when(userContext.getUser()).thenReturn(user);
+        when(userContext.getUserDto()).thenReturn(responseUserDto);
+        when(userRepo.findById(user.getId())).thenReturn(Optional.of(user));
         when(userRepo.findCoursesByAuthor(user)).thenReturn(courses);
         when(courseMapper.toResponseDto(any(Course.class))).thenReturn(new ResponseCourseDto());
 
@@ -55,12 +62,18 @@ public class AuthorCourseServiceTest {
     @Test
     public void testGetAllCoursesForAuthorWithThreeCourses() {
         User user = new User();
+        user.setId(1L);
+
+        ResponseUserDto responseUserDto = new ResponseUserDto();
+        responseUserDto.setId(1L);
+
         List<Course> courses = new ArrayList<>();
         courses.add(new Course());
         courses.add(new Course());
         courses.add(new Course());
 
-        when(userContext.getUser()).thenReturn(user);
+        when(userContext.getUserDto()).thenReturn(responseUserDto);
+        when(userRepo.findById(user.getId())).thenReturn(Optional.of(user));
         when(userRepo.findCoursesByAuthor(user)).thenReturn(courses);
         when(courseMapper.toResponseDto(any(Course.class))).thenReturn(new ResponseCourseDto());
 
@@ -73,6 +86,9 @@ public class AuthorCourseServiceTest {
         User user = new User();
         user.setId(1L);
 
+        ResponseUserDto responseUserDto = new ResponseUserDto();
+        responseUserDto.setId(1L);
+
         RequestCourseDto requestCourseDto = new RequestCourseDto();
         requestCourseDto.setCourseName("Test Course");
         requestCourseDto.setCourseStatus(CourseStatus.TEMPLATE);
@@ -82,7 +98,7 @@ public class AuthorCourseServiceTest {
         course.setCourseName(requestCourseDto.getCourseName());
         course.setCourseStatus(requestCourseDto.getCourseStatus());
 
-        when(userContext.getUser()).thenReturn(user);
+        when(userContext.getUserDto()).thenReturn(responseUserDto);
         when(userRepo.findById(user.getId())).thenReturn(Optional.of(user));
         when(courseMapper.toEntity(requestCourseDto)).thenReturn(course);
         when(courseRepo.save(course)).thenReturn(course);
@@ -133,9 +149,11 @@ public class AuthorCourseServiceTest {
         course.setCourseStatus(CourseStatus.TEMPLATE);
         User user = new User();
         user.setId(1L);
+        ResponseUserDto responseUserDto = new ResponseUserDto();
+        responseUserDto.setId(1L);
 
         when(courseUtils.validateAndGetCourse(courseId)).thenReturn(course);
-        when(userContext.getUser()).thenReturn(user);
+        when(userContext.getUserDto()).thenReturn(responseUserDto);
         when(userRepo.findById(user.getId())).thenReturn(Optional.of(user));
 
         authorCourseService.deleteCourse(courseId);

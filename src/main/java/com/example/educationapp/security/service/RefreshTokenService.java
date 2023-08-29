@@ -18,9 +18,7 @@ import java.util.UUID;
 public class RefreshTokenService {
     @Value("${app.security.refreshTokenDurationMs}")
     private int refreshTokenDurationMs;
-
     private final RefreshTokenRepo refreshTokenRepo;
-
     private final UserRepo userRepo;
 
     public Optional<RefreshToken> findByToken(String token) {
@@ -52,4 +50,3 @@ public class RefreshTokenService {
         return refreshTokenRepo.deleteByUser(userRepo.findById(userId).get());
     }
 }
-

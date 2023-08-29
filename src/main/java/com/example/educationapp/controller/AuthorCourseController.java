@@ -18,13 +18,13 @@ public class AuthorCourseController {
     private final AuthorCourseService authorCourseService;
 
     @GetMapping
-    public ResponseEntity<List<ResponseCourseDto>> getAllCoursesForAuthor(){
+    public ResponseEntity<List<ResponseCourseDto>> getAllCoursesForAuthor() {
         List<ResponseCourseDto> courses = authorCourseService.getAllCoursesForAuthor();
         return ResponseEntity.ok(courses);
     }
 
     @PostMapping
-    public ResponseEntity<ResponseCourseDto> createCourse(@RequestBody RequestCourseDto requestCourseDto){
+    public ResponseEntity<ResponseCourseDto> createCourse(@RequestBody RequestCourseDto requestCourseDto) {
         return ResponseEntity.ok(authorCourseService.createCourse(requestCourseDto));
     }
 

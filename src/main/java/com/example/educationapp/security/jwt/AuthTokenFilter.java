@@ -18,9 +18,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @Slf4j
 public class AuthTokenFilter extends OncePerRequestFilter {
-
     private final JwtUtils jwtUtils;
-
     private final UserDetailsServiceImpl userDetailsService;
 
     @Override
@@ -54,4 +52,3 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         return jwt;
     }
 }
-

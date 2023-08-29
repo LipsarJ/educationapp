@@ -24,13 +24,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AuthorHomeworkTaskService {
     private final HomeworkTaskRepo homeworkTaskRepo;
-
     private final HomeworkTaskMapper homeworkTaskMapper;
-
     private final CourseUtils courseUtils;
-
     private final LessonRepo lessonRepo;
-
     private final MediaHomeworkTaskRepo mediaHomeworkTaskRepo;
 
     public List<ResponseHomeworkTaskDto> getAllTasks(Long courseId, Long lessonId) {
@@ -50,7 +46,7 @@ public class AuthorHomeworkTaskService {
 
         Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
-        if(homeworkTaskRepo.existsByTitle(requestHomeworkTaskDto.getTitle())) {
+        if (homeworkTaskRepo.existsByTitle(requestHomeworkTaskDto.getTitle())) {
             throw new HomeworkTaskNameException("Homework Task with this name is already exists.");
         }
 
@@ -80,7 +76,7 @@ public class AuthorHomeworkTaskService {
 
         HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework Task is not found"));
 
-        if(homeworkTaskRepo.existsByTitleAndIdNot(requestHomeworkTaskDto.getTitle(), id)){
+        if (homeworkTaskRepo.existsByTitleAndIdNot(requestHomeworkTaskDto.getTitle(), id)) {
             throw new HomeworkTaskNameException("Homework task with this name is already exists.");
         }
         HomeworkTask updatedHomeworkTask = homeworkTaskMapper.toEntity(requestHomeworkTaskDto);
@@ -98,10 +94,8 @@ public class AuthorHomeworkTaskService {
         Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
         HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework is not found."));
-        if(!homeworkTask.getHomeworkTaskMediaList().isEmpty()) {
-            for(MediaHomeworkTask mediaHomeworkTask : homeworkTask.getHomeworkTaskMediaList()) {
-                mediaHomeworkTaskRepo.delete(mediaHomeworkTask);
-            }
+        for (MediaHomeworkTask mediaHomeworkTask : homeworkTask.getHomeworkTaskMediaList()) {
+            mediaHomeworkTaskRepo.delete(mediaHomeworkTask);
         }
         lesson.getHomeworkTaskList().remove(homeworkTask);
         lessonRepo.save(lesson);
