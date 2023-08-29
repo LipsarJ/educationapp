@@ -7,4 +7,5 @@ public record UserInfoDto(
         String username,
         String email,
         List<String> roles
-) {}
+) {
+}

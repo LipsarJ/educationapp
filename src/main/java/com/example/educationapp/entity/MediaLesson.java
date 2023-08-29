@@ -27,9 +27,9 @@ public class MediaLesson {
 
     @Override
     public boolean equals(Object obj) {
-        if(this == obj) return true;
-        if(obj == null) return false;
-        if(getClass() != obj.getClass()) return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         MediaLesson other = (MediaLesson) obj;
         return id != null && id.equals(other.getId());
     }
@@ -42,7 +42,7 @@ public class MediaLesson {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MediaType type;
+    private MediaType mediaType;
 
     @ManyToOne
     @JoinColumn(name = "lesson_id")

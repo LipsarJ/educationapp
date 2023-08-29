@@ -19,16 +19,12 @@ import java.util.Date;
 @Component
 @Slf4j
 public class JwtUtils {
-
     @Value("${app.security.jwtSecret}")
     private String jwtSecret;
-
     @Value("${app.security.jwtExpirationMs}")
     private int jwtExpirationMs;
-
     @Value("${app.security.jwtCookie}")
     private String jwtCookie;
-
     @Value("${app.security.jwtRefreshCookie}")
     private String jwtRefreshCookie;
 

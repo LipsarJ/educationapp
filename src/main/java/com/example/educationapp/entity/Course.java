@@ -2,7 +2,10 @@ package com.example.educationapp.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -17,7 +20,6 @@ import static java.time.ZoneOffset.UTC;
 @Table(name = "courses")
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class Course {
@@ -33,9 +35,9 @@ public class Course {
 
     @Override
     public boolean equals(Object obj) {
-        if(this == obj) return true;
-        if(obj == null) return false;
-        if(getClass() != obj.getClass()) return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         Course other = (Course) obj;
         return id != null && id.equals(other.getId());
     }
@@ -45,7 +47,7 @@ public class Course {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CourseStatus status;
+    private CourseStatus courseStatus;
 
     @Column(nullable = false)
     private LocalDateTime createDate;
@@ -78,4 +80,15 @@ public class Course {
 
     @OneToMany(mappedBy = "lessonsCourse")
     private List<Lesson> lessonList = new ArrayList<Lesson>();
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "id=" + id +
+                ", courseName='" + courseName + '\'' +
+                ", courseStatus=" + courseStatus +
+                ", createDate=" + createDate +
+                ", updateDate=" + updateDate +
+                '}';
+    }
 }

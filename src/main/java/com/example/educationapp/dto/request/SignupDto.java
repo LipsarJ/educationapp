@@ -17,4 +17,5 @@ public record SignupDto(
         @NotNull LocalDateTime createDate,
         @NotNull LocalDateTime updateDate,
         @NotNull String userStatus
-) {}
+) {
+}

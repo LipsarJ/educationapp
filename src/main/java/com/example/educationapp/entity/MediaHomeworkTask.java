@@ -19,6 +19,7 @@ public class MediaHomeworkTask {
     @GeneratedValue
     @UuidGenerator
     private UUID id;
+
     @Override
     public int hashCode() {
         return 154;
@@ -26,9 +27,9 @@ public class MediaHomeworkTask {
 
     @Override
     public boolean equals(Object obj) {
-        if(this == obj) return true;
-        if(obj == null) return false;
-        if(getClass() != obj.getClass()) return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         MediaHomeworkTask other = (MediaHomeworkTask) obj;
         return id != null && id.equals(other.getId());
     }
@@ -42,7 +43,7 @@ public class MediaHomeworkTask {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MediaType type;
+    private MediaType mediaType;
 
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)

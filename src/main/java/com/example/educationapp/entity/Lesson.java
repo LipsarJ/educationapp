@@ -30,9 +30,9 @@ public class Lesson {
 
     @Override
     public boolean equals(Object obj) {
-        if(this == obj) return true;
-        if(obj == null) return false;
-        if(getClass() != obj.getClass()) return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         Lesson other = (Lesson) obj;
         return id != null && id.equals(other.getId());
     }
@@ -44,7 +44,7 @@ public class Lesson {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private LessonStatus status;
+    private LessonStatus lessonStatus;
 
     @Column(nullable = false)
     private LocalDateTime createDate;
