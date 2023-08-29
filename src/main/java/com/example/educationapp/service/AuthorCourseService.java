@@ -33,8 +33,6 @@ public class AuthorCourseService {
 
     private final CourseUtils courseUtils;
 
-    private final LessonRepo lessonRepo;
-
     private final AuthorLessonService authorLessonService;
 
 

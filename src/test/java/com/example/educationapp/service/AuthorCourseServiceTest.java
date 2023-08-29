@@ -30,10 +30,11 @@ public class AuthorCourseServiceTest {
     private final CourseMapper courseMapper = mock(CourseMapper.class);
     private final UserContext userContext = mock(UserContext.class);
     private final CourseUtils courseUtils = mock(CourseUtils.class);
-    private final LessonRepo lessonRepo = mock(LessonRepo.class);
+
+    private final AuthorLessonService  authorLessonService = mock(AuthorLessonService.class);
 
     private final AuthorCourseService authorCourseService = new AuthorCourseService(
-            courseRepo, userRepo, courseMapper, userContext, courseUtils, lessonRepo
+            courseRepo, userRepo, courseMapper, userContext, courseUtils, authorLessonService
     );
 
     @Test
@@ -140,7 +141,6 @@ public class AuthorCourseServiceTest {
         authorCourseService.deleteCourse(courseId);
 
         verify(userRepo).save(user);
-        verify(lessonRepo, times(course.getLessonList().size())).save(any(Lesson.class));
         verify(courseRepo).delete(course);
     }
 }
