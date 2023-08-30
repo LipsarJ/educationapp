@@ -32,7 +32,7 @@ public class AdminApiService {
                 role.getUsers().add(user);
                 roleRepo.save(role);
             } else {
-                throw new UserHasRoleException("User is already has this role.");
+                throw new UserHasRoleException("User is already has this role: " + roleName);
             }
         }
         user = userRepo.save(user);

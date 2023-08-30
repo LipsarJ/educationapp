@@ -1,0 +1,78 @@
+version: '3.8'
+services:
+  postgres-education:
+    container_name: postgres-education
+    image: postgres:15
+    restart: on-failure
+    volumes:
+      - ./compose-data/postgres-education:/var/lib/pgsql/data
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGDATA=${PGDATA}
+      - POSTGRES_DB=${POSTGRES_DB}
+    networks:
+      - postgresql-net
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: minio/minio
+    container_name: minio
+    restart: always
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "9005:9005"
+      - "9000:9000"
+    environment:
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_BROWSER=on
+    networks:
+      - minio-net
+    volumes:
+      - ./compose-data/minio/minio-data:/data
+      - ./compose-data/minio/minio-config:/root/.minio
+    command: server /data --console-address ":9005"
+
+  education:
+    container_name: education
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+    networks:
+      - minio-net
+      - postgresql-net
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    depends_on:
+      postgres-education:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+
+networks:
+  postgresql-net:
+    driver: bridge
+  minio-net:
+    driver: bridge
