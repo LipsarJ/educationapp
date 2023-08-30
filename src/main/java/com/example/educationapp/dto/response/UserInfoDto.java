@@ -1,11 +1,14 @@
 package com.example.educationapp.dto.response;
 
-import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-public record UserInfoDto(
-        Long id,
-        String username,
-        String email,
-        List<String> roles
-) {
+@Data
+@AllArgsConstructor
+public class UserInfoDto {
+    private Long id;
+    private String username;
+    private String firstName;
+    private String middleName;
+    private String lastName;
 }
