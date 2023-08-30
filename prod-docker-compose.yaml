@@ -9,10 +9,10 @@ services:
     ports:
       - 5433:5432
     environment:
-      - POSTGRES_USER=education
-      - POSTGRES_PASSWORD=password
-      - PGDATA=/var/lib/pgsql/data
-      - POSTGRES_DB=education
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - PGDATA=${PGDATA}
+      - POSTGRES_DB=${POSTGRES_DB}
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready" ]
       interval: 10s
@@ -31,10 +31,25 @@ services:
       - "9005:9005"
       - "9000:9000"
     environment:
-      MINIO_ROOT_USER: admin
-      MINIO_ROOT_PASSWORD: 7D3ffTPfo0h705Nn
-      MINIO_BROWSER: "on"
+      - MINIO_ROOT_USER=${MINIO_ROOT_USER}
+      - MINIO_ROOT_PASSWORD=${MINIO_ROOT_PASSWORD}
+      - MINIO_BROWSER=on
     volumes:
       - ./compose-data/minio/minio-data:/data
       - ./compose-data/minio/minio-config:/root/.minio
     command: server /data --console-address ":9005"
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+    depends_on:
+      - "postgres-education"
