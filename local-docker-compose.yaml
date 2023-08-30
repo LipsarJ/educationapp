@@ -13,6 +13,8 @@ services:
       - POSTGRES_PASSWORD=password
       - PGDATA=/var/lib/pgsql/data
       - POSTGRES_DB=education
+    networks:
+      - postgresql-net
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready" ]
       interval: 10s
@@ -24,8 +26,8 @@ services:
     restart: always
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
-      interval: 30s
-      timeout: 10s
+      interval: 15s
+      timeout: 5s
       retries: 5
     ports:
       - "9005:9005"
@@ -34,12 +36,14 @@ services:
       MINIO_ROOT_USER: admin
       MINIO_ROOT_PASSWORD: 7D3ffTPfo0h705Nn
       MINIO_BROWSER: "on"
+    networks:
+      - minio-net
     volumes:
       - ./compose-data/minio/minio-data:/data
       - ./compose-data/minio/minio-config:/root/.minio
     command: server /data --console-address ":9005"
-  app:
-    container_name: app
+  education:
+    container_name: education
     build:
       context: .
       dockerfile: dockerfile
@@ -51,6 +55,9 @@ services:
       - DATABASE_NAME=education
       - DATABASE_USER=education
       - DATABASE_PASSWORD=password
+    networks:
+      - minio-net
+      - postgresql-net
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
       interval: 10s
@@ -61,3 +68,8 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+networks:
+  postgresql-net:
+    driver: bridge
+  minio-net:
+    driver: bridge
