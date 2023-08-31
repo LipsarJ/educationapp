@@ -22,7 +22,7 @@ public class ResponseLessonDto {
     @Schema(description = "Содержание занятия", example = "Основные понятия и операции в алгебре")
     private String content;
 
-    @Schema(description = "Статус занятия", example = "PUBLISHED")
+    @Schema(description = "Статус занятия", example = "ACTIVE")
     private LessonStatus lessonStatus;
 
     @Schema(description = "Дата обновления", example = "2023-08-24T14:30:00Z")

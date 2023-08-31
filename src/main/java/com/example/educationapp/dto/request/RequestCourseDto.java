@@ -19,6 +19,6 @@ public class RequestCourseDto {
     private String courseName;
 
     @NotNull
-    @Schema(description = "Статус курса, который вводит пользователь", example = "АКТИВНЫЙ")
+    @Schema(description = "Статус курса, который вводит пользователь", example = "ONGOING")
     private CourseStatus courseStatus;
 }

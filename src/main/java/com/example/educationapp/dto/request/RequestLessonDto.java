@@ -22,6 +22,6 @@ public class RequestLessonDto {
     private String content;
 
     @NotNull
-    @Schema(description = "Статус урока, которое получаем от пользователя", example = "В_ПРОЦЕССЕ")
+    @Schema(description = "Статус урока, которое получаем от пользователя", example = "ACTIVE")
     private LessonStatus lessonStatus;
 }

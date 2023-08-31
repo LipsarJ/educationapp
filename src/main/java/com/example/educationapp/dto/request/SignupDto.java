@@ -39,7 +39,7 @@ public record SignupDto(
         @Schema(description = "Дата обновления данных пользователя в базе данных", example = "2023-08-24T12:00:00Z")
         LocalDateTime updateDate,
         @NotNull
-        @Schema(description = "Статус пользователя для регистрации", example = "АКТИВНЫЙ")
+        @Schema(description = "Статус пользователя для регистрации", example = "ACTIVE")
         String userStatus
 ) {
         // Constructors and methods
