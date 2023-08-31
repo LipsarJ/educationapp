@@ -11,13 +11,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+
 @Schema(description = "ДТО для курса, который получаем при запросе от пользователя")
 public class RequestCourseDto {
     @NotBlank
-    @Schema(description = "Имя курса, которое вводит пользователь")
+    @Schema(description = "Имя курса, которое вводит пользователь", example = "Введение в программирование")
     private String courseName;
 
     @NotNull
-    @Schema(description = "Статус курса, который вводит пользователь")
+    @Schema(description = "Статус курса, который вводит пользователь", example = "АКТИВНЫЙ")
     private CourseStatus courseStatus;
 }

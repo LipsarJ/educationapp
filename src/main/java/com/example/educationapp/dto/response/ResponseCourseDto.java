@@ -13,18 +13,18 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 @Schema(description = "ДТО с информацией о курсе")
 public class ResponseCourseDto {
-    @Schema(description = "Идентификатор курса")
+    @Schema(description = "Идентификатор курса", example = "1")
     private Long id;
 
-    @Schema(description = "Название курса")
+    @Schema(description = "Название курса", example = "Математика")
     private String courseName;
 
-    @Schema(description = "Статус курса")
+    @Schema(description = "Статус курса", example = "ACTIVE")
     private CourseStatus courseStatus;
 
-    @Schema(description = "Дата обновления")
+    @Schema(description = "Дата обновления", example = "2023-08-24T14:30:00Z")
     private OffsetDateTime updateDate;
 
-    @Schema(description = "Дата создания")
+    @Schema(description = "Дата создания", example = "2023-08-20T10:00:00Z")
     private OffsetDateTime createDate;
 }

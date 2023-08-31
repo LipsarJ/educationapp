@@ -14,14 +14,14 @@ import lombok.NoArgsConstructor;
 @Schema(description = "ДТО для урока, которое получаем при запросе от пользователя")
 public class RequestLessonDto {
     @NotBlank
-    @Schema(description = "Имя урока, которое получаем от пользователя")
+    @Schema(description = "Имя урока, которое получаем от пользователя", example = "Переменные и типы данных")
     private String lessonName;
 
     @NotBlank
-    @Schema(description = "Содержание урока, которое получаем от пользователя")
+    @Schema(description = "Содержание урока, которое получаем от пользователя", example = "В этом уроке мы узнаем о различных типах переменных.")
     private String content;
 
     @NotNull
-    @Schema(description = "Статус урока, которое получаем от пользователя")
+    @Schema(description = "Статус урока, которое получаем от пользователя", example = "В_ПРОЦЕССЕ")
     private LessonStatus lessonStatus;
 }

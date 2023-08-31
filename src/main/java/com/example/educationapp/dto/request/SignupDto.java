@@ -10,36 +10,37 @@ import java.time.LocalDateTime;
 
 @Schema(description = "ДТО регистрации, которое получаем при регистрации пользователя")
 public record SignupDto(
-        @Schema(description = "Имя пользователя для регистрации")
         @NotBlank
         @Size(min = 3, max = 20)
+        @Schema(description = "Имя пользователя для регистрации", example = "анна_смирнова")
         String username,
-        @Schema(description = "E-mail пользователя для регистрации")
         @NotBlank
         @Size(max = 50)
         @Email
+        @Schema(description = "E-mail пользователя для регистрации", example = "anna@example.com")
         String email,
-        @Schema(description = "Пароль пользователя для регистрации")
         @NotBlank
         @Size(min = 6, max = 40)
+        @Schema(description = "Пароль пользователя для регистрации", example = "секретныйпароль")
         String password,
-        @Schema(description = "Отчество пользователя для регистрации")
         @NotBlank
+        @Schema(description = "Отчество пользователя для регистрации", example = "Ивановна")
         String middlename,
-        @Schema(description = "Имя пользователя для регистрации")
         @NotBlank
+        @Schema(description = "Имя пользователя для регистрации", example = "Анна")
         String firstname,
-        @Schema(description = "Фамилия пользователя для регистрации")
         @NotBlank
+        @Schema(description = "Фамилия пользователя для регистрации", example = "Смирнова")
         String lastname,
-        @Schema(description = "Дата создания пользователя в базе данных")
         @NotNull
+        @Schema(description = "Дата создания пользователя в базе данных", example = "2023-08-24T12:00:00Z")
         LocalDateTime createDate,
-        @Schema(description = "Дата обновления данных пользователя в базе данных")
         @NotNull
+        @Schema(description = "Дата обновления данных пользователя в базе данных", example = "2023-08-24T12:00:00Z")
         LocalDateTime updateDate,
-        @Schema(description = "Статус пользователя для регистрации")
         @NotNull
+        @Schema(description = "Статус пользователя для регистрации", example = "АКТИВНЫЙ")
         String userStatus
 ) {
+        // Constructors and methods
 }

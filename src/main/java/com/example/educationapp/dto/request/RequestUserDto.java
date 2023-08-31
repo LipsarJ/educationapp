@@ -14,9 +14,10 @@ import java.util.Set;
 @Schema(description = "ДТО пользователя, которое получаем при запросе от админа")
 public class RequestUserDto {
     @NotBlank
-    @Schema(description = "Имя пользователя, которое получаем при запросе")
+    @Schema(description = "Имя пользователя, которое получаем при запросе", example = "анна_смирнова")
     private String username;
+
     @NotBlank
-    @Schema(description = "Сет ролей пользователя, которые получаем при запросе")
+    @Schema(description = "Сет ролей пользователя, которые получаем при запросе", example = "[\"ROLE_ADMIN\", \"ROLE_USER\"]")
     private Set<String> roles;
 }

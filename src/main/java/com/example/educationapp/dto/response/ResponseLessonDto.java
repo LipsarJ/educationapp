@@ -13,21 +13,21 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResponseLessonDto {
-    @Schema(description = "Идентификатор занятия")
+    @Schema(description = "Идентификатор занятия", example = "1")
     private Long id;
 
-    @Schema(description = "Название занятия")
+    @Schema(description = "Название занятия", example = "Введение в алгебру")
     private String lessonName;
 
-    @Schema(description = "Содержание занятия")
+    @Schema(description = "Содержание занятия", example = "Основные понятия и операции в алгебре")
     private String content;
 
-    @Schema(description = "Статус занятия")
+    @Schema(description = "Статус занятия", example = "PUBLISHED")
     private LessonStatus lessonStatus;
 
-    @Schema(description = "Дата обновления")
+    @Schema(description = "Дата обновления", example = "2023-08-24T14:30:00Z")
     private OffsetDateTime updateDate;
 
-    @Schema(description = "Дата создания")
+    @Schema(description = "Дата создания", example = "2023-08-20T13:30:00Z")
     private OffsetDateTime createDate;
 }
