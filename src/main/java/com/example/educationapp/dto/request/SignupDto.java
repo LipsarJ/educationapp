@@ -19,8 +19,6 @@ public record SignupDto(
         String password,
         @NotBlank String middlename,
         @NotBlank String firstname,
-        @NotBlank String lastname,
-        @NotNull LocalDateTime createDate,
-        @NotNull LocalDateTime updateDate
+        @NotBlank String lastname
 ) {
 }

@@ -60,6 +60,7 @@ public class WebSecurityConfig {
                                 .requestMatchers("/api/v1/auth/signup").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
                                 .requestMatchers("/favicon.ico", "/swagger/**", "/swagger-config/**").permitAll()
+                                .requestMatchers("/api/v1/users").permitAll()
                                 .anyRequest().authenticated()
                 );
 
