@@ -1,0 +1,1 @@
+CREATE INDEX idx_search_index ON users (username, firstname, middlename, lastname);
