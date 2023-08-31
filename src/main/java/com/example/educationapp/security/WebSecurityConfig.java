@@ -59,7 +59,7 @@ public class WebSecurityConfig {
                         auth.requestMatchers("/api/v1/auth/signin").permitAll()
                                 .requestMatchers("/api/v1/auth/signup").permitAll()
                                 .requestMatchers("/actuator/**").permitAll()
-                                .requestMatchers("/api/v1/users").permitAll()
+                                .requestMatchers("/favicon.ico", "/swagger/**", "/swagger-config/**").permitAll()
                                 .anyRequest().authenticated()
                 );
 

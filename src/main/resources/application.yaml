@@ -18,3 +18,9 @@ app:
     jwtExpirationMs: 600000000
     jwtCookie: "education-jwt"
     jwtRefreshCookie: "education-jwt-refresh"
+springdoc:
+  api-docs:
+    enabled: true
+    path: /swagger-config/education/api-docs
+  swagger-ui:
+    path: /swagger/swagger-ui.html
