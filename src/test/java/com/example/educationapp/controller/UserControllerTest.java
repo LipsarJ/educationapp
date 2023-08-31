@@ -35,7 +35,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(UserController.class)
 @AutoConfigureMockMvc
 @EnableMethodSecurity
-@WithMockUser(username = "Lipsar", authorities = "AUTHOR")
 public class UserControllerTest {
 
     @Autowired
