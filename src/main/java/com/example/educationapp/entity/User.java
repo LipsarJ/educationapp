@@ -15,7 +15,7 @@ import java.util.Set;
 import static java.time.ZoneOffset.UTC;
 
 @Entity
-@Table(name = "users")
+@Table(name = "users", indexes = @Index(name = "search_index", columnList = "username, firstname, middlename, lastname"))
 @Getter
 @Setter
 @NoArgsConstructor
