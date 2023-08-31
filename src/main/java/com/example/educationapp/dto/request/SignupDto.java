@@ -42,5 +42,4 @@ public record SignupDto(
         @Schema(description = "Статус пользователя для регистрации", example = "ACTIVE")
         String userStatus
 ) {
-        // Constructors and methods
 }
