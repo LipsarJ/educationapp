@@ -43,7 +43,7 @@ public class MediaHomeworkDone {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MediaType type;
+    private MediaType mediaType;
 
     @ManyToOne
     @JoinColumn(name = "homework_done_id", nullable = false)
