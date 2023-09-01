@@ -58,7 +58,7 @@ public class UserControllerTest {
 
         when(userService.getUsersWithPaginationAndFilter(any(), any(Pageable.class))).thenReturn(userPage);
 
-        mockMvc.perform(get("/api/v1/users"))
+        MvcResult result = mockMvc.perform(get("/api/v1/users"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.userInfo").isArray())
                 .andExpect(jsonPath("$.userInfo", hasSize(1)))

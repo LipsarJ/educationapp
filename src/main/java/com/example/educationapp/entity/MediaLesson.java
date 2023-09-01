@@ -20,20 +20,6 @@ public class MediaLesson {
     @UuidGenerator
     private UUID id;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private Long size;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private MediaType mediaType;
-
-    @ManyToOne
-    @JoinColumn(name = "lesson_id")
-    private Lesson mediaLesson;
-
     @Override
     public int hashCode() {
         return 313;
@@ -47,4 +33,18 @@ public class MediaLesson {
         MediaLesson other = (MediaLesson) obj;
         return id != null && id.equals(other.getId());
     }
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private Long size;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MediaType mediaType;
+
+    @ManyToOne
+    @JoinColumn(name = "lesson_id")
+    private Lesson mediaLesson;
 }

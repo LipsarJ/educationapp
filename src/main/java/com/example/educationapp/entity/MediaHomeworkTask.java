@@ -20,20 +20,6 @@ public class MediaHomeworkTask {
     @UuidGenerator
     private UUID id;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private Long size;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private MediaType mediaType;
-
-    @ManyToOne
-    @JoinColumn(name = "task_id", nullable = false)
-    private HomeworkTask taskMedia;
-
     @Override
     public int hashCode() {
         return 154;
@@ -48,4 +34,18 @@ public class MediaHomeworkTask {
         return id != null && id.equals(other.getId());
     }
 
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(nullable = false)
+    private Long size;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private MediaType mediaType;
+
+    @ManyToOne
+    @JoinColumn(name = "task_id", nullable = false)
+    private HomeworkTask taskMedia;
 }

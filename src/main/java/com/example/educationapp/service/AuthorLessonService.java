@@ -107,6 +107,7 @@ public class AuthorLessonService {
     }
 
     private boolean isStatusChangeValid(LessonStatus newStatus) {
-        return newStatus.equals(LessonStatus.ACTIVE);
+        if (newStatus == LessonStatus.ACTIVE) return true;
+        else return false;
     }
 }

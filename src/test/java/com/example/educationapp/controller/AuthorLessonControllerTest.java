@@ -31,7 +31,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -129,8 +128,6 @@ public class AuthorLessonControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$.lessonStatus").value(responseLessonDto.getLessonStatus().toString()))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.createDate").value(responseLessonDto.getCreateDate().format(DateTimeFormatter.ISO_DATE_TIME)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.updateDate").value(responseLessonDto.getUpdateDate().format(DateTimeFormatter.ISO_DATE_TIME)));
-
-        assertNotNull(responseLessonDto);
     }
 
     @Test
@@ -140,7 +137,7 @@ public class AuthorLessonControllerTest {
     }
 
     @Test
-    public void testCreateLessonInvalidStatusException() throws Exception {
+    public void testCreateLesson_InvalidStatusException() throws Exception {
         RequestLessonDto requestDto = new RequestLessonDto();
         requestDto.setLessonName("Test Lesson");
         requestDto.setLessonStatus(LessonStatus.NOT_ACTIVE);
@@ -158,7 +155,7 @@ public class AuthorLessonControllerTest {
     }
 
     @Test
-    public void testDeleteLessonLessonNotFoundException() throws Exception {
+    public void testDeleteLesson_LessonNotFoundException() throws Exception {
         Long courseId = 1L;
         Long id = 2L;
 
@@ -178,9 +175,7 @@ public class AuthorLessonControllerTest {
         when(authorLessonService.getLesson(anyLong(), anyLong())).thenReturn(responseLessonDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/author/lessons/1/2"))
-                .andExpect(status().isForbidden());
-
-        assertNotNull(responseLessonDto);
+                .andExpect(status().isForbidden());;
     }
 
     @Test

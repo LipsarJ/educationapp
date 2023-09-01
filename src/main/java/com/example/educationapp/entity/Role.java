@@ -24,10 +24,6 @@ public class Role {
     @Enumerated(EnumType.STRING)
     private ERole roleName;
 
-    @ManyToMany(mappedBy = "roleSet")
-    @JsonIgnore
-    private Set<User> users = new HashSet<>();
-
     @Override
     public int hashCode() {
         return Objects.hashCode(roleName);
@@ -44,4 +40,8 @@ public class Role {
         Role other = (Role) obj;
         return Objects.equals(roleName, other.getRoleName());
     }
+
+    @ManyToMany(mappedBy = "roleSet")
+    @JsonIgnore
+    private Set<User> users = new HashSet<>();
 }

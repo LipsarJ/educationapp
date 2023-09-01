@@ -27,6 +27,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Override
+    public int hashCode() {
+        return 813;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        User other = (User) obj;
+        return id != null && id.equals(other.getId());
+    }
+
     @Column(nullable = false)
     private String username;
 
@@ -55,6 +69,17 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime updateDate;
 
+    @PrePersist
+    void onCreate() {
+        updateDate = LocalDateTime.now(ZoneId.from(UTC));
+        createDate = LocalDateTime.now(ZoneId.from(UTC));
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        updateDate = LocalDateTime.now(ZoneId.from(UTC));
+    }
+
     @ManyToMany
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -78,31 +103,6 @@ public class User {
             joinColumns = @JoinColumn(name = "teacher_id"),
             inverseJoinColumns = @JoinColumn(name = "course_id"))
     private Set<Course> teacherCourseSet = new HashSet<>();
-
-    @PrePersist
-    void onCreate() {
-        updateDate = LocalDateTime.now(ZoneId.from(UTC));
-        createDate = LocalDateTime.now(ZoneId.from(UTC));
-    }
-
-    @PreUpdate
-    void onUpdate() {
-        updateDate = LocalDateTime.now(ZoneId.from(UTC));
-    }
-
-    @Override
-    public int hashCode() {
-        return 813;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        User other = (User) obj;
-        return id != null && id.equals(other.getId());
-    }
 
     @Override
     public String toString() {

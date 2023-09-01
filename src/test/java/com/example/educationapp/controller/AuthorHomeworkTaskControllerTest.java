@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -138,7 +137,7 @@ public class AuthorHomeworkTaskControllerTest {
     }
 
     @Test
-    public void testCreateTaskInvalidTaskNameException() throws Exception {
+    public void testCreateTask_InvalidTaskNameException() throws Exception {
         RequestHomeworkTaskDto requestDto = new RequestHomeworkTaskDto();
         requestDto.setTitle("Existing Task Title");
 
@@ -155,7 +154,7 @@ public class AuthorHomeworkTaskControllerTest {
     }
 
     @Test
-    public void testDeleteTaskLessonNotFoundException() throws Exception {
+    public void testDeleteTask_LessonNotFoundException() throws Exception {
         Long courseId = 1L;
         Long lessonId = 2L;
         Long id = 3L;
