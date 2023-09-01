@@ -3,7 +3,7 @@ package com.example.educationapp.service;
 import com.example.educationapp.controlleradvice.ErrorResponse;
 import com.example.educationapp.dto.request.LoginDto;
 import com.example.educationapp.dto.request.SignupDto;
-import com.example.educationapp.dto.response.UserInfoDto;
+import com.example.educationapp.dto.response.UserLoginDto;
 import com.example.educationapp.entity.RefreshToken;
 import com.example.educationapp.entity.User;
 import com.example.educationapp.entity.UserStatus;
@@ -63,7 +63,7 @@ public class AuthService {
             return ResponseEntity.ok()
                     .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                     .header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
-                    .body(new UserInfoDto(userDetails.getId(),
+                    .body(new UserLoginDto(userDetails.getId(),
                             userDetails.getUsername(),
                             userDetails.getEmail(),
                             roles));

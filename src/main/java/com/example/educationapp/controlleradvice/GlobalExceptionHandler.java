@@ -1,6 +1,9 @@
 package com.example.educationapp.controlleradvice;
 
-import com.example.educationapp.exception.*;
+import com.example.educationapp.exception.BadDataException;
+import com.example.educationapp.exception.ForbiddenException;
+import com.example.educationapp.exception.NotFoundException;
+import com.example.educationapp.exception.TokenRefreshException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -45,12 +48,6 @@ public class GlobalExceptionHandler {
         }
     }
 
-    @ExceptionHandler(InvalidStatusException.class)
-    public ResponseEntity<ErrorResponse> handleInvalidStatusException(InvalidStatusException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
-
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
@@ -60,7 +57,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ErrorResponse> handleForbiddenException(ForbiddenException ex) {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
 
     @ExceptionHandler(TokenRefreshException.class)
@@ -69,14 +66,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 
-    @ExceptionHandler(ExistingNameException.class)
-    public ResponseEntity<ErrorResponse> handleExistingNameException(ExistingNameException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
-    }
-
-    @ExceptionHandler(UserHasRoleException.class)
-    public ResponseEntity<ErrorResponse> handleHomeworkUserHasRoleException(UserHasRoleException ex) {
+    @ExceptionHandler(BadDataException.class)
+    public ResponseEntity<ErrorResponse> handleBadDataException(BadDataException ex) {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }

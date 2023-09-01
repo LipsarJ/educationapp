@@ -5,6 +5,7 @@ import com.example.educationapp.dto.request.LoginDto;
 import com.example.educationapp.dto.request.SignupDto;
 
 import com.example.educationapp.dto.response.UserInfoDto;
+import com.example.educationapp.dto.response.UserLoginDto;
 import com.example.educationapp.service.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,7 +35,7 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Возвращает информацию о пользователе с токенами",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = UserInfoDto.class))),
+                            schema = @Schema(implementation = UserLoginDto.class))),
             @ApiResponse(responseCode = "401", description = "Если неверные данные для аутентификации",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ErrorResponse.class)))
