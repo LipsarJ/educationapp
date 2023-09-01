@@ -6,10 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 @Schema(description = "ДТО для логина пользователя.")
 public record LoginDto(
         @NotBlank
-        @Schema(description = "Имя пользователя для логина", example = "иван_иванов")
+        @Schema(description = "Имя пользователя для логина", example = "Lipsar")
         String username,
         @NotBlank
-        @Schema(description = "Пароль пользователя для логина", example = "секретныйпароль")
+        @Schema(description = "Пароль пользователя для логина", example = "admin111")
         String password
 ) {
 }
