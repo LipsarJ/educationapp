@@ -61,7 +61,7 @@ public class AuthorHomeworkTaskService {
     public ResponseHomeworkTaskDto getTask(Long courseId, Long lessonId, Long id) {
         courseUtils.validateAndGetCourse(courseId);
 
-        Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
+        lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
         HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework is not found."));
 
