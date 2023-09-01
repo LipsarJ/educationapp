@@ -137,7 +137,7 @@ public class AuthorLessonControllerTest {
     }
 
     @Test
-    public void testCreateLesson_InvalidStatusException() throws Exception {
+    public void testCreateLessonInvalidStatusException() throws Exception {
         RequestLessonDto requestDto = new RequestLessonDto();
         requestDto.setLessonName("Test Lesson");
         requestDto.setLessonStatus(LessonStatus.NOT_ACTIVE);
@@ -155,7 +155,7 @@ public class AuthorLessonControllerTest {
     }
 
     @Test
-    public void testDeleteLesson_LessonNotFoundException() throws Exception {
+    public void testDeleteLessonLessonNotFoundException() throws Exception {
         Long courseId = 1L;
         Long id = 2L;
 

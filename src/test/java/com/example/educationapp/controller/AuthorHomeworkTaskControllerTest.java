@@ -137,7 +137,7 @@ public class AuthorHomeworkTaskControllerTest {
     }
 
     @Test
-    public void testCreateTask_InvalidTaskNameException() throws Exception {
+    public void testCreateTaskInvalidTaskNameException() throws Exception {
         RequestHomeworkTaskDto requestDto = new RequestHomeworkTaskDto();
         requestDto.setTitle("Existing Task Title");
 
@@ -154,7 +154,7 @@ public class AuthorHomeworkTaskControllerTest {
     }
 
     @Test
-    public void testDeleteTask_LessonNotFoundException() throws Exception {
+    public void testDeleteTaskLessonNotFoundException() throws Exception {
         Long courseId = 1L;
         Long lessonId = 2L;
         Long id = 3L;

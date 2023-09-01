@@ -20,20 +20,6 @@ public class HomeworkDone {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Override
-    public int hashCode() {
-        return 451;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        HomeworkDone other = (HomeworkDone) obj;
-        return id != null && id.equals(other.getId());
-    }
-
     private LocalDateTime submissionDate;
     private Integer grade;
 
@@ -51,4 +37,18 @@ public class HomeworkDone {
 
     @OneToMany(mappedBy = "homeworkDone")
     private List<MediaHomeworkDone> mediaHomeworkDoneList = new ArrayList<MediaHomeworkDone>();
+
+    @Override
+    public int hashCode() {
+        return 451;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        HomeworkDone other = (HomeworkDone) obj;
+        return id != null && id.equals(other.getId());
+    }
 }

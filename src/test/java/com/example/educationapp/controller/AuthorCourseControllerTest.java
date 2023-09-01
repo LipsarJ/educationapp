@@ -119,7 +119,7 @@ public class AuthorCourseControllerTest {
     }
 
     @Test
-    public void testCreateCourse_CourseNameException() throws Exception {
+    public void testCreateCourseCourseNameException() throws Exception {
         RequestCourseDto requestCourseDto = new RequestCourseDto();
         requestCourseDto.setCourseName("Test Course");
 
@@ -136,7 +136,7 @@ public class AuthorCourseControllerTest {
     }
 
     @Test
-    public void testCreateCourse_InvalidStatusException() throws Exception {
+    public void testCreateCourseInvalidStatusException() throws Exception {
         RequestCourseDto requestCourseDto = new RequestCourseDto();
         requestCourseDto.setCourseName("Test Course");
         requestCourseDto.setCourseStatus(CourseStatus.ONGOING);
@@ -154,7 +154,7 @@ public class AuthorCourseControllerTest {
     }
 
     @Test
-    public void testDeleteCourse_UserNotFoundException() throws Exception {
+    public void testDeleteCourseUserNotFoundException() throws Exception {
         Long courseId = 1L;
 
         doThrow(new UserNotFoundException("User not found"))
