@@ -1,6 +1,9 @@
 package com.example.educationapp.controlleradvice;
 
-import com.example.educationapp.exception.*;
+import com.example.educationapp.exception.BadDataException;
+import com.example.educationapp.exception.ForbiddenException;
+import com.example.educationapp.exception.NotFoundException;
+import com.example.educationapp.exception.TokenRefreshException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -54,7 +57,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ErrorResponse> handleForbiddenException(ForbiddenException ex) {
         ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
 
     @ExceptionHandler(TokenRefreshException.class)
