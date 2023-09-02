@@ -5,6 +5,7 @@ import com.example.educationapp.dto.response.admin.UserAdminResponseDto;
 import com.example.educationapp.entity.ERole;
 import com.example.educationapp.entity.Role;
 import com.example.educationapp.entity.User;
+import com.example.educationapp.exception.BadDataException;
 import com.example.educationapp.exception.UserNotFoundException;
 import com.example.educationapp.mapper.admin.UserAdminMapper;
 import com.example.educationapp.repo.RoleRepo;
@@ -27,9 +28,15 @@ public class AdminApiService {
         User user = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User is not found."));
 
         if (updateUserDto.getUsername() != null) {
+            if (userRepo.existsByUsernameAndIdNot(updateUserDto.getUsername(), id)) {
+                throw new BadDataException(String.format("User with username: %s is already exists.", updateUserDto.getUsername()));
+            }
             user.setUsername(updateUserDto.getUsername());
         }
         if (updateUserDto.getEmail() != null) {
+            if (userRepo.existsByEmailAndIdNot(updateUserDto.getEmail(), id)) {
+                throw new BadDataException(String.format("User with email: %s is already exists.", updateUserDto.getEmail()));
+            }
             user.setEmail(updateUserDto.getEmail());
         }
         if (updateUserDto.getFirstname() != null) {
