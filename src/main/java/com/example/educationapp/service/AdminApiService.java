@@ -27,45 +27,29 @@ public class AdminApiService {
     public UserAdminResponseDto updateUser(UpdateUserDto updateUserDto, Long id) {
         User user = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User is not found."));
 
-        if (updateUserDto.getUsername() != null) {
-            if (userRepo.existsByUsernameAndIdNot(updateUserDto.getUsername(), id)) {
-                throw new BadDataException(String.format("User with username: %s is already exists.", updateUserDto.getUsername()));
-            }
-            user.setUsername(updateUserDto.getUsername());
+        if (userRepo.existsByUsernameAndIdNot(updateUserDto.getUsername(), id)) {
+            throw new BadDataException(String.format("User with username: %s is already exists.", updateUserDto.getUsername()));
         }
-        if (updateUserDto.getEmail() != null) {
-            if (userRepo.existsByEmailAndIdNot(updateUserDto.getEmail(), id)) {
-                throw new BadDataException(String.format("User with email: %s is already exists.", updateUserDto.getEmail()));
-            }
-            user.setEmail(updateUserDto.getEmail());
+        user.setUsername(updateUserDto.getUsername());
+        if (userRepo.existsByEmailAndIdNot(updateUserDto.getEmail(), id)) {
+            throw new BadDataException(String.format("User with email: %s is already exists.", updateUserDto.getEmail()));
         }
-        if (updateUserDto.getFirstname() != null) {
-            user.setFirstname(updateUserDto.getFirstname());
+        user.setEmail(updateUserDto.getEmail());
+        user.setFirstname(updateUserDto.getFirstname());
+        user.setMiddlename(updateUserDto.getMiddlename());
+        user.setLastname(updateUserDto.getLastname());
+        user.setPassword(passwordEncoder.encode(updateUserDto.getPassword()));
+        user.setStatus(updateUserDto.getStatus());
+        for (Role role : user.getRoleSet()) {
+            role.getUsers().remove(user);
+            roleRepo.save(role);
         }
-        if (updateUserDto.getMiddlename() != null) {
-            user.setMiddlename(updateUserDto.getMiddlename());
-        }
-        if (updateUserDto.getLastname() != null) {
-            user.setLastname(updateUserDto.getLastname());
-        }
-        if (updateUserDto.getPassword() != null) {
-            user.setPassword(passwordEncoder.encode(updateUserDto.getPassword()));
-        }
-        if (updateUserDto.getStatus() != null) {
-            user.setStatus(updateUserDto.getStatus());
-        }
-        if (!updateUserDto.getRoleSet().isEmpty()) {
-            for (Role role : user.getRoleSet()) {
-                role.getUsers().remove(user);
-                roleRepo.save(role);
-            }
-            user.getRoleSet().clear();
-            for (ERole eRole : updateUserDto.getRoleSet()) {
-                Role role = roleRepo.findByRoleName(eRole);
-                user.getRoleSet().add(role);
-                role.getUsers().add(user);
-                roleRepo.save(role);
-            }
+        user.getRoleSet().clear();
+        for (ERole eRole : updateUserDto.getRoleSet()) {
+            Role role = roleRepo.findByRoleName(eRole);
+            user.getRoleSet().add(role);
+            role.getUsers().add(user);
+            roleRepo.save(role);
         }
         userRepo.save(user);
         return userAdminMapper.toDto(user);
