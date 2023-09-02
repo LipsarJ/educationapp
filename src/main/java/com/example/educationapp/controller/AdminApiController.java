@@ -2,6 +2,7 @@ package com.example.educationapp.controller;
 
 import com.example.educationapp.controlleradvice.ErrorResponse;
 import com.example.educationapp.dto.request.RequestUserDto;
+import com.example.educationapp.dto.request.UpdateUserDto;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.service.AdminApiService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,10 +12,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/admin/user")
@@ -24,7 +22,7 @@ public class AdminApiController {
 
     private final AdminApiService adminApiService;
 
-    @PutMapping("/roles")
+    @PutMapping("/{id}")
     @Operation(
             summary = "Обновить роли пользователя",
             responses = {
@@ -42,7 +40,7 @@ public class AdminApiController {
                     )
             }
     )
-    public ResponseUserDto updateUserRoles(@RequestBody RequestUserDto requestUserDto) {
-        return adminApiService.updateUser(requestUserDto);
+    public ResponseUserDto updateUser(@RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) {
+        return adminApiService.updateUser(updateUserDto, id);
     }
 }
