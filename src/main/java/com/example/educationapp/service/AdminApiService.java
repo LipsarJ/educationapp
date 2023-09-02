@@ -1,12 +1,12 @@
 package com.example.educationapp.service;
 
 import com.example.educationapp.dto.request.UpdateUserDto;
-import com.example.educationapp.dto.response.ResponseUserDto;
+import com.example.educationapp.dto.response.admin.UserAdminResponseDto;
 import com.example.educationapp.entity.ERole;
 import com.example.educationapp.entity.Role;
 import com.example.educationapp.entity.User;
 import com.example.educationapp.exception.UserNotFoundException;
-import com.example.educationapp.mapper.UserMapper;
+import com.example.educationapp.mapper.admin.UserAdminMapper;
 import com.example.educationapp.repo.RoleRepo;
 import com.example.educationapp.repo.UserRepo;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AdminApiService {
     private final UserRepo userRepo;
-    private final UserMapper userMapper;
+    private final UserAdminMapper userAdminMapper;
     private final RoleRepo roleRepo;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public ResponseUserDto updateUser(UpdateUserDto updateUserDto, Long id) {
+    public UserAdminResponseDto updateUser(UpdateUserDto updateUserDto, Long id) {
         User user = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User is not found."));
 
         if (updateUserDto.getUsername() != null) {
@@ -61,6 +61,6 @@ public class AdminApiService {
             }
         }
         userRepo.save(user);
-        return userMapper.toDto(user);
+        return userAdminMapper.toDto(user);
     }
 }

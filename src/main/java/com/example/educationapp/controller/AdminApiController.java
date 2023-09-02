@@ -1,9 +1,8 @@
 package com.example.educationapp.controller;
 
 import com.example.educationapp.controlleradvice.ErrorResponse;
-import com.example.educationapp.dto.request.RequestUserDto;
 import com.example.educationapp.dto.request.UpdateUserDto;
-import com.example.educationapp.dto.response.ResponseUserDto;
+import com.example.educationapp.dto.response.admin.UserAdminResponseDto;
 import com.example.educationapp.service.AdminApiService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -28,9 +27,9 @@ public class AdminApiController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Возвращает пользователя с обновленными ролями",
+                            description = "Возвращает пользователя с обновленными данными",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ResponseUserDto.class))
+                                    schema = @Schema(implementation = UserAdminResponseDto.class))
                     ),
                     @ApiResponse(
                             responseCode = "400",
@@ -40,7 +39,7 @@ public class AdminApiController {
                     )
             }
     )
-    public ResponseUserDto updateUser(@RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) {
+    public UserAdminResponseDto updateUser(@RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) {
         return adminApiService.updateUser(updateUserDto, id);
     }
 }
