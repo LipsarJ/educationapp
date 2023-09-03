@@ -21,10 +21,6 @@ public class RefreshTokenService {
     private final RefreshTokenRepo refreshTokenRepo;
     private final UserRepo userRepo;
 
-    public Optional<RefreshToken> findByToken(String token) {
-        return refreshTokenRepo.findByToken(token);
-    }
-
     public RefreshToken createRefreshToken(Long userId) {
         RefreshToken refreshToken = new RefreshToken();
 

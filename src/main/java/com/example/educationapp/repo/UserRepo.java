@@ -18,4 +18,8 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 
     @Query("select c from Course c join c.authors a where a = :author")
     List<Course> findCoursesByAuthor(User author);
+
+    boolean existsByUsernameAndIdNot(String username, Long userId);
+
+    boolean existsByEmailAndIdNot(String email, Long userId);
 }
