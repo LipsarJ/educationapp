@@ -20,20 +20,6 @@ public class MediaLesson {
     @UuidGenerator
     private UUID id;
 
-    @Override
-    public int hashCode() {
-        return 313;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        MediaLesson other = (MediaLesson) obj;
-        return id != null && id.equals(other.getId());
-    }
-
     @Column(nullable = false)
     private String name;
 
@@ -47,4 +33,18 @@ public class MediaLesson {
     @ManyToOne
     @JoinColumn(name = "lesson_id")
     private Lesson mediaLesson;
+
+    @Override
+    public int hashCode() {
+        return 313;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        MediaLesson other = (MediaLesson) obj;
+        return id != null && id.equals(other.getId());
+    }
 }

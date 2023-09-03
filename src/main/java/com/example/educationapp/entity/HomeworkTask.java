@@ -23,20 +23,6 @@ public class HomeworkTask {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Override
-    public int hashCode() {
-        return 738;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        HomeworkTask other = (HomeworkTask) obj;
-        return id != null && id.equals(other.getId());
-    }
-
     @Column(nullable = false)
     private String title;
 
@@ -52,6 +38,16 @@ public class HomeworkTask {
     @Column(nullable = false)
     private LocalDateTime updateDate;
 
+    @ManyToOne
+    @JoinColumn(name = "lesson_id", nullable = false)
+    private Lesson lesson;
+
+    @OneToMany(mappedBy = "taskMedia")
+    private List<MediaHomeworkTask> homeworkTaskMediaList = new ArrayList<MediaHomeworkTask>();
+
+    @OneToMany(mappedBy = "task")
+    private List<HomeworkDone> homeworkDoneList = new ArrayList<HomeworkDone>();
+
     @PrePersist
     void onCreate() {
         updateDate = LocalDateTime.now(ZoneId.from(UTC));
@@ -63,13 +59,17 @@ public class HomeworkTask {
         updateDate = LocalDateTime.now(ZoneId.from(UTC));
     }
 
-    @ManyToOne
-    @JoinColumn(name = "lesson_id", nullable = false)
-    private Lesson lesson;
+    @Override
+    public int hashCode() {
+        return 738;
+    }
 
-    @OneToMany(mappedBy = "taskMedia")
-    private List<MediaHomeworkTask> homeworkTaskMediaList = new ArrayList<MediaHomeworkTask>();
-
-    @OneToMany(mappedBy = "task")
-    private List<HomeworkDone> homeworkDoneList = new ArrayList<HomeworkDone>();
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        HomeworkTask other = (HomeworkTask) obj;
+        return id != null && id.equals(other.getId());
+    }
 }
