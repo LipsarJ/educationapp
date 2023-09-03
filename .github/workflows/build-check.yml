@@ -26,13 +26,13 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
         with:
-          path: /educationapp/education-back
+          path: /education-back
       - uses: actions/cache@v3
         with:
           path: |
-            /educationapp/education-back/.gradle/caches
-            /educationapp/education-back/.gradle/wrapper
-            /educationapp/education-back/.m2/repository
+            /education-back/.gradle/caches
+            /education-back/.gradle/wrapper
+            /education-back/.m2/repository
           key: ${{ runner.os }}-gradle-test-${{ hashFiles('educationapp/education-back/**/*.gradle') }}
           restore-keys: ${{ runner.os }}-gradle-test-
 
