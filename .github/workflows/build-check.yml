@@ -1,9 +1,8 @@
 name: Pull request changed build
 
-# Controls when the action will run.
 on:
   pull_request:
-    types: [ opened, reopened, synchronize ]
+    types: [opened, reopened, synchronize]
     paths:
       - 'education-back/**'
   push:
@@ -12,7 +11,6 @@ on:
     paths:
       - 'education-back/**'
 
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
@@ -41,15 +39,9 @@ jobs:
 
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
-        with:
-          directory: 'education-back'
 
       - name: Run chmod to make gradlew executable
         run: chmod +x ./education-back/gradlew
-        working-directory: .
 
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
-        with:
-          arguments: build
-        working-directory: education-back
+        run: ./education-back/gradlew build
