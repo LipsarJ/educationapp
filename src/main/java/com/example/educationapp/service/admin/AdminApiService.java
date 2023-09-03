@@ -1,6 +1,7 @@
-package com.example.educationapp.service;
+package com.example.educationapp.service.admin;
 
 import com.example.educationapp.dto.request.UpdateUserDto;
+import com.example.educationapp.dto.request.admin.UpdatePasswordDto;
 import com.example.educationapp.dto.response.admin.UserAdminResponseDto;
 import com.example.educationapp.entity.ERole;
 import com.example.educationapp.entity.Role;
@@ -38,8 +39,7 @@ public class AdminApiService {
         user.setFirstname(updateUserDto.getFirstname());
         user.setMiddlename(updateUserDto.getMiddlename());
         user.setLastname(updateUserDto.getLastname());
-        user.setPassword(passwordEncoder.encode(updateUserDto.getPassword()));
-        user.setStatus(updateUserDto.getStatus());
+        user.setStatus(updateUserDto.getUserStatus());
         for (Role role : user.getRoleSet()) {
             role.getUsers().remove(user);
             roleRepo.save(role);
@@ -51,6 +51,14 @@ public class AdminApiService {
             role.getUsers().add(user);
             roleRepo.save(role);
         }
+        userRepo.save(user);
+        return userAdminMapper.toDto(user);
+    }
+
+    @Transactional
+    public UserAdminResponseDto updateUserPassword(UpdatePasswordDto updatePasswordDto, Long id) {
+        User user = userRepo.findById(id).orElseThrow(() -> new UserNotFoundException("User is not found."));
+        user.setPassword(passwordEncoder.encode(updatePasswordDto.getPassword()));
         userRepo.save(user);
         return userAdminMapper.toDto(user);
     }

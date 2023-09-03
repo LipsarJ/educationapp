@@ -42,11 +42,6 @@ public class UpdateUserDto {
     private String lastname;
 
     @NotBlank
-    @Size(min = 6, max = 40)
-    @Schema(description = "Пароль пользователя", example = "password123")
-    private String password;
-
-    @NotBlank
     @Schema(description = "Статус пользователя", example = "ACTIVE")
-    private UserStatus status;
+    private UserStatus userStatus;
 }
