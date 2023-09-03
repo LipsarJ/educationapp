@@ -5,16 +5,13 @@ import com.example.educationapp.dto.response.ResponseCourseDto;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.CourseStatus;
-import com.example.educationapp.entity.Lesson;
 import com.example.educationapp.entity.User;
 import com.example.educationapp.mapper.CourseMapper;
 import com.example.educationapp.repo.CourseRepo;
-import com.example.educationapp.repo.LessonRepo;
 import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.security.service.UserContext;
 import com.example.educationapp.utils.CourseUtils;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.test.context.support.WithMockUser;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;

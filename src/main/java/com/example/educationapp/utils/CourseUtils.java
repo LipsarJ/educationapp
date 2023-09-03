@@ -33,13 +33,8 @@ public class CourseUtils {
     }
 
     public boolean isStatusChangeValid(CourseStatus currentStatus, CourseStatus newStatus) {
-        if ((currentStatus == CourseStatus.TEMPLATE && newStatus == CourseStatus.ONGOING)
-                || (currentStatus == CourseStatus.ONGOING && newStatus == CourseStatus.ENDED)) {
-            return true;
-        } else if (currentStatus == newStatus) {
-            return true;
-        } else {
-            return false;
-        }
+        return (currentStatus == CourseStatus.TEMPLATE && newStatus == CourseStatus.ONGOING)
+                || (currentStatus == CourseStatus.ONGOING && newStatus == CourseStatus.ENDED)
+                || currentStatus == newStatus;
     }
 }

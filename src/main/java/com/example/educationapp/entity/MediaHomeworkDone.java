@@ -20,21 +20,6 @@ public class MediaHomeworkDone {
     @UuidGenerator
     private UUID id;
 
-    @Override
-    public int hashCode() {
-        return 913;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        MediaHomeworkDone other = (MediaHomeworkDone) obj;
-        return id != null && id.equals(other.getId());
-    }
-
-
     @Column(nullable = false)
     private String name;
 
@@ -48,4 +33,18 @@ public class MediaHomeworkDone {
     @ManyToOne
     @JoinColumn(name = "homework_done_id", nullable = false)
     private HomeworkDone homeworkDone;
+
+    @Override
+    public int hashCode() {
+        return 913;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        MediaHomeworkDone other = (MediaHomeworkDone) obj;
+        return id != null && id.equals(other.getId());
+    }
 }
