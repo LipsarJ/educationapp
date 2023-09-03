@@ -2,10 +2,8 @@ package com.example.educationapp.controller;
 
 import com.example.educationapp.dto.request.RequestHomeworkTaskDto;
 import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
-import com.example.educationapp.entity.HomeworkTask;
 import com.example.educationapp.exception.HomeworkTaskNameException;
 import com.example.educationapp.exception.LessonNotFoundException;
-import com.example.educationapp.repo.HomeworkTaskRepo;
 import com.example.educationapp.service.AuthorHomeworkTaskService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +27,6 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doThrow;
@@ -137,7 +134,7 @@ public class AuthorHomeworkTaskControllerTest {
     }
 
     @Test
-    public void testCreateTask_InvalidTaskNameException() throws Exception {
+    public void testCreateTaskInvalidTaskNameException() throws Exception {
         RequestHomeworkTaskDto requestDto = new RequestHomeworkTaskDto();
         requestDto.setTitle("Existing Task Title");
 
@@ -154,7 +151,7 @@ public class AuthorHomeworkTaskControllerTest {
     }
 
     @Test
-    public void testDeleteTask_LessonNotFoundException() throws Exception {
+    public void testDeleteTaskLessonNotFoundException() throws Exception {
         Long courseId = 1L;
         Long lessonId = 2L;
         Long id = 3L;

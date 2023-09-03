@@ -28,20 +28,6 @@ public class Course {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Override
-    public int hashCode() {
-        return 871;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) return true;
-        if (obj == null) return false;
-        if (getClass() != obj.getClass()) return false;
-        Course other = (Course) obj;
-        return id != null && id.equals(other.getId());
-    }
-
     @Column(nullable = false)
     private String courseName;
 
@@ -54,17 +40,6 @@ public class Course {
 
     @Column(nullable = false)
     private LocalDateTime updateDate;
-
-    @PrePersist
-    void onCreate() {
-        updateDate = LocalDateTime.now(ZoneId.from(UTC));
-        createDate = LocalDateTime.now(ZoneId.from(UTC));
-    }
-
-    @PreUpdate
-    void onUpdate() {
-        updateDate = LocalDateTime.now(ZoneId.from(UTC));
-    }
 
     @ManyToMany(mappedBy = "studentCourseSet")
     @JsonIgnore
@@ -80,6 +55,31 @@ public class Course {
 
     @OneToMany(mappedBy = "lessonsCourse")
     private List<Lesson> lessonList = new ArrayList<Lesson>();
+
+    @PrePersist
+    void onCreate() {
+        updateDate = LocalDateTime.now(ZoneId.from(UTC));
+        createDate = LocalDateTime.now(ZoneId.from(UTC));
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        updateDate = LocalDateTime.now(ZoneId.from(UTC));
+    }
+
+    @Override
+    public int hashCode() {
+        return 871;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        Course other = (Course) obj;
+        return id != null && id.equals(other.getId());
+    }
 
     @Override
     public String toString() {
