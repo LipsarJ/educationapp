@@ -2,7 +2,7 @@ name: Pull request changed build
 
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [ opened, reopened, synchronize ]
     paths:
       - 'education-back/**'
   push:
@@ -44,4 +44,6 @@ jobs:
         run: chmod +x ./education-back/gradlew
 
       - name: Build with Gradle
-        run: ./education-back/gradlew build
+        run: |
+          cd education-back
+          ./gradlew build
