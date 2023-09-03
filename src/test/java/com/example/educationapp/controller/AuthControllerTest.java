@@ -2,9 +2,9 @@ package com.example.educationapp.controller;
 
 import com.example.educationapp.dto.request.LoginDto;
 import com.example.educationapp.dto.request.SignupDto;
-import com.example.educationapp.dto.response.UserLoginDto;
 import com.example.educationapp.entity.RefreshToken;
 import com.example.educationapp.entity.User;
+import com.example.educationapp.exception.BadDataException;
 import com.example.educationapp.repo.RefreshTokenRepo;
 import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.security.WebSecurityConfig;
@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -31,13 +30,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import java.util.ArrayList;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
@@ -71,28 +69,28 @@ public class AuthControllerTest {
     @Test
     public void testAuthenticateUser() throws Exception {
         LoginDto loginDto = new LoginDto("testuser", "testpassword");
-        Authentication authentication = Mockito.mock(Authentication.class);
+        Authentication authentication = mock(Authentication.class);
         UserDetailsImpl userDetails = new UserDetailsImpl(1L, "testuser", "test@test.com", "testpassword", new ArrayList<>());
         ResponseCookie jwtCookie = ResponseCookie.from("jwtCookie", "jwtToken").httpOnly(true).path("/").build();
         ResponseCookie jwtRefreshCookie = ResponseCookie.from("jwtRefreshCookie", "refreshToken").httpOnly(true).path("/").build();
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setToken("ksahjh3412");
 
-        Mockito.when(authenticationManager.authenticate(Mockito.any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
-        Mockito.when(authentication.getPrincipal()).thenReturn(userDetails);
-        Mockito.when(jwtUtils.generateRefreshJwtCookie(refreshToken.getToken()))
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
+        when(authentication.getPrincipal()).thenReturn(userDetails);
+        when(jwtUtils.generateRefreshJwtCookie(refreshToken.getToken()))
                 .thenReturn(jwtRefreshCookie);
-        Mockito.when(jwtUtils.generateJwtCookie(userDetails)).thenReturn(jwtCookie);
-        Mockito.when(refreshTokenService.createRefreshToken(1L)).thenReturn(refreshToken);
+        when(jwtUtils.generateJwtCookie(userDetails)).thenReturn(jwtCookie);
+        when(refreshTokenService.createRefreshToken(1L)).thenReturn(refreshToken);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/auth/signin")
+        mockMvc.perform(post("/api/v1/auth/signin")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(loginDto)))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("testuser"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.email").value("test@test.com"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.username").value("testuser"))
+                .andExpect(jsonPath("$.email").value("test@test.com"));
     }
 
     @Test
@@ -157,7 +155,7 @@ public class AuthControllerTest {
         try {
             return new ObjectMapper().writeValueAsString(obj);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new BadDataException(e.getMessage());
         }
     }
 }
