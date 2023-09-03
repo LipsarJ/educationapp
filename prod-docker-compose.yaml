@@ -5,7 +5,7 @@ services:
     image: postgres:15
     restart: on-failure
     volumes:
-      - .education-back/compose-data/postgres-education:/var/lib/pgsql/data
+      - ./compose-data/postgres-education:/var/lib/pgsql/data
     ports:
       - 5433:5432
     environment:
@@ -40,8 +40,8 @@ services:
     networks:
       - minio-net
     volumes:
-      - .education-back/compose-data/minio/minio-data:/data
-      - .education-back/compose-data/minio/minio-config:/root/.minio
+      - ./compose-data/minio/minio-data:/data
+      - ./compose-data/minio/minio-config:/root/.minio
     command: server /data --console-address ":9005"
 
   education:
