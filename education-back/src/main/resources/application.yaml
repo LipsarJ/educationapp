@@ -15,7 +15,7 @@ app:
   security:
     refreshTokenDurationMs: 600000000
     jwtSecret: "======================Education=Spring==========================="
-    jwtExpirationMs: 600000000
+    jwtExpirationMs: 1800000
     jwtCookie: "education-jwt"
     jwtRefreshCookie: "education-jwt-refresh"
 springdoc:

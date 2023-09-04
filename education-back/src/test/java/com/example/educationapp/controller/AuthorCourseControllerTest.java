@@ -13,10 +13,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -30,11 +32,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@SpringBootTest
 @ExtendWith(SpringExtension.class)
-@WebMvcTest(AuthorCourseController.class)
 @WithMockUser(username = "Lipsar", authorities = "AUTHOR")
 @AutoConfigureMockMvc
-@EnableMethodSecurity
+@ActiveProfiles("test")
 public class AuthorCourseControllerTest {
 
     @Autowired
@@ -50,7 +52,8 @@ public class AuthorCourseControllerTest {
         courses.add(responseCourseDto);
         when(authorCourseService.getAllCoursesForAuthor()).thenReturn(courses);
 
-        mockMvc.perform(get("/api/v1/author/courses"))
+        mockMvc.perform(get("/api/v1/author/courses")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(courses.size())));
     }
