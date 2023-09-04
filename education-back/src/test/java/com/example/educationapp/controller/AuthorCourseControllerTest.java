@@ -18,6 +18,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -35,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @WithMockUser(username = "Lipsar", authorities = "AUTHOR")
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 public class AuthorCourseControllerTest {
 
     @Autowired
@@ -50,7 +52,8 @@ public class AuthorCourseControllerTest {
         courses.add(responseCourseDto);
         when(authorCourseService.getAllCoursesForAuthor()).thenReturn(courses);
 
-        mockMvc.perform(get("/api/v1/author/courses"))
+        mockMvc.perform(get("/api/v1/author/courses")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(courses.size())));
     }
