@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "ДТО для id пользователей, которых нужно удалить или добавить в список авторов курса.")
-public class AddOrRemoveAuthorsDto {
+@Schema(description = "ДТО для id пользователей, которых нужно удалить или добавить в список учителей курса.")
+public class AddOrRemoveTeachersDto {
     List<Long> ids;
 }

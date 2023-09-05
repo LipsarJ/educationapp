@@ -1,6 +1,7 @@
 package com.example.educationapp.service.authormanagement;
 
 import com.example.educationapp.dto.request.authormanagement.AddOrRemoveAuthorsDto;
+import com.example.educationapp.dto.request.authormanagement.AddOrRemoveTeachersDto;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.User;
@@ -61,6 +62,49 @@ public class AuthorManagementService {
             }
         }
         return authors.stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<ResponseUserDto> getAllTeachersForCourse(Long id) {
+        Course course = courseUtils.validateAndGetCourse(id);
+        Set<User> teachers = course.getTeachers();
+        return teachers.stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<ResponseUserDto> addTeachersForCourse(Long id, AddOrRemoveTeachersDto addOrRemoveTeachersDto) {
+        Set<User> teachers = userRepo.findByIdIn(addOrRemoveTeachersDto.getIds());
+        Course course = courseUtils.validateAndGetCourse(id);
+        for (User teacher : teachers) {
+            if (!teacher.getTeacherCourseSet().contains(course)) {
+                teacher.getAuthorCourseSet().add(course);
+                userRepo.save(teacher);
+            } else {
+                throw new BadDataException(String.format("User with id: %s is already teacher of this course", teacher.getId()));
+            }
+        }
+        return teachers.stream()
+                .map(userMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<ResponseUserDto> removeTeachersForCourse(Long id, AddOrRemoveTeachersDto addOrRemoveTeachersDto) {
+        Set<User> teachers = userRepo.findByIdIn(addOrRemoveTeachersDto.getIds());
+        Course course = courseUtils.validateAndGetCourse(id);
+        for (User teacher : teachers) {
+            if (teacher.getTeacherCourseSet().contains(course)) {
+                teacher.getAuthorCourseSet().remove(course);
+                userRepo.save(teacher);
+            } else {
+                throw new BadDataException(String.format("User with id: %s is not teacher of this course", teacher.getId()));
+            }
+        }
+        return teachers.stream()
                 .map(userMapper::toDto)
                 .collect(Collectors.toList());
     }

@@ -1,6 +1,7 @@
 package com.example.educationapp.controller.author.management;
 
 import com.example.educationapp.dto.request.authormanagement.AddOrRemoveAuthorsDto;
+import com.example.educationapp.dto.request.authormanagement.AddOrRemoveTeachersDto;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.User;
@@ -153,6 +154,110 @@ public class AuthorManagementControllerTest {
         mockMvc.perform(put("/api/v1/author/courses/1/remove-authors")
                         .with(csrf())
                         .content(new ObjectMapper().writeValueAsString(addOrRemoveAuthorsDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testGetAllTwoTeachersForCourse() throws Exception {
+        User user1 = new User();
+        user1.setUsername("teacher1");
+        User user2 = new User();
+        user2.setUsername("teacher2");
+
+        Course course = new Course();
+        course.setId(1L);
+        course.getTeachers().add(user1);
+        course.getTeachers().add(user2);
+        List<ResponseUserDto> teachers = new ArrayList<>();
+        teachers.add(userMapper.toDto(user1));
+        teachers.add(userMapper.toDto(user2));
+        when(courseUtils.validateAndGetCourse(1L)).thenReturn(course);
+        when(authorManagementService.getAllTeachersForCourse(1L)).thenReturn(teachers);
+        mockMvc.perform(get("/api/v1/author/courses/1/teachers")
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
+    }
+
+    @Test
+    public void testGetAllThreeTeachersForCourse() throws Exception {
+        User user1 = new User();
+        user1.setUsername("teacher1");
+        User user2 = new User();
+        user2.setUsername("teacher2");
+        User user3 = new User();
+        user1.setUsername("teacher3");
+
+        Course course = new Course();
+        course.setId(1L);
+        course.getTeachers().add(user1);
+        course.getTeachers().add(user2);
+        course.getTeachers().add(user3);
+        List<ResponseUserDto> teachers = new ArrayList<>();
+        teachers.add(userMapper.toDto(user1));
+        teachers.add(userMapper.toDto(user2));
+        teachers.add(userMapper.toDto(user3));
+        when(courseUtils.validateAndGetCourse(1L)).thenReturn(course);
+        when(authorManagementService.getAllTeachersForCourse(1L)).thenReturn(teachers);
+        mockMvc.perform(get("/api/v1/author/courses/1/teachers")
+                        .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)));
+    }
+
+    @Test
+    public void testAddTeachersToCourse() throws Exception {
+        User user1 = new User();
+        user1.setUsername("teacher1");
+        user1.setId(1L);
+        User user2 = new User();
+        user2.setUsername("teacher2");
+        user2.setId(2L);
+        Set<User> teachersSet = new HashSet<>();
+        teachersSet.add(user1);
+        teachersSet.add(user2);
+        AddOrRemoveTeachersDto addOrRemoveTeachersDto = new AddOrRemoveTeachersDto(Arrays.asList(1L, 2L));
+        Course course = new Course();
+        course.setId(1L);
+        List<ResponseUserDto> teachers = new ArrayList<>();
+        teachers.add(userMapper.toDto(user1));
+        teachers.add(userMapper.toDto(user2));
+        when(userRepo.findByIdIn(addOrRemoveTeachersDto.getIds())).thenReturn(teachersSet);
+        when(courseUtils.validateAndGetCourse(1L)).thenReturn(course);
+        when(authorManagementService.addTeachersForCourse(1L, addOrRemoveTeachersDto)).thenReturn(teachers);
+
+        mockMvc.perform(put("/api/v1/author/courses/1/add-teachers")
+                        .with(csrf())
+                        .content(new ObjectMapper().writeValueAsString(addOrRemoveTeachersDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void testRemoveTeachersToCourse() throws Exception {
+        User user1 = new User();
+        user1.setUsername("teacher1");
+        user1.setId(1L);
+        User user2 = new User();
+        user2.setUsername("teacher2");
+        user2.setId(2L);
+        Set<User> teachersSet = new HashSet<>();
+        teachersSet.add(user1);
+        teachersSet.add(user2);
+        AddOrRemoveTeachersDto addOrRemoveTeachersDto = new AddOrRemoveTeachersDto(Arrays.asList(1L, 2L));
+        Course course = new Course();
+        course.setId(1L);
+        List<ResponseUserDto> teachers = new ArrayList<>();
+        teachers.add(userMapper.toDto(user1));
+        teachers.add(userMapper.toDto(user2));
+        when(userRepo.findByIdIn(addOrRemoveTeachersDto.getIds())).thenReturn(teachersSet);
+        when(courseUtils.validateAndGetCourse(1L)).thenReturn(course);
+        when(authorManagementService.removeTeachersForCourse(1L, addOrRemoveTeachersDto)).thenReturn(teachers);
+
+        mockMvc.perform(put("/api/v1/author/courses/1/remove-teachers")
+                        .with(csrf())
+                        .content(new ObjectMapper().writeValueAsString(addOrRemoveTeachersDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
