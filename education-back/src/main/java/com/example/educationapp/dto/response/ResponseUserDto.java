@@ -21,7 +21,7 @@ public class ResponseUserDto {
     private String username;
 
     @Schema(description = "Набор ролей пользователя", example = "[\"USER\", \"ADMIN\"]")
-    private Set<Role> roles;
+    private Set<Role> roleSet;
 
     @Schema(description = "Дата обновления", example = "2023-08-24T14:30:00Z")
     private OffsetDateTime updateDate;

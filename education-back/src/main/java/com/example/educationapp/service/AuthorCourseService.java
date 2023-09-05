@@ -55,9 +55,8 @@ public class AuthorCourseService {
         }
         Course course = courseMapper.toEntity(requestCourseDto);
         User user = userRepo.findById(responseUserDto.getId()).orElseThrow(() -> new UserNotFoundException("User not found"));
-        course.getAuthors().add(user);
-        course = courseRepo.save(course);
         user.getAuthorCourseSet().add(course);
+        courseRepo.save(course);
         userRepo.save(user);
         return courseMapper.toResponseDto(course);
     }

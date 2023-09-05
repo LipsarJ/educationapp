@@ -53,8 +53,6 @@ public class AuthorHomeworkTaskService {
         HomeworkTask homeworkTask = homeworkTaskMapper.toEntity(requestHomeworkTaskDto);
         homeworkTask.setLesson(lesson);
         homeworkTask = homeworkTaskRepo.save(homeworkTask);
-        lesson.getHomeworkTaskList().add(homeworkTask);
-        lessonRepo.save(lesson);
         return homeworkTaskMapper.toResponseDto(homeworkTask);
     }
 

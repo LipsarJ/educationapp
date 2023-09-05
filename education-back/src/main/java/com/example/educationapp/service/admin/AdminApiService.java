@@ -40,16 +40,10 @@ public class AdminApiService {
         user.setMiddlename(updateUserDto.getMiddlename());
         user.setLastname(updateUserDto.getLastname());
         user.setStatus(updateUserDto.getUserStatus());
-        for (Role role : user.getRoleSet()) {
-            role.getUsers().remove(user);
-            roleRepo.save(role);
-        }
         user.getRoleSet().clear();
         for (ERole eRole : updateUserDto.getRoleSet()) {
             Role role = roleRepo.findByRoleName(eRole);
             user.getRoleSet().add(role);
-            role.getUsers().add(user);
-            roleRepo.save(role);
         }
         userRepo.save(user);
         return userAdminMapper.toDto(user);

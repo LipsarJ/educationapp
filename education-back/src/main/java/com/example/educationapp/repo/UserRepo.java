@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
     Optional<User> findByUsername(String username);
@@ -22,4 +23,6 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
     boolean existsByUsernameAndIdNot(String username, Long userId);
 
     boolean existsByEmailAndIdNot(String email, Long userId);
+
+    Set<User> findByIdIn(List<Long> userIds);
 }

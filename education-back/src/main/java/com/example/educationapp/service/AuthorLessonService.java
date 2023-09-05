@@ -51,9 +51,7 @@ public class AuthorLessonService {
         }
         Lesson lesson = lessonMapper.toEntity(requestLessonDto);
         lesson.setLessonsCourse(course);
-        lesson = lessonRepo.save(lesson);
-        course.getLessonList().add(lesson);
-        courseRepo.save(course);
+        lessonRepo.save(lesson);
         return lessonMapper.toResponseDto(lesson);
     }
 
