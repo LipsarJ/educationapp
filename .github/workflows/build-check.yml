@@ -1,29 +1,26 @@
 name: Pull request changed build
 
-# Controls when the action will run. 
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [ opened, reopened, synchronize ]
+    paths:
+      - 'education-back/**'
   push:
     branches:
       - master
+    paths:
+      - 'education-back/**'
 
-      # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    
+
     outputs:
       output1: ${{ steps.output-data.outputs.image-url }}
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
       - uses: actions/cache@v3
         with:
@@ -39,11 +36,14 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
+
       - name: Validate Gradle wrapper
         uses: gradle/wrapper-validation-action@e6e38bacfdf1a337459f332974bb2327a31aaf4b
+
       - name: Run chmod to make gradlew executable
-        run: chmod +x ./gradlew
+        run: chmod +x ./education-back/gradlew
+
       - name: Build with Gradle
-        uses: gradle/gradle-build-action@0d13054264b0bb894ded474f08ebb30921341cee
-        with:
-          arguments: build
+        run: |
+          cd education-back
+          ./gradlew build

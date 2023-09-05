@@ -48,7 +48,7 @@ services:
     container_name: education
     build:
       context: .
-      dockerfile: dockerfile
+      dockerfile: education-back/Dockerfile
     ports:
       - "8080:8080"
     environment:
