@@ -81,7 +81,7 @@ public class AuthorManagementService {
         Course course = courseUtils.validateAndGetCourse(id);
         for (User teacher : teachers) {
             if (!teacher.getTeacherCourseSet().contains(course)) {
-                teacher.getAuthorCourseSet().add(course);
+                teacher.getTeacherCourseSet().add(course);
                 userRepo.save(teacher);
             } else {
                 throw new BadDataException(String.format("User with id: %s is already teacher of this course", teacher.getId()));
@@ -98,7 +98,7 @@ public class AuthorManagementService {
         Course course = courseUtils.validateAndGetCourse(id);
         for (User teacher : teachers) {
             if (teacher.getTeacherCourseSet().contains(course)) {
-                teacher.getAuthorCourseSet().remove(course);
+                teacher.getTeacherCourseSet().remove(course);
                 userRepo.save(teacher);
             } else {
                 throw new BadDataException(String.format("User with id: %s is not teacher of this course", teacher.getId()));
