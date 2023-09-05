@@ -128,4 +128,32 @@ public class AuthorManagementControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
+
+    @Test
+    public void testRemoveAuthorsToCourse() throws Exception {
+        User user1 = new User();
+        user1.setUsername("author1");
+        user1.setId(1L);
+        User user2 = new User();
+        user2.setUsername("author2");
+        user2.setId(2L);
+        Set<User> authorsSet = new HashSet<>();
+        authorsSet.add(user1);
+        authorsSet.add(user2);
+        AddOrRemoveAuthorsDto addOrRemoveAuthorsDto = new AddOrRemoveAuthorsDto(Arrays.asList(1L, 2L));
+        Course course = new Course();
+        course.setId(1L);
+        List<ResponseUserDto> authors = new ArrayList<>();
+        authors.add(userMapper.toDto(user1));
+        authors.add(userMapper.toDto(user2));
+        when(userRepo.findByIdIn(addOrRemoveAuthorsDto.getIds())).thenReturn(authorsSet);
+        when(courseUtils.validateAndGetCourse(1L)).thenReturn(course);
+        when(authorManagementService.addAuthorsForCourse(1L, addOrRemoveAuthorsDto)).thenReturn(authors);
+
+        mockMvc.perform(put("/api/v1/author/courses/1/remove-authors")
+                        .with(csrf())
+                        .content(new ObjectMapper().writeValueAsString(addOrRemoveAuthorsDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
 }
