@@ -10,5 +10,6 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
     User toEntity(RequestUserDto requestUserDto);
 
+    @Mapping(target = "roles", source = "user.roleSet")
     ResponseUserDto toDto(User user);
 }
