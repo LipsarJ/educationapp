@@ -116,9 +116,7 @@ public class AuthorManagementControllerTest {
         List<ResponseUserDto> authors = new ArrayList<>();
         authors.add(userMapper.toDto(user1));
         authors.add(userMapper.toDto(user2));
-        List<Long> ids = Arrays.asList(1L, 2L);
-        when(addOrRemoveAuthorsDto.getIds()).thenReturn(ids);
-        when(userRepo.findByIdIn(ids)).thenReturn(authorsSet);
+        when(userRepo.findByIdIn(addOrRemoveAuthorsDto.getIds())).thenReturn(authorsSet);
         when(courseUtils.validateAndGetCourse(1L)).thenReturn(course);
         when(authorManagementService.addAuthorsForCourse(1L, addOrRemoveAuthorsDto)).thenReturn(authors);
 
