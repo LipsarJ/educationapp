@@ -6,6 +6,7 @@ import com.example.educationapp.dto.response.admin.UserAdminResponseDto;
 import com.example.educationapp.entity.User;
 import com.example.educationapp.entity.UserStatus;
 import com.example.educationapp.mapper.admin.UserAdminMapper;
+import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.security.WebSecurityConfig;
 import com.example.educationapp.service.admin.AdminApiService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,6 +43,8 @@ public class AdminApiControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private AdminApiService adminApiService;
+    @MockBean
+    UserRepo userRepo;
 
     @Test
     public void testUpdateUser() throws Exception {

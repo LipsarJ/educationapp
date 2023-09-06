@@ -62,13 +62,13 @@ public class AuthorCourseService {
     }
 
     public ResponseCourseDto getCourse(Long id) {
-        Course course = courseUtils.validateAndGetCourse(id);
+        Course course = courseUtils.validateAndGetCourseForAuthor(id);
         return courseMapper.toResponseDto(course);
     }
 
     @Transactional
     public ResponseCourseDto updateCourse(Long id, RequestCourseDto requestCourseDto) {
-        Course course = courseUtils.validateAndGetCourse(id);
+        Course course = courseUtils.validateAndGetCourseForAuthor(id);
         if (courseRepo.existsByCourseNameAndIdNot(requestCourseDto.getCourseName(), id)) {
             throw new CourseNameException("Course name is already exists");
         }
@@ -90,7 +90,7 @@ public class AuthorCourseService {
 
     @Transactional
     public void deleteCourse(Long id) {
-        Course course = courseUtils.validateAndGetCourse(id);
+        Course course = courseUtils.validateAndGetCourseForAuthor(id);
         ResponseUserDto responseUserDto = userContext.getUserDto();
         if (course.getCourseStatus() != CourseStatus.TEMPLATE) {
             throw new InvalidStatusException("Course can only be deleted if it's in TEMPLATE status.");

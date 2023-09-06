@@ -71,7 +71,7 @@ public class AuthorHomeworkTaskServiceTest {
 
         assertNotNull(result);
         assertEquals(tasks.size(), result.size());
-        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(courseUtils).validateAndGetCourseForAuthor(courseId);
         verify(lessonRepo).findById(lessonId);
         verify(homeworkTaskRepo).findAllByLesson(lesson);
         verify(homeworkTaskMapper, times(tasks.size())).toResponseDto(any(HomeworkTask.class));
@@ -98,7 +98,7 @@ public class AuthorHomeworkTaskServiceTest {
 
         assertNotNull(result);
         assertEquals(tasks.size(), result.size());
-        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(courseUtils).validateAndGetCourseForAuthor(courseId);
         verify(lessonRepo).findById(lessonId);
         verify(homeworkTaskRepo).findAllByLesson(lesson);
         verify(homeworkTaskMapper, times(tasks.size())).toResponseDto(any(HomeworkTask.class));
@@ -122,12 +122,11 @@ public class AuthorHomeworkTaskServiceTest {
         ResponseHomeworkTaskDto result = homeworkTaskService.createTask(courseId, lessonId, requestDto);
 
         assertNotNull(result);
-        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(courseUtils).validateAndGetCourseForAuthor(courseId);
         verify(lessonRepo).findById(lessonId);
         verify(homeworkTaskRepo).existsByTitle(requestDto.getTitle());
         verify(homeworkTaskMapper).toEntity(requestDto);
         verify(homeworkTaskRepo).save(any(HomeworkTask.class));
-        verify(lessonRepo).save(lesson);
         verify(homeworkTaskMapper).toResponseDto(any(HomeworkTask.class));
     }
 
@@ -139,7 +138,7 @@ public class AuthorHomeworkTaskServiceTest {
         HomeworkTask task = new HomeworkTask();
         task.setId(taskId);
 
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(null);
+        when(courseUtils.validateAndGetCourseForAuthor(courseId)).thenReturn(null);
         when(lessonRepo.findById(lessonId)).thenReturn(Optional.of(new Lesson()));
         when(homeworkTaskRepo.findById(taskId)).thenReturn(Optional.of(task));
         when(homeworkTaskMapper.toResponseDto(any(HomeworkTask.class)))
@@ -148,7 +147,7 @@ public class AuthorHomeworkTaskServiceTest {
         ResponseHomeworkTaskDto result = homeworkTaskService.getTask(courseId, lessonId, taskId);
 
         assertNotNull(result);
-        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(courseUtils).validateAndGetCourseForAuthor(courseId);
         verify(lessonRepo).findById(lessonId);
         verify(homeworkTaskRepo).findById(taskId);
         verify(homeworkTaskMapper).toResponseDto(any(HomeworkTask.class));
@@ -169,7 +168,7 @@ public class AuthorHomeworkTaskServiceTest {
         existingTask.setId(taskId);
         existingTask.setTitle("Existing Task Title");
 
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(null);
+        when(courseUtils.validateAndGetCourseForAuthor(courseId)).thenReturn(null);
         when(lessonRepo.findById(lessonId)).thenReturn(Optional.of(new Lesson()));
         when(homeworkTaskRepo.findById(taskId)).thenReturn(Optional.of(existingTask));
         when(homeworkTaskRepo.existsByTitleAndIdNot(requestDto.getTitle(), taskId)).thenReturn(false);
@@ -192,7 +191,7 @@ public class AuthorHomeworkTaskServiceTest {
         assertEquals(responseDto.getDescription(), updatedTask.getDescription());
         assertEquals(responseDto.getDeadlineDate(), updatedTask.getDeadlineDate());
 
-        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(courseUtils).validateAndGetCourseForAuthor(courseId);
         verify(lessonRepo).findById(lessonId);
         verify(homeworkTaskRepo).findById(taskId);
         verify(homeworkTaskRepo).existsByTitleAndIdNot(requestDto.getTitle(), taskId);
@@ -211,14 +210,14 @@ public class AuthorHomeworkTaskServiceTest {
         task.setId(taskId);
         MediaHomeworkTask mediaHomeworkTask = new MediaHomeworkTask();
 
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(null);
+        when(courseUtils.validateAndGetCourseForAuthor(courseId)).thenReturn(null);
         when(lessonRepo.findById(lessonId)).thenReturn(Optional.of(lesson));
         when(homeworkTaskRepo.findById(taskId)).thenReturn(Optional.of(task));
         when(mediaHomeworkTaskRepo.save(any(MediaHomeworkTask.class))).thenReturn(mediaHomeworkTask);
 
         homeworkTaskService.deleteTask(courseId, lessonId, taskId);
 
-        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(courseUtils).validateAndGetCourseForAuthor(courseId);
         verify(lessonRepo).findById(lessonId);
         verify(homeworkTaskRepo).findById(taskId);
         verify(mediaHomeworkTaskRepo, times(0)).save(any(MediaHomeworkTask.class));

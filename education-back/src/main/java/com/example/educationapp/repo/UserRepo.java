@@ -2,6 +2,8 @@ package com.example.educationapp.repo;
 
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -25,4 +27,6 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
     boolean existsByEmailAndIdNot(String email, Long userId);
 
     Set<User> findByIdIn(List<Long> userIds);
+
+    Page<User> findAllByStudentCourseSet(Set<Course> course, Pageable pageable);
 }

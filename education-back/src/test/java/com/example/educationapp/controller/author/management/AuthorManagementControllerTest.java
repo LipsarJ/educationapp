@@ -8,7 +8,7 @@ import com.example.educationapp.entity.User;
 import com.example.educationapp.mapper.UserMapper;
 import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.security.service.UserContext;
-import com.example.educationapp.service.authormanagement.AuthorManagementService;
+import com.example.educationapp.service.management.author.AuthorManagementService;
 import com.example.educationapp.utils.CourseUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -68,7 +68,7 @@ public class AuthorManagementControllerTest {
         List<ResponseUserDto> authors = new ArrayList<>();
         authors.add(userMapper.toDto(user1));
         authors.add(userMapper.toDto(user2));
-        when(courseUtils.validateAndGetCourse(1L)).thenReturn(course);
+        when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.getAllAuthorsForCourse(1L)).thenReturn(authors);
         mockMvc.perform(get("/api/v1/author/courses/1/authors")
                         .with(csrf()))
@@ -94,7 +94,7 @@ public class AuthorManagementControllerTest {
         authors.add(userMapper.toDto(user1));
         authors.add(userMapper.toDto(user2));
         authors.add(userMapper.toDto(user3));
-        when(courseUtils.validateAndGetCourse(1L)).thenReturn(course);
+        when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.getAllAuthorsForCourse(1L)).thenReturn(authors);
         mockMvc.perform(get("/api/v1/author/courses/1/authors")
                         .with(csrf()))
@@ -120,7 +120,7 @@ public class AuthorManagementControllerTest {
         authors.add(userMapper.toDto(user1));
         authors.add(userMapper.toDto(user2));
         when(userRepo.findByIdIn(addOrRemoveAuthorsDto.getIds())).thenReturn(authorsSet);
-        when(courseUtils.validateAndGetCourse(1L)).thenReturn(course);
+        when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.addAuthorsForCourse(1L, addOrRemoveAuthorsDto)).thenReturn(authors);
 
         mockMvc.perform(put("/api/v1/author/courses/1/add-authors")
@@ -148,7 +148,7 @@ public class AuthorManagementControllerTest {
         authors.add(userMapper.toDto(user1));
         authors.add(userMapper.toDto(user2));
         when(userRepo.findByIdIn(addOrRemoveAuthorsDto.getIds())).thenReturn(authorsSet);
-        when(courseUtils.validateAndGetCourse(1L)).thenReturn(course);
+        when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.addAuthorsForCourse(1L, addOrRemoveAuthorsDto)).thenReturn(authors);
 
         mockMvc.perform(put("/api/v1/author/courses/1/remove-authors")
@@ -172,7 +172,7 @@ public class AuthorManagementControllerTest {
         List<ResponseUserDto> teachers = new ArrayList<>();
         teachers.add(userMapper.toDto(user1));
         teachers.add(userMapper.toDto(user2));
-        when(courseUtils.validateAndGetCourse(1L)).thenReturn(course);
+        when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.getAllTeachersForCourse(1L)).thenReturn(teachers);
         mockMvc.perform(get("/api/v1/author/courses/1/teachers")
                         .with(csrf()))
@@ -198,7 +198,7 @@ public class AuthorManagementControllerTest {
         teachers.add(userMapper.toDto(user1));
         teachers.add(userMapper.toDto(user2));
         teachers.add(userMapper.toDto(user3));
-        when(courseUtils.validateAndGetCourse(1L)).thenReturn(course);
+        when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.getAllTeachersForCourse(1L)).thenReturn(teachers);
         mockMvc.perform(get("/api/v1/author/courses/1/teachers")
                         .with(csrf()))
@@ -224,7 +224,7 @@ public class AuthorManagementControllerTest {
         teachers.add(userMapper.toDto(user1));
         teachers.add(userMapper.toDto(user2));
         when(userRepo.findByIdIn(addOrRemoveTeachersDto.getIds())).thenReturn(teachersSet);
-        when(courseUtils.validateAndGetCourse(1L)).thenReturn(course);
+        when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.addTeachersForCourse(1L, addOrRemoveTeachersDto)).thenReturn(teachers);
 
         mockMvc.perform(put("/api/v1/author/courses/1/add-teachers")
@@ -252,7 +252,7 @@ public class AuthorManagementControllerTest {
         teachers.add(userMapper.toDto(user1));
         teachers.add(userMapper.toDto(user2));
         when(userRepo.findByIdIn(addOrRemoveTeachersDto.getIds())).thenReturn(teachersSet);
-        when(courseUtils.validateAndGetCourse(1L)).thenReturn(course);
+        when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.removeTeachersForCourse(1L, addOrRemoveTeachersDto)).thenReturn(teachers);
 
         mockMvc.perform(put("/api/v1/author/courses/1/remove-teachers")

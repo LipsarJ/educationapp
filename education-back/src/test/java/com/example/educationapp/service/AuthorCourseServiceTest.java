@@ -116,7 +116,7 @@ public class AuthorCourseServiceTest {
     public void testGetCourse() {
         Long courseId = 1L;
         ResponseCourseDto responseCourseDto = new ResponseCourseDto();
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(new Course());
+        when(courseUtils.validateAndGetCourseForAuthor(courseId)).thenReturn(new Course());
         when(courseMapper.toResponseDto(any(Course.class))).thenReturn(responseCourseDto);
 
         ResponseCourseDto retrievedCourse = authorCourseService.getCourse(courseId);
@@ -130,7 +130,7 @@ public class AuthorCourseServiceTest {
         ResponseCourseDto responseCourseDto = new ResponseCourseDto();
         Course existingCourse = new Course();
 
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(existingCourse);
+        when(courseUtils.validateAndGetCourseForAuthor(courseId)).thenReturn(existingCourse);
         when(courseRepo.existsByCourseNameAndIdNot(anyString(), anyLong())).thenReturn(false);
         when(courseUtils.isStatusChangeValid(any(), any())).thenReturn(true);
         when(courseMapper.toResponseDto(any(Course.class))).thenReturn(responseCourseDto);
@@ -149,7 +149,7 @@ public class AuthorCourseServiceTest {
         ResponseUserDto responseUserDto = new ResponseUserDto();
         responseUserDto.setId(1L);
 
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(course);
+        when(courseUtils.validateAndGetCourseForAuthor(courseId)).thenReturn(course);
         when(userContext.getUserDto()).thenReturn(responseUserDto);
         when(userRepo.findById(user.getId())).thenReturn(Optional.of(user));
 

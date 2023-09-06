@@ -29,7 +29,7 @@ public class AuthorLessonService {
     private final AuthorHomeworkTaskService authorHomeworkTaskService;
 
     public List<ResponseLessonDto> getAllLessons(Long courseId) {
-        Course course = courseUtils.validateAndGetCourse(courseId);
+        Course course = courseUtils.validateAndGetCourseForAuthor(courseId);
 
         List<Lesson> lessons = lessonRepo.findAllByLessonsCourse(course);
         return lessons.stream()
@@ -40,7 +40,7 @@ public class AuthorLessonService {
 
     @Transactional
     public ResponseLessonDto createLesson(Long courseId, RequestLessonDto requestLessonDto) {
-        Course course = courseUtils.validateAndGetCourse(courseId);
+        Course course = courseUtils.validateAndGetCourseForAuthor(courseId);
         if (requestLessonDto.getLessonStatus() == LessonStatus.NOT_ACTIVE) {
             throw new InvalidStatusException("Lesson can be only created with Active status.");
         } else {
@@ -56,7 +56,7 @@ public class AuthorLessonService {
     }
 
     public ResponseLessonDto getLesson(Long courseId, Long id) {
-        courseUtils.validateAndGetCourse(courseId);
+        courseUtils.validateAndGetCourseForAuthor(courseId);
 
         Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
@@ -65,7 +65,7 @@ public class AuthorLessonService {
 
     @Transactional
     public ResponseLessonDto updateLesson(Long courseId, Long id, RequestLessonDto requestLessonDto) {
-        courseUtils.validateAndGetCourse(courseId);
+        courseUtils.validateAndGetCourseForAuthor(courseId);
         Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found"));
         LessonStatus newStatus = requestLessonDto.getLessonStatus();
         if (lessonRepo.existsByLessonNameAndIdNot(requestLessonDto.getLessonName(), id)) {
@@ -85,7 +85,7 @@ public class AuthorLessonService {
 
     @Transactional
     public void deleteLesson(Long courseId, Long id) {
-        Course course = courseUtils.validateAndGetCourse(courseId);
+        Course course = courseUtils.validateAndGetCourseForAuthor(courseId);
         Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
         if (lesson.getLessonStatus() != LessonStatus.NOT_ACTIVE) {

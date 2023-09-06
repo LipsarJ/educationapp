@@ -30,7 +30,7 @@ public class AuthorHomeworkTaskService {
     private final MediaHomeworkTaskRepo mediaHomeworkTaskRepo;
 
     public List<ResponseHomeworkTaskDto> getAllTasks(Long courseId, Long lessonId) {
-        courseUtils.validateAndGetCourse(courseId);
+        courseUtils.validateAndGetCourseForAuthor(courseId);
 
         Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
@@ -42,7 +42,7 @@ public class AuthorHomeworkTaskService {
 
     @Transactional
     public ResponseHomeworkTaskDto createTask(Long courseId, Long lessonId, RequestHomeworkTaskDto requestHomeworkTaskDto) {
-        courseUtils.validateAndGetCourse(courseId);
+        courseUtils.validateAndGetCourseForAuthor(courseId);
 
         Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
@@ -57,7 +57,7 @@ public class AuthorHomeworkTaskService {
     }
 
     public ResponseHomeworkTaskDto getTask(Long courseId, Long lessonId, Long id) {
-        courseUtils.validateAndGetCourse(courseId);
+        courseUtils.validateAndGetCourseForAuthor(courseId);
 
         lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
@@ -68,7 +68,7 @@ public class AuthorHomeworkTaskService {
 
     @Transactional
     public ResponseHomeworkTaskDto updateTask(Long courseId, Long lessonId, Long id, RequestHomeworkTaskDto requestHomeworkTaskDto) {
-        courseUtils.validateAndGetCourse(courseId);
+        courseUtils.validateAndGetCourseForAuthor(courseId);
 
         lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
@@ -88,7 +88,7 @@ public class AuthorHomeworkTaskService {
 
     @Transactional
     public void deleteTask(Long courseId, Long lessonId, Long id) {
-        courseUtils.validateAndGetCourse(courseId);
+        courseUtils.validateAndGetCourseForAuthor(courseId);
         Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
         HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework is not found."));

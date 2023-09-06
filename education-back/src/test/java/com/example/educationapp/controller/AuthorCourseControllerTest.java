@@ -6,17 +6,16 @@ import com.example.educationapp.entity.CourseStatus;
 import com.example.educationapp.exception.CourseNameException;
 import com.example.educationapp.exception.InvalidStatusException;
 import com.example.educationapp.exception.UserNotFoundException;
+import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.service.AuthorCourseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -44,6 +43,8 @@ public class AuthorCourseControllerTest {
 
     @MockBean
     private AuthorCourseService authorCourseService;
+    @MockBean
+    UserRepo userRepo;
 
     @Test
     public void testGetAllCoursesForAuthor() throws Exception {

@@ -1,10 +1,10 @@
-package com.example.educationapp.controller.author.management;
+package com.example.educationapp.controller.management.author;
 
 import com.example.educationapp.controlleradvice.ErrorResponse;
 import com.example.educationapp.dto.request.authormanagement.AddOrRemoveAuthorsDto;
 import com.example.educationapp.dto.request.authormanagement.AddOrRemoveTeachersDto;
 import com.example.educationapp.dto.response.ResponseUserDto;
-import com.example.educationapp.service.authormanagement.AuthorManagementService;
+import com.example.educationapp.service.management.author.AuthorManagementService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

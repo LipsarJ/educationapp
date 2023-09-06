@@ -5,6 +5,7 @@ import com.example.educationapp.dto.response.ResponseLessonDto;
 import com.example.educationapp.entity.LessonStatus;
 import com.example.educationapp.exception.InvalidStatusException;
 import com.example.educationapp.exception.LessonNotFoundException;
+import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.service.AuthorLessonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,11 +14,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -49,6 +48,8 @@ public class AuthorLessonControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
+    @MockBean
+    UserRepo userRepo;
 
     @BeforeEach
     public void setUp() {
@@ -83,7 +84,7 @@ public class AuthorLessonControllerTest {
 
     @Test
     public void testCreateLesson() throws Exception {
-        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L,"New Lesson", "New Content", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
+        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L, "New Lesson", "New Content", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
 
         when(authorLessonService.createLesson(anyLong(), any(RequestLessonDto.class))).thenReturn(responseLessonDto);
 
@@ -100,7 +101,7 @@ public class AuthorLessonControllerTest {
 
     @Test
     public void testGetLesson() throws Exception {
-        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L,"Lesson 1", "Content 1", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
+        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L, "Lesson 1", "Content 1", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
 
         when(authorLessonService.getLesson(anyLong(), anyLong())).thenReturn(responseLessonDto);
 
@@ -160,7 +161,7 @@ public class AuthorLessonControllerTest {
         Long id = 2L;
 
         doThrow(new LessonNotFoundException("Lesson is not found."))
-                .when(authorLessonService).deleteLesson(courseId,id);
+                .when(authorLessonService).deleteLesson(courseId, id);
 
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/author/lessons/{courseId}/{id}", courseId, id).with(csrf()))
                 .andExpect(status().isNotFound())
@@ -170,18 +171,19 @@ public class AuthorLessonControllerTest {
     @Test
     @WithMockUser(username = "studentTest", authorities = "STUDENT")
     public void testGetLessonAuthoritiesCheckStudent() throws Exception {
-        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L,"Lesson 1", "Content 1", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
+        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L, "Lesson 1", "Content 1", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
 
         when(authorLessonService.getLesson(anyLong(), anyLong())).thenReturn(responseLessonDto);
 
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/author/lessons/1/2"))
-                .andExpect(status().isForbidden());;
+                .andExpect(status().isForbidden());
+        ;
     }
 
     @Test
     @WithMockUser(username = "teacherTest", authorities = "TEACHER")
     public void testGetLessonAuthoritiesCheckTeacher() throws Exception {
-        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L,"Lesson 1", "Content 1", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
+        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L, "Lesson 1", "Content 1", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
 
         when(authorLessonService.getLesson(anyLong(), anyLong())).thenReturn(responseLessonDto);
 

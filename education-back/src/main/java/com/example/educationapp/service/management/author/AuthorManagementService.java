@@ -1,4 +1,4 @@
-package com.example.educationapp.service.authormanagement;
+package com.example.educationapp.service.management.author;
 
 import com.example.educationapp.dto.request.authormanagement.AddOrRemoveAuthorsDto;
 import com.example.educationapp.dto.request.authormanagement.AddOrRemoveTeachersDto;
@@ -25,7 +25,7 @@ public class AuthorManagementService {
     private final CourseUtils courseUtils;
 
     public List<ResponseUserDto> getAllAuthorsForCourse(Long id) {
-        Course course = courseUtils.validateAndGetCourse(id);
+        Course course = courseUtils.validateAndGetCourseForAuthor(id);
         Set<User> authors = course.getAuthors();
         return authors.stream()
                 .map(userMapper::toDto)
@@ -35,7 +35,7 @@ public class AuthorManagementService {
     @Transactional
     public List<ResponseUserDto> addAuthorsForCourse(Long id, AddOrRemoveAuthorsDto addOrRemoveAuthorsDto) {
         Set<User> authors = userRepo.findByIdIn(addOrRemoveAuthorsDto.getIds());
-        Course course = courseUtils.validateAndGetCourse(id);
+        Course course = courseUtils.validateAndGetCourseForAuthor(id);
         for (User author : authors) {
             if (!author.getAuthorCourseSet().contains(course)) {
                 author.getAuthorCourseSet().add(course);
@@ -52,7 +52,7 @@ public class AuthorManagementService {
     @Transactional
     public List<ResponseUserDto> removeAuthorsForCourse(Long id, AddOrRemoveAuthorsDto addOrRemoveAuthorsDto) {
         Set<User> authors = userRepo.findByIdIn(addOrRemoveAuthorsDto.getIds());
-        Course course = courseUtils.validateAndGetCourse(id);
+        Course course = courseUtils.validateAndGetCourseForAuthor(id);
         for (User author : authors) {
             if (author.getAuthorCourseSet().contains(course)) {
                 author.getAuthorCourseSet().remove(course);
@@ -68,7 +68,7 @@ public class AuthorManagementService {
 
     @Transactional
     public List<ResponseUserDto> getAllTeachersForCourse(Long id) {
-        Course course = courseUtils.validateAndGetCourse(id);
+        Course course = courseUtils.validateAndGetCourseForAuthor(id);
         Set<User> teachers = course.getTeachers();
         return teachers.stream()
                 .map(userMapper::toDto)
@@ -78,7 +78,7 @@ public class AuthorManagementService {
     @Transactional
     public List<ResponseUserDto> addTeachersForCourse(Long id, AddOrRemoveTeachersDto addOrRemoveTeachersDto) {
         Set<User> teachers = userRepo.findByIdIn(addOrRemoveTeachersDto.getIds());
-        Course course = courseUtils.validateAndGetCourse(id);
+        Course course = courseUtils.validateAndGetCourseForAuthor(id);
         for (User teacher : teachers) {
             if (!teacher.getTeacherCourseSet().contains(course)) {
                 teacher.getTeacherCourseSet().add(course);
@@ -95,7 +95,7 @@ public class AuthorManagementService {
     @Transactional
     public List<ResponseUserDto> removeTeachersForCourse(Long id, AddOrRemoveTeachersDto addOrRemoveTeachersDto) {
         Set<User> teachers = userRepo.findByIdIn(addOrRemoveTeachersDto.getIds());
-        Course course = courseUtils.validateAndGetCourse(id);
+        Course course = courseUtils.validateAndGetCourseForAuthor(id);
         for (User teacher : teachers) {
             if (teacher.getTeacherCourseSet().contains(course)) {
                 teacher.getTeacherCourseSet().remove(course);
