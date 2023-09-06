@@ -1,4 +1,4 @@
-package com.example.educationapp.controller;
+package com.example.educationapp.controller.author;
 
 import com.example.educationapp.dto.request.RequestHomeworkTaskDto;
 import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;

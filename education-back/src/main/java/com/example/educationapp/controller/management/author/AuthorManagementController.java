@@ -1,8 +1,8 @@
 package com.example.educationapp.controller.management.author;
 
 import com.example.educationapp.controlleradvice.ErrorResponse;
-import com.example.educationapp.dto.request.authormanagement.AddOrRemoveAuthorsDto;
-import com.example.educationapp.dto.request.authormanagement.AddOrRemoveTeachersDto;
+import com.example.educationapp.dto.request.management.author.AddOrRemoveAuthorsDto;
+import com.example.educationapp.dto.request.management.author.AddOrRemoveTeachersDto;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.service.management.author.AuthorManagementService;
 import io.swagger.v3.oas.annotations.Operation;

@@ -1,7 +1,7 @@
-package com.example.educationapp.controller.author.management;
+package com.example.educationapp.controller.management.author;
 
-import com.example.educationapp.dto.request.authormanagement.AddOrRemoveAuthorsDto;
-import com.example.educationapp.dto.request.authormanagement.AddOrRemoveTeachersDto;
+import com.example.educationapp.dto.request.management.author.AddOrRemoveAuthorsDto;
+import com.example.educationapp.dto.request.management.author.AddOrRemoveTeachersDto;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.User;

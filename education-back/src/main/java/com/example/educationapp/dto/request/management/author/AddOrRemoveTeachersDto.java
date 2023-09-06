@@ -1,4 +1,4 @@
-package com.example.educationapp.dto.request.authormanagement;
+package com.example.educationapp.dto.request.management.author;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

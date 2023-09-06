@@ -1,6 +1,6 @@
 package com.example.educationapp.service.management.teacher;
 
-import com.example.educationapp.dto.request.AddOrRemoveStudentsDto;
+import com.example.educationapp.dto.request.management.teacher.AddOrRemoveStudentsDto;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.dto.response.UserInfoDto;
 import com.example.educationapp.entity.Course;
