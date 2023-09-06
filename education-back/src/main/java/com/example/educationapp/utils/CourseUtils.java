@@ -20,7 +20,7 @@ public class CourseUtils {
     private final CourseRepo courseRepo;
     private final UserRepo userRepo;
 
-    public Course validateAndGetCourse(Long courseId) {
+    public Course validateAndGetCourseForAuthor(Long courseId) {
         ResponseUserDto responseUserDto = userContext.getUserDto();
         User user = userRepo.findById(responseUserDto.getId()).orElseThrow(() -> new UserNotFoundException("User not found"));
 
@@ -28,6 +28,18 @@ public class CourseUtils {
 
         if (!course.getAuthors().contains(user)) {
             throw new ForbiddenException("You are not the author of this course.");
+        }
+        return course;
+    }
+
+    public Course validateAndGetCourseForTeacher(Long courseId) {
+        ResponseUserDto responseUserDto = userContext.getUserDto();
+        User user = userRepo.findById(responseUserDto.getId()).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        Course course = courseRepo.findById(courseId).orElseThrow(() -> new CourseNotFoundException("Course is not found."));
+
+        if (!course.getTeachers().contains(user)) {
+            throw new ForbiddenException("You are not the teacher of this course.");
         }
         return course;
     }

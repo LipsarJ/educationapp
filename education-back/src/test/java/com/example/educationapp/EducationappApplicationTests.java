@@ -1,7 +1,9 @@
 package com.example.educationapp;
 
+import com.example.educationapp.repo.UserRepo;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
@@ -9,7 +11,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ActiveProfiles("test")
 @Testcontainers
 class EducationappApplicationTests {
-
     @Test
     void contextLoads() {
     }

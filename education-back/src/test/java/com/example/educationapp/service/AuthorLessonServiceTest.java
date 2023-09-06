@@ -61,14 +61,14 @@ class AuthorLessonServiceTest {
         lessons.add(new Lesson());
         lessons.add(new Lesson());
 
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(course);
+        when(courseUtils.validateAndGetCourseForAuthor(courseId)).thenReturn(course);
         when(lessonRepo.findAllByLessonsCourse(course)).thenReturn(lessons);
         when(lessonMapper.toResponseDto(any(Lesson.class))).thenReturn(new ResponseLessonDto());
 
         List<ResponseLessonDto> responseLessonDtos = authorLessonService.getAllLessons(courseId);
 
         assertEquals(lessons.size(), responseLessonDtos.size());
-        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(courseUtils).validateAndGetCourseForAuthor(courseId);
         verify(lessonRepo).findAllByLessonsCourse(course);
         verify(lessonMapper, times(lessons.size())).toResponseDto(any(Lesson.class));
     }
@@ -82,14 +82,14 @@ class AuthorLessonServiceTest {
         lessons.add(new Lesson());
         lessons.add(new Lesson());
 
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(course);
+        when(courseUtils.validateAndGetCourseForAuthor(courseId)).thenReturn(course);
         when(lessonRepo.findAllByLessonsCourse(course)).thenReturn(lessons);
         when(lessonMapper.toResponseDto(any(Lesson.class))).thenReturn(new ResponseLessonDto());
 
         List<ResponseLessonDto> responseLessonDtos = authorLessonService.getAllLessons(courseId);
 
         assertEquals(lessons.size(), responseLessonDtos.size());
-        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(courseUtils).validateAndGetCourseForAuthor(courseId);
         verify(lessonRepo).findAllByLessonsCourse(course);
         verify(lessonMapper, times(lessons.size())).toResponseDto(any(Lesson.class));
     }
@@ -100,7 +100,7 @@ class AuthorLessonServiceTest {
         RequestLessonDto requestLessonDto = new RequestLessonDto();
         requestLessonDto.setLessonName("Lesson1");
         Course course = new Course();
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(course);
+        when(courseUtils.validateAndGetCourseForAuthor(courseId)).thenReturn(course);
         when(lessonRepo.existsByLessonName(requestLessonDto.getLessonName())).thenReturn(false);
         when(lessonMapper.toEntity(requestLessonDto)).thenReturn(new Lesson());
         when(lessonRepo.save(any(Lesson.class))).thenReturn(new Lesson());
@@ -109,7 +109,7 @@ class AuthorLessonServiceTest {
         ResponseLessonDto responseLessonDto = authorLessonService.createLesson(courseId, requestLessonDto);
 
         assertNotNull(responseLessonDto);
-        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(courseUtils).validateAndGetCourseForAuthor(courseId);
         verify(lessonRepo).existsByLessonName(requestLessonDto.getLessonName());
         verify(lessonMapper).toEntity(requestLessonDto);
         verify(lessonRepo).save(any(Lesson.class));
@@ -122,14 +122,14 @@ class AuthorLessonServiceTest {
         Long lessonId = 2L;
         Course course = new Course();
         Lesson lesson = new Lesson();
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(course);
+        when(courseUtils.validateAndGetCourseForAuthor(courseId)).thenReturn(course);
         when(lessonRepo.findById(lessonId)).thenReturn(Optional.of(lesson));
         when(lessonMapper.toResponseDto(lesson)).thenReturn(new ResponseLessonDto());
 
         ResponseLessonDto responseLessonDto = authorLessonService.getLesson(courseId, lessonId);
 
         assertNotNull(responseLessonDto);
-        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(courseUtils).validateAndGetCourseForAuthor(courseId);
         verify(lessonRepo).findById(lessonId);
         verify(lessonMapper).toResponseDto(lesson);
     }
@@ -151,7 +151,7 @@ class AuthorLessonServiceTest {
         ResponseLessonDto responseLessonDto = authorLessonService.updateLesson(courseId, lessonId, requestLessonDto);
 
         assertNotNull(responseLessonDto);
-        verify(courseUtils).validateAndGetCourse(courseId);
+        verify(courseUtils).validateAndGetCourseForAuthor(courseId);
         verify(lessonRepo).existsByLessonNameAndIdNot(requestLessonDto.getLessonName(), lessonId);
         verify(lessonRepo).findById(lessonId);
         verify(lessonRepo).save(any(Lesson.class));
@@ -171,7 +171,7 @@ class AuthorLessonServiceTest {
         List<MediaLesson> mediaLessons = new ArrayList<>();
         mediaLessons.add(new MediaLesson());
         lesson.setMediaLessonSet(mediaLessons);
-        when(courseUtils.validateAndGetCourse(courseId)).thenReturn(course);
+        when(courseUtils.validateAndGetCourseForAuthor(courseId)).thenReturn(course);
         when(lessonRepo.findById(lessonId)).thenReturn(Optional.of(lesson));
 
         lesson.setLessonStatus(LessonStatus.NOT_ACTIVE);
@@ -180,7 +180,7 @@ class AuthorLessonServiceTest {
 
         authorLessonService.deleteLesson(courseId, lessonId);
 
-        verify(courseUtils, times(1)).validateAndGetCourse(courseId);
+        verify(courseUtils, times(1)).validateAndGetCourseForAuthor(courseId);
         verify(lessonRepo).findById(lessonId);
         verify(homeworkTaskRepo, times(0)).save(any(HomeworkTask.class));
         verify(mediaLessonRepo, times(0)).save(any(MediaLesson.class));
