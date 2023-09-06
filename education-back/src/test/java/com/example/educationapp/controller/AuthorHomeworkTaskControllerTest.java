@@ -47,8 +47,6 @@ public class AuthorHomeworkTaskControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @MockBean
-    UserRepo userRepo;
 
     @BeforeEach
     public void setUp() {

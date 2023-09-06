@@ -42,8 +42,6 @@ public class UserControllerTest {
 
     @MockBean
     private UserServiceImpl userService;
-    @MockBean
-    UserRepo userRepo;
 
     @Test
     public void testGetUsersWithPagination() throws Exception {

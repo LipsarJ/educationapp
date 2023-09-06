@@ -11,9 +11,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 @ActiveProfiles("test")
 @Testcontainers
 class EducationappApplicationTests {
-    @MockBean
-    UserRepo userRepo;
-
     @Test
     void contextLoads() {
     }

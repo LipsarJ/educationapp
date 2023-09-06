@@ -43,8 +43,6 @@ public class AdminApiControllerTest {
     private MockMvc mockMvc;
     @MockBean
     private AdminApiService adminApiService;
-    @MockBean
-    UserRepo userRepo;
 
     @Test
     public void testUpdateUser() throws Exception {

@@ -27,6 +27,4 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
     boolean existsByEmailAndIdNot(String email, Long userId);
 
     Set<User> findByIdIn(List<Long> userIds);
-
-    Page<User> findAllByStudentCourseSet(Set<Course> course, Pageable pageable);
 }

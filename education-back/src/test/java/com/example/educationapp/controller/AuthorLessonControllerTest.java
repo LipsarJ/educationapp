@@ -48,8 +48,6 @@ public class AuthorLessonControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-    @MockBean
-    UserRepo userRepo;
 
     @BeforeEach
     public void setUp() {

@@ -43,8 +43,6 @@ public class AuthorCourseControllerTest {
 
     @MockBean
     private AuthorCourseService authorCourseService;
-    @MockBean
-    UserRepo userRepo;
 
     @Test
     public void testGetAllCoursesForAuthor() throws Exception {
