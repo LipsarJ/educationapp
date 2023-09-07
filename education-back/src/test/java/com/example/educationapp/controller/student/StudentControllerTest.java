@@ -73,7 +73,6 @@ class StudentControllerTest {
         ResponseLessonStudentDto lessonDto = new ResponseLessonStudentDto();
         lessonDto.setId(1L);
         lessonDto.setLessonName("Introduction to Algebra");
-        List<ResponseLessonStudentDto> lessonList = Collections.singletonList(lessonDto);
 
         when(studentService.getLessonInfoForStudent(1L, 1L)).thenReturn(lessonDto);
 
@@ -89,7 +88,6 @@ class StudentControllerTest {
         ResponseHomeworkTaskStudentDto homeworkTaskDto = new ResponseHomeworkTaskStudentDto();
         homeworkTaskDto.setId(1L);
         homeworkTaskDto.setTitle("Homework 1");
-        List<ResponseHomeworkTaskStudentDto> homeworkTaskList = Collections.singletonList(homeworkTaskDto);
 
         when(studentService.getHomeworkTaskInfoForStudent(1L, 1L, 1L)).thenReturn(homeworkTaskDto);
 
@@ -105,7 +103,6 @@ class StudentControllerTest {
         ResponseHomeworkDoneStudentDto homeworkDoneDto = new ResponseHomeworkDoneStudentDto();
         homeworkDoneDto.setId(1L);
         homeworkDoneDto.setSubmissionDate(LocalDateTime.now());
-        List<ResponseHomeworkDoneStudentDto> homeworkDoneList = Collections.singletonList(homeworkDoneDto);
 
         when(studentService.getStudentHomeworkDone(1L, 1L, 1L)).thenReturn(homeworkDoneDto);
 
