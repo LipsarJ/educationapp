@@ -25,7 +25,6 @@ public class HomeworkDone {
     private Integer grade;
     private String studentDescription;
     private String teacherFeedback;
-    private Long teacherId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -39,6 +38,10 @@ public class HomeworkDone {
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
     private User student;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacher;
 
     @OneToMany(mappedBy = "homeworkDone")
     private List<MediaHomeworkDone> mediaHomeworkDoneList = new ArrayList<MediaHomeworkDone>();
