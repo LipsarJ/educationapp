@@ -22,6 +22,9 @@ public class HomeworkDone {
 
     private LocalDateTime submissionDate;
     private Integer grade;
+    private String studentDescription;
+    private String teacherFeedback;
+    private Long teacherId;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

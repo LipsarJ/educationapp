@@ -43,7 +43,7 @@ public class Lesson {
     private Course lessonsCourse;
 
     @OneToMany(mappedBy = "mediaLesson")
-    private List<MediaLesson> mediaLessonSet = new ArrayList<MediaLesson>();
+    private List<MediaLesson> mediaLessonList = new ArrayList<MediaLesson>();
 
     @OneToMany(mappedBy = "lesson")
     private List<HomeworkTask> homeworkTaskList = new ArrayList<HomeworkTask>();

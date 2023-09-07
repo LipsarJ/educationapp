@@ -94,13 +94,13 @@ public class AuthorLessonService {
         for (HomeworkTask homeworkTask : lesson.getHomeworkTaskList()) {
             authorHomeworkTaskService.deleteTask(courseId, id, homeworkTask.getId());
         }
-        for (MediaLesson mediaLesson : lesson.getMediaLessonSet()) {
+        for (MediaLesson mediaLesson : lesson.getMediaLessonList()) {
             mediaLessonRepo.delete(mediaLesson);
         }
         course.getLessonList().remove(lesson);
         courseRepo.save(course);
         lesson.getHomeworkTaskList().clear();
-        lesson.getMediaLessonSet().clear();
+        lesson.getMediaLessonList().clear();
         lessonRepo.delete(lesson);
     }
 
