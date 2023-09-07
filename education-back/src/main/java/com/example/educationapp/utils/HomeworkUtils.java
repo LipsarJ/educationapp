@@ -49,4 +49,8 @@ public class HomeworkUtils {
         getHomeworkTaskForValidatedLesson(id, lessonId, homeworkTaskId);
         return student;
     }
+
+    public boolean validateUniqueHomeworkDoneForTask(Long id, Long lessonId, Long homeworkTaskId) {
+        return getHomeworkDoneForStudent(id, lessonId, homeworkTaskId) != null;
+    }
 }

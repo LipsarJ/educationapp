@@ -6,6 +6,7 @@ import com.example.educationapp.dto.response.student.ResponseHomeworkDoneStudent
 import com.example.educationapp.dto.response.student.ResponseHomeworkTaskStudentDto;
 import com.example.educationapp.dto.response.student.ResponseLessonStudentDto;
 import com.example.educationapp.entity.*;
+import com.example.educationapp.exception.BadDataException;
 import com.example.educationapp.mapper.student.StudentCourseMapper;
 import com.example.educationapp.repo.specification.HomeworkDoneRepo;
 import com.example.educationapp.utils.CourseUtils;
@@ -15,8 +16,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Set;
@@ -53,18 +52,37 @@ public class StudentService {
         return studentCourseMapper.toResponseHomeworkTaskDto(homeworkTask);
     }
 
-    public ResponseHomeworkDoneStudentDto getStudentsHomeworkDone(Long id, Long lessonId, Long homeworkTaskId) {
+    public ResponseHomeworkDoneStudentDto getStudentHomeworkDone(Long id, Long lessonId, Long homeworkTaskId) {
         HomeworkDone homeworkDone = homeworkUtils.getHomeworkDoneForStudent(id, lessonId, homeworkTaskId);
         return studentCourseMapper.toResponseHomeworkDoneDto(homeworkDone);
     }
 
-    public ResponseHomeworkDoneStudentDto createHomeworkDone(Long id, Long lessonId, Long homeworkTaskId, RequestHomeworkDoneStudentDto requestHomeworkDoneStudentDto) {
-        HomeworkDone homeworkDone = studentCourseMapper.toHomeworkDone(requestHomeworkDoneStudentDto);
-        homeworkDone.setStudent(homeworkUtils.getStudentForHomeworkDone(id, lessonId, homeworkTaskId));
-        homeworkDone.setTask(homeworkUtils.getHomeworkTaskForValidatedLesson(id, lessonId, homeworkTaskId));
-        homeworkDone.setSubmissionDate(LocalDateTime.now(ZoneOffset.UTC));
-        homeworkDone.setStatus(HomeworkDoneStatus.PENDING);
-        homeworkDoneRepo.save(homeworkDone);
-        return studentCourseMapper.toResponseHomeworkDoneDto(homeworkDone);
+    public ResponseHomeworkDoneStudentDto createHomeworkDone(Long id, Long lessonId,
+                                                             Long homeworkTaskId, RequestHomeworkDoneStudentDto requestHomeworkDoneStudentDto) {
+        if (!homeworkUtils.validateUniqueHomeworkDoneForTask(id, lessonId, homeworkTaskId)) {
+            HomeworkDone homeworkDone = studentCourseMapper.toHomeworkDone(requestHomeworkDoneStudentDto);
+            homeworkDone.setStudent(homeworkUtils.getStudentForHomeworkDone(id, lessonId, homeworkTaskId));
+            homeworkDone.setTask(homeworkUtils.getHomeworkTaskForValidatedLesson(id, lessonId, homeworkTaskId));
+            homeworkDone.setSubmissionDate(LocalDateTime.now(ZoneOffset.UTC));
+            homeworkDone.setStatus(HomeworkDoneStatus.PENDING);
+            homeworkDoneRepo.save(homeworkDone);
+            return studentCourseMapper.toResponseHomeworkDoneDto(homeworkDone);
+        }
+        else {
+            throw new BadDataException("You already have solution for this task.");
+        }
+    }
+
+    public ResponseHomeworkDoneStudentDto editStudentHomeworkDone(Long id, Long lessonId,
+                                                                  Long homeworkTaskId, RequestHomeworkDoneStudentDto requestHomeworkDoneStudentDto){
+        HomeworkDone homeworkDone = homeworkUtils.getHomeworkDoneForStudent(id, lessonId, homeworkTaskId);
+        if(homeworkDone != null) {
+            homeworkDone.setStudentDescription(requestHomeworkDoneStudentDto.getStudentDescription());
+            homeworkDoneRepo.save(homeworkDone);
+            return studentCourseMapper.toResponseHomeworkDoneDto(homeworkDone);
+        }
+        else {
+            throw new BadDataException("Solution for this task is not found");
+        }
     }
 }

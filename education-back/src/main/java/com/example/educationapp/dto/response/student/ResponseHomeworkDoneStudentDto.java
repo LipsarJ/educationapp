@@ -1,5 +1,6 @@
 package com.example.educationapp.dto.response.student;
 
+import com.example.educationapp.dto.response.UserInfoDto;
 import com.example.educationapp.entity.MediaHomeworkDone;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class ResponseHomeworkDoneStudentDto {
     private String studentDescription;
     @Schema(description = "Обратная связь от учителя")
     private String teacherFeedback;
-    @Schema(description = "Идентификатор учителя, проверившего задание")
-    private Long teacherId;
+    @Schema(description = "Данные учителя, проверившего задание")
+    private UserInfoDto userInfoDto;
     //private List<MediaHomeworkDone> mediaHomeworkDones;
 }
