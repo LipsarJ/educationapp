@@ -4,6 +4,7 @@ import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.CourseStatus;
 import com.example.educationapp.entity.User;
+import com.example.educationapp.exception.BadDataException;
 import com.example.educationapp.exception.CourseNotFoundException;
 import com.example.educationapp.exception.ForbiddenException;
 import com.example.educationapp.exception.UserNotFoundException;
@@ -12,6 +13,8 @@ import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.security.service.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Component
@@ -40,6 +43,22 @@ public class CourseUtils {
 
         if (!course.getTeachers().contains(user)) {
             throw new ForbiddenException("You are not the teacher of this course.");
+        }
+        return course;
+    }
+
+    public Set<Course> getCoursesForStudent() {
+        ResponseUserDto responseUserDto = userContext.getUserDto();
+        User user = userRepo.findById(responseUserDto.getId()).orElseThrow(() -> new UserNotFoundException("User not found"));
+        return user.getStudentCourseSet();
+    }
+
+    public Course validateAndGetCourseForStudent(Long id) {
+        ResponseUserDto responseUserDto = userContext.getUserDto();
+        User user = userRepo.findById(responseUserDto.getId()).orElseThrow(() -> new UserNotFoundException("User not found"));
+        Course course = courseRepo.findById(id).orElseThrow(() -> new CourseNotFoundException("Course is not found."));
+        if(!user.getStudentCourseSet().contains(course)){
+            throw new ForbiddenException("You are not a student of this course.");
         }
         return course;
     }

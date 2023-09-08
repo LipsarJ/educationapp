@@ -1,5 +1,6 @@
 package com.example.educationapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,8 @@ public class HomeworkDone {
 
     private LocalDateTime submissionDate;
     private Integer grade;
+    private String studentDescription;
+    private String teacherFeedback;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -29,11 +32,16 @@ public class HomeworkDone {
 
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)
+    @JsonIgnore
     private HomeworkTask task;
 
     @ManyToOne
     @JoinColumn(name = "student_id", nullable = false)
     private User student;
+
+    @ManyToOne
+    @JoinColumn(name = "teacher_id")
+    private User teacher;
 
     @OneToMany(mappedBy = "homeworkDone")
     private List<MediaHomeworkDone> mediaHomeworkDoneList = new ArrayList<MediaHomeworkDone>();

@@ -1,5 +1,6 @@
 package com.example.educationapp.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -40,10 +41,11 @@ public class HomeworkTask {
 
     @ManyToOne
     @JoinColumn(name = "lesson_id", nullable = false)
+    @JsonIgnore
     private Lesson lesson;
 
     @OneToMany(mappedBy = "taskMedia")
-    private List<MediaHomeworkTask> homeworkTaskMediaList = new ArrayList<MediaHomeworkTask>();
+    private List<MediaHomeworkTask> mediaHomeworkTaskList = new ArrayList<MediaHomeworkTask>();
 
     @OneToMany(mappedBy = "task")
     private List<HomeworkDone> homeworkDoneList = new ArrayList<HomeworkDone>();

@@ -92,12 +92,12 @@ public class AuthorHomeworkTaskService {
         Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
         HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework is not found."));
-        for (MediaHomeworkTask mediaHomeworkTask : homeworkTask.getHomeworkTaskMediaList()) {
+        for (MediaHomeworkTask mediaHomeworkTask : homeworkTask.getMediaHomeworkTaskList()) {
             mediaHomeworkTaskRepo.delete(mediaHomeworkTask);
         }
         lesson.getHomeworkTaskList().remove(homeworkTask);
         lessonRepo.save(lesson);
-        homeworkTask.getHomeworkTaskMediaList().clear();
+        homeworkTask.getMediaHomeworkTaskList().clear();
         homeworkTaskRepo.delete(homeworkTask);
     }
 }
