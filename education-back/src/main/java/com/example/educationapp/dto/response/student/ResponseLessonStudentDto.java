@@ -1,14 +1,12 @@
 package com.example.educationapp.dto.response.student;
 
-import com.example.educationapp.entity.HomeworkTask;
-import com.example.educationapp.entity.MediaLesson;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,5 +23,5 @@ public class ResponseLessonStudentDto {
     /*@Schema(description = "Список медиа прикреплённых к уроку")
     private List<MediaLesson> mediaLessons;*/
     @Schema(description = "Список домашних заданий", example = "Задание 1, задание 2.")
-    private List<HomeworkTask> homeworkTasks;
+    private Set<ResponseHomeworkTaskStudentDto> homeworkTasks;
 }

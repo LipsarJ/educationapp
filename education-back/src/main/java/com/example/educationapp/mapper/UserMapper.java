@@ -6,7 +6,7 @@ import com.example.educationapp.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = BaseLocalDateTimeOffsetDateTimeMapper.class)
+@Mapper(componentModel = "spring", uses = {BaseLocalDateTimeOffsetDateTimeMapper.class, RoleMapper.class})
 public interface UserMapper {
     User toEntity(RequestUserDto requestUserDto);
 

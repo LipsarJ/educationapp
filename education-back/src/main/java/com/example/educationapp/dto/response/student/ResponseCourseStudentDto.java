@@ -1,13 +1,12 @@
 package com.example.educationapp.dto.response.student;
 
-import com.example.educationapp.entity.Lesson;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -20,5 +19,5 @@ public class ResponseCourseStudentDto {
     @Schema(description = "Название курса", example = "Математика")
     private String courseName;
     @Schema(description = "Список уроков курса", example = "Вводный урок")
-    private List<Lesson> lessons;
+    private Set<ResponseLessonStudentDto> lessons;
 }

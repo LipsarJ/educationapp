@@ -10,16 +10,19 @@ import com.example.educationapp.entity.HomeworkDone;
 import com.example.educationapp.entity.HomeworkTask;
 import com.example.educationapp.entity.Lesson;
 import com.example.educationapp.mapper.BaseLocalDateTimeOffsetDateTimeMapper;
+import com.example.educationapp.mapper.HomeworkTaskMapper;
+import com.example.educationapp.mapper.LessonMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = BaseLocalDateTimeOffsetDateTimeMapper.class)
+@Mapper(componentModel = "spring", uses = {BaseLocalDateTimeOffsetDateTimeMapper.class, LessonMapper.class, HomeworkTaskMapper.class})
 public interface StudentCourseMapper {
+
     @Mapping(target = "lessons", source = "course.lessonList")
     ResponseCourseStudentDto toResponseCourseDto(Course course);
 
     @Mapping(target = "homeworkTasks", source = "lesson.homeworkTaskList")
-    //@Mapping(target = "mediaLessons", source = "lesson.mediaLessonList")
+        //@Mapping(target = "mediaLessons", source = "lesson.mediaLessonList")
     ResponseLessonStudentDto toResponseLessonDto(Lesson lesson);
 
     //@Mapping(target = "mediaHomeworkTasks", source = "homeworkTask.mediaHomeworkTaskList")
