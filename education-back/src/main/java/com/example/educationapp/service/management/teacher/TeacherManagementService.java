@@ -68,7 +68,7 @@ public class TeacherManagementService {
             }
         }
         return students.stream()
-                .map(userMapper::toDto)
+                .map(userMapper::toResponseUserDto)
                 .collect(Collectors.toList());
     }
 
@@ -85,7 +85,7 @@ public class TeacherManagementService {
             }
         }
         return students.stream()
-                .map(userMapper::toDto)
+                .map(userMapper::toResponseUserDto)
                 .collect(Collectors.toList());
     }
 }

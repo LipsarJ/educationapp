@@ -28,6 +28,6 @@ public class ResponseHomeworkDoneStudentDto {
     @Schema(description = "Обратная связь от учителя")
     private String teacherFeedback;
     @Schema(description = "Данные учителя, проверившего задание")
-    private UserInfoDto userInfoDto;
+    private UserInfoDto teacherInfoDto;
     //private List<MediaHomeworkDone> mediaHomeworkDones;
 }
