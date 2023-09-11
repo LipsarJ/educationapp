@@ -71,106 +71,118 @@ const Register: React.FC = () => {
     }
 
     const handleRegister = async (values: SignupData) => {
-        try {
-            const response = await axios.post('/api/v1/auth/signup', values);
-            console.log(response.data);
-            navigate('/login');
-        } catch (error) {
-            console.error(error);
+            let error;
+            try {
+                const response = await axios.post('/api/v1/auth/signup', values);
+                console.log(response.data);
+                navigate('/login');
+            } catch (error: any) {
+                console.error(error);
+                if (error.response) {
+                    const status = error.response.status;
+                    const responseData = error.response.data;
+
+                    if (status === 400) {
+                        alert(responseData.message);
+                    }
+                }
+            }
         }
-    };
+        ;
 
-    return (
-        <Container mt="15" centerContent>
-            <Heading mb={4} size="lg">Зарегистрироваться</Heading>
-            <Formik
-                initialValues={{
-                    username: '',
-                    email: '',
-                    password: '',
-                    middlename: '',
-                    firstname: '',
-                    lastname: ''
-                }}
-                onSubmit={handleRegister}
-            >
-                {() => (
-                    <Form style={{minWidth: '100%'}}>
-                        <Field name='username' validate={validateUsername}>
-                            {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.username && form.touched.username} width="100%">
-                                    <Input {...field}
-                                           mb={2}
-                                           width="100%"
-                                           placeholder="Имя пользователя"/>
-                                    <FormErrorMessage mt={0} mb={2}>{form.errors.username}</FormErrorMessage>
-                                </FormControl>
-                            )}
-                        </Field>
+        return (
+            <Container mt="15" centerContent>
+                <Heading mb={4} size="lg">Зарегистрироваться</Heading>
+                <Formik
+                    initialValues={{
+                        username: '',
+                        email: '',
+                        password: '',
+                        middlename: '',
+                        firstname: '',
+                        lastname: ''
+                    }}
+                    onSubmit={handleRegister}
+                >
+                    {() => (
+                        <Form style={{minWidth: '100%'}}>
+                            <Field name='username' validate={validateUsername}>
+                                {({field, form}: { field: any; form: any }) => (
+                                    <FormControl isInvalid={form.errors.username && form.touched.username} width="100%">
+                                        <Input {...field}
+                                               mb={2}
+                                               width="100%"
+                                               placeholder="Имя пользователя"/>
+                                        <FormErrorMessage mt={0} mb={2}>{form.errors.username}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
 
-                        <Field name='email' validate={validateEmail}>
-                            {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.email && form.touched.email} width="100%">
-                                    <Input {...field}
-                                           mb={2}
-                                           width="100%"
-                                           placeholder="Email"/>
-                                    <FormErrorMessage mt={0} mb={2}>{form.errors.email}</FormErrorMessage>
-                                </FormControl>
-                            )}
-                        </Field>
-                        <Field name='password' validate={validatePassword}>
-                            {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.password && form.touched.password} width="100%">
-                                    <Input {...field}
-                                           mb={2}
-                                           width="100%"
-                                           type="password" placeholder="Пароль"/>
-                                    <FormErrorMessage mt={0} mb={2}>{form.errors.password}</FormErrorMessage>
-                                </FormControl>
-                            )}
-                        </Field>
-                        <Field name='firstname' validate={validateFirstname}>
-                            {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.firstname && form.touched.firstname} width="100%">
-                                    <Input {...field}
-                                           mb={2}
-                                           width="100%"
-                                           placeholder="Имя"/>
-                                    <FormErrorMessage mt={0} mb={2}>{form.errors.firstname}</FormErrorMessage>
-                                </FormControl>
-                            )}
-                        </Field>
-                        <Field name='lastname' validate={validateLastname}>
-                            {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.lastname && form.touched.lastname} width="100%">
-                                    <Input {...field}
-                                           mb={2}
-                                           width="100%"
-                                           placeholder="Фамилия"/>
-                                    <FormErrorMessage mt={0} mb={2}>{form.errors.lastname}</FormErrorMessage>
-                                </FormControl>
-                            )}
-                        </Field>
-                        <Field name='middlename' validate={validateMiddlename}>
-                            {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.middlename && form.touched.middlename} width="100%">
-                                    <Input {...field}
-                                           mb={2}
-                                           width="100%"
-                                           placeholder="Отчество"/>
-                                    <FormErrorMessage mt={0} mb={2}>{form.errors.middlename}</FormErrorMessage>
-                                </FormControl>
-                            )}
-                        </Field>
-                        <Button mt={5} colorScheme="blue" size="lg" type='submit' mx="auto" display="block">
-                            Зарегистрироваться
-                        </Button>
-                    </Form>
-                )}
-            </Formik>
-        </Container>
-    );
-}
+                            <Field name='email' validate={validateEmail}>
+                                {({field, form}: { field: any; form: any }) => (
+                                    <FormControl isInvalid={form.errors.email && form.touched.email} width="100%">
+                                        <Input {...field}
+                                               mb={2}
+                                               width="100%"
+                                               placeholder="Email"/>
+                                        <FormErrorMessage mt={0} mb={2}>{form.errors.email}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
+                            <Field name='password' validate={validatePassword}>
+                                {({field, form}: { field: any; form: any }) => (
+                                    <FormControl isInvalid={form.errors.password && form.touched.password} width="100%">
+                                        <Input {...field}
+                                               mb={2}
+                                               width="100%"
+                                               type="password" placeholder="Пароль"/>
+                                        <FormErrorMessage mt={0} mb={2}>{form.errors.password}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
+                            <Field name='firstname' validate={validateFirstname}>
+                                {({field, form}: { field: any; form: any }) => (
+                                    <FormControl isInvalid={form.errors.firstname && form.touched.firstname}
+                                                 width="100%">
+                                        <Input {...field}
+                                               mb={2}
+                                               width="100%"
+                                               placeholder="Имя"/>
+                                        <FormErrorMessage mt={0} mb={2}>{form.errors.firstname}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
+                            <Field name='lastname' validate={validateLastname}>
+                                {({field, form}: { field: any; form: any }) => (
+                                    <FormControl isInvalid={form.errors.lastname && form.touched.lastname} width="100%">
+                                        <Input {...field}
+                                               mb={2}
+                                               width="100%"
+                                               placeholder="Фамилия"/>
+                                        <FormErrorMessage mt={0} mb={2}>{form.errors.lastname}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
+                            <Field name='middlename' validate={validateMiddlename}>
+                                {({field, form}: { field: any; form: any }) => (
+                                    <FormControl isInvalid={form.errors.middlename && form.touched.middlename}
+                                                 width="100%">
+                                        <Input {...field}
+                                               mb={2}
+                                               width="100%"
+                                               placeholder="Отчество"/>
+                                        <FormErrorMessage mt={0} mb={2}>{form.errors.middlename}</FormErrorMessage>
+                                    </FormControl>
+                                )}
+                            </Field>
+                            <Button mt={5} colorScheme="blue" size="lg" type='submit' mx="auto" display="block">
+                                Зарегистрироваться
+                            </Button>
+                        </Form>
+                    )}
+                </Formik>
+            </Container>
+        );
+    }
 
-export default Register;
+    export default Register;

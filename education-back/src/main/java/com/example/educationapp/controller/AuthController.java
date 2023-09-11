@@ -106,7 +106,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body(new ErrorResponse("Error: Username is already taken!"));
         }
 
-        if (userRepo.existsByEmail(signUpDto.email())) {
+        if (userRepo.existsByEmailIgnoreCase(signUpDto.email())) {
             return ResponseEntity.badRequest().body(new ErrorResponse("Error: Email is already in use!"));
         }
 
@@ -166,7 +166,6 @@ public class AuthController {
                     })
                     .orElseThrow(() -> new TokenRefreshException(refreshToken, "Refresh token is not in the database!"));
         }
-
         return ResponseEntity.badRequest().body(new ErrorResponse("Refresh Token is empty!"));
     }
 }
