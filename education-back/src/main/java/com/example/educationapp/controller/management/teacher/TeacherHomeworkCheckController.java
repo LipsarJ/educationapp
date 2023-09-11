@@ -39,7 +39,7 @@ public class TeacherHomeworkCheckController {
     public HomeworkDoneInfoPage getAllHomeworksDoneForTask(@PathVariable Long id, @PathVariable Long lessonId,
                                                            @PathVariable Long homeworkTaskId,
                                                            Pageable pageable,
-                                                           @RequestParam(required = false) boolean checked
+                                                           @RequestParam(required = false) Boolean checked
     ) {
         Page<ResponseHomeworkDoneStudentDto> homeworksDonePage =
                 teacherHomeworkCheckService.getAllHomeworksDoneForTask(id, lessonId, homeworkTaskId, pageable, checked);
@@ -64,9 +64,9 @@ public class TeacherHomeworkCheckController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public ResponseHomeworkDoneStudentDto setGradeToHomework (@PathVariable Long id, @PathVariable Long lessonId,
-                                                              @PathVariable Long homeworkTaskId, @PathVariable Long homeworkDoneId,
-                                                              @RequestBody RequestTeacherCheckHomeworkDto requestTeacherCheckHomeworkDto) {
+    public ResponseHomeworkDoneStudentDto setGradeToHomework(@PathVariable Long id, @PathVariable Long lessonId,
+                                                             @PathVariable Long homeworkTaskId, @PathVariable Long homeworkDoneId,
+                                                             @RequestBody RequestTeacherCheckHomeworkDto requestTeacherCheckHomeworkDto) {
         return teacherHomeworkCheckService.setGradeToHomeworkDone(id, lessonId, homeworkTaskId, homeworkDoneId, requestTeacherCheckHomeworkDto);
     }
 }

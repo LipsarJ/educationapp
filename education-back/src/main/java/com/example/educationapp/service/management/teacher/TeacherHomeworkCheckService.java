@@ -6,7 +6,7 @@ import com.example.educationapp.entity.HomeworkDone;
 import com.example.educationapp.entity.HomeworkTask;
 import com.example.educationapp.mapper.UserMapper;
 import com.example.educationapp.mapper.student.StudentCourseMapper;
-import com.example.educationapp.repo.specification.HomeworkDoneRepo;
+import com.example.educationapp.repo.HomeworkDoneRepo;
 import com.example.educationapp.utils.HomeworkUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -14,9 +14,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,18 +27,15 @@ public class TeacherHomeworkCheckService {
     private final HomeworkDoneRepo homeworkDoneRepo;
 
     public Page<ResponseHomeworkDoneStudentDto> getAllHomeworksDoneForTask(Long id, Long lessonId,
-                                                                           Long homeworkTaskId, Pageable pageable, boolean checked) {
+                                                                           Long homeworkTaskId, Pageable pageable, Boolean checked) {
         HomeworkTask homeworkTask = homeworkUtils.getHomeworkTaskForTeacherValidatedLesson(id, lessonId, homeworkTaskId);
-        List<HomeworkDone> homeworkDoneList = new ArrayList<>(homeworkTask.getHomeworkDoneList());
-
-        if (!checked) {
-            Iterator<HomeworkDone> iterator = homeworkDoneList.iterator();
-            while (iterator.hasNext()) {
-                HomeworkDone homeworkDone = iterator.next();
-                if (homeworkDone.getGrade() != null) {
-                    iterator.remove();
-                }
-            }
+        List<HomeworkDone> homeworkDoneList;
+        if (checked == null) {
+            homeworkDoneList = homeworkTask.getHomeworkDoneList();
+        } else if (checked) {
+            homeworkDoneList = homeworkDoneRepo.findAllByTaskAndGradeIsNotNull(homeworkTask);
+        } else {
+            homeworkDoneList = homeworkDoneRepo.findAllByTaskAndGradeIsNull(homeworkTask);
         }
 
         int pageSize = pageable.getPageSize();

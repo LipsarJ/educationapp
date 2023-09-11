@@ -11,7 +11,7 @@ import com.example.educationapp.exception.HomeworkTaskNotFoundException;
 import com.example.educationapp.exception.UserNotFoundException;
 import com.example.educationapp.repo.HomeworkTaskRepo;
 import com.example.educationapp.repo.UserRepo;
-import com.example.educationapp.repo.specification.HomeworkDoneRepo;
+import com.example.educationapp.repo.HomeworkDoneRepo;
 import com.example.educationapp.security.service.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

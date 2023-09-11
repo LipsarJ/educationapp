@@ -8,7 +8,7 @@ import com.example.educationapp.dto.response.student.ResponseLessonStudentDto;
 import com.example.educationapp.entity.*;
 import com.example.educationapp.exception.BadDataException;
 import com.example.educationapp.mapper.student.StudentCourseMapper;
-import com.example.educationapp.repo.specification.HomeworkDoneRepo;
+import com.example.educationapp.repo.HomeworkDoneRepo;
 import com.example.educationapp.utils.CourseUtils;
 import com.example.educationapp.utils.HomeworkUtils;
 import com.example.educationapp.utils.LessonUtils;
