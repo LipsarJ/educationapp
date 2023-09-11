@@ -1,5 +1,4 @@
 import React, {createContext, useContext, useEffect, useState} from 'react';
-import {initializeAxios} from '../utils/axiosConfig';
 
 const AuthContext = createContext<AuthContextProps | null>(null);
 
@@ -20,7 +19,6 @@ interface AuthContextProps {
     user: User | null;
     setAuthenticated: React.Dispatch<React.SetStateAction<boolean>>;
     setUser: React.Dispatch<React.SetStateAction<User | null>>;
-    logout: () => void;
 }
 
 interface User {
@@ -46,22 +44,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         localStorage.setItem('user', JSON.stringify(user));
     }, [isAuthenticated, user]);
 
-    const logout = () => {
-        setAuthenticated(false);
-        setUser(null);
-        localStorage.removeItem('isAuthenticated');
-        localStorage.removeItem('user');
-        window.location.href = '/login';
-    };
-
-    useEffect(() => {
-        // Инициализируем axios с функцией logout
-        initializeAxios(logout);
-    }, []);
-
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, setAuthenticated, user, setUser, logout }}>
+        <AuthContext.Provider value={{ isAuthenticated, setAuthenticated, user, setUser }}>
             {children}
         </AuthContext.Provider>
     );

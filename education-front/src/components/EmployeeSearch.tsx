@@ -10,7 +10,7 @@ import {
     HStack,
     useColorModeValue
 } from '@chakra-ui/react';
-import {getAxiosInstance} from '../utils/axiosConfig';
+import {instanceAxios} from '../utils/axiosConfig';
 
 interface Employee {
     id: number;
@@ -30,7 +30,7 @@ const EmployeeSearch: React.FC = () => {
 
     const fetchEmployees = async (currentPage: number) => {
         try {
-            const response = await getAxiosInstance().get('/api/v1/users', {
+            const response = await instanceAxios.get('/api/v1/users', {
                 params: {
                     filterText: searchText,
                     page: currentPage,
