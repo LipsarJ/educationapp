@@ -1,7 +1,7 @@
 import React from 'react';
 import {Flex, Button, Link, Spacer, Box} from '@chakra-ui/react';
 import {useAuth} from '../contexts/AuthContext';
-import axios from '../utils/axiosConfig';
+import {getAxiosInstance} from '../utils/axiosConfig';
 import {NavLink, useNavigate} from 'react-router-dom';
 
 const Header: React.FC = () => {
@@ -11,7 +11,7 @@ const Header: React.FC = () => {
 
     const handleLogout = async () => {
         try {
-            const response = await axios.post('/api/v1/auth/signout');
+            const response = await getAxiosInstance().post('/api/v1/auth/signout');
         } catch (e) {
             console.error(e)
         }

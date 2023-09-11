@@ -1,7 +1,7 @@
 import React from 'react';
 import {Field, Form, Formik} from 'formik';
 import {Button, Container, FormControl, FormErrorMessage, Heading, Input} from '@chakra-ui/react';
-import axios from '../../utils/axiosConfig';
+import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 
 interface SignupData {
@@ -72,7 +72,9 @@ const Register: React.FC = () => {
 
     const handleRegister = async (values: SignupData) => {
         try {
-            const response = await axios.post('/api/v1/auth/signup', values);
+            const response = await axios.post('http://localhost:8080/api/v1/auth/signup', values, {
+                withCredentials: true
+            });
             console.log(response.data);
             navigate('/login');
         } catch (error) {
