@@ -71,14 +71,25 @@ const Register: React.FC = () => {
     }
 
     const handleRegister = async (values: SignupData) => {
+        let error;
         try {
             const response = await axios.post('http://localhost:8080/api/v1/auth/signup', values, {
                 withCredentials: true
             });
             console.log(response.data);
             navigate('/login');
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
+            if(error.response)
+            {
+                const status = error.response.status;
+                const responseData = error.response.data;
+
+                if (status == 400)
+                {
+                    alert(responseData.message);
+                }
+            }
         }
     };
 
