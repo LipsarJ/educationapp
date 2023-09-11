@@ -39,6 +39,11 @@ const Header: React.FC = () => {
                     Персоналии
                 </Link>
             </Box>
+            <Box p="2">
+                <Link as={NavLink} to="/" m={2} _hover={{textDecoration: 'underline'}}>
+                    Домашняя страница
+                </Link>
+            </Box>
             <Spacer/>
             {isAuthenticated && (
                 <Button colorScheme="facebook" variant="solid" onClick={handleLogout}>
