@@ -21,7 +21,9 @@ const Login: React.FC = () => {
             navigate('/'); // перенаправляем на главную страницу
         } catch (error: any) {
             console.error(error);
-            alert("Неверное имя пользователя или пароль.")
+            if (error.response.status == 401) {
+                alert("Неверное имя пользователя или пароль.")
+            }
         }
     };
 
