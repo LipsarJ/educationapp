@@ -1,4 +1,4 @@
 package com.example.educationapp.controlleradvice;
 
-public record ErrorResponse(String message, LoginErrors errorCode) {
+public record ErrorResponse(String message, AuthErrors errorCode) {
 }

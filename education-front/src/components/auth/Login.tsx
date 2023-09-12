@@ -3,6 +3,7 @@ import {VStack, Input, Button, Container, Heading} from '@chakra-ui/react';
 import axios, {AxiosError} from 'axios';
 import {useAuth} from '../../contexts/AuthContext';
 import {useNavigate} from 'react-router-dom';
+import {ErrorCodes} from './ErrorCodes'
 
 interface LoginData {
     username: string;
@@ -24,12 +25,13 @@ const Login: React.FC = () => {
             setUser(response.data);
             console.log(response.data);
             navigate('/');
-        } catch (e) {
-            const axiosError = e as AxiosError;
-            if (axiosError.response && axiosError.response.status === 401) {
+        } catch (error: any) {
+            const errorCode = error.response.data.errorCode;
+            console.log(errorCode);
+            if (errorCode == ErrorCodes.BadCredits) {
                 setError('Неверный логин или пароль');
             } else {
-                console.error(e);
+                console.error(error);
             }
         }
     };

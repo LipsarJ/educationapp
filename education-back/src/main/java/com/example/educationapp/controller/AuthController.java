@@ -1,7 +1,7 @@
 package com.example.educationapp.controller;
 
 import com.example.educationapp.controlleradvice.ErrorResponse;
-import com.example.educationapp.controlleradvice.LoginErrors;
+import com.example.educationapp.controlleradvice.AuthErrors;
 import com.example.educationapp.dto.request.LoginDto;
 import com.example.educationapp.dto.request.SignupDto;
 import com.example.educationapp.dto.response.UserLoginDto;
@@ -88,7 +88,7 @@ public class AuthController {
                     .body(userLoginDto);
         } catch (AuthenticationException ex) {
             return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
-                    .body(new ErrorResponse("Invalid username or password", LoginErrors.BAD_CREDITIANS));
+                    .body(new ErrorResponse("Invalid username or password", AuthErrors.BAD_CREDITIANS));
         }
     }
 
@@ -104,11 +104,11 @@ public class AuthController {
     })
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupDto signUpDto) {
         if (userRepo.existsByUsername(signUpDto.username())) {
-            return ResponseEntity.badRequest().body(new ErrorResponse("Error: Username is already taken!", LoginErrors.USERNAME_TAKEN));
+            return ResponseEntity.badRequest().body(new ErrorResponse("Error: Username is already taken!", AuthErrors.USERNAME_TAKEN));
         }
 
         if (userRepo.existsByEmailIgnoreCase(signUpDto.email())) {
-            return ResponseEntity.badRequest().body(new ErrorResponse("Error: Email is already in use!", LoginErrors.EMAIL_TAKEN));
+            return ResponseEntity.badRequest().body(new ErrorResponse("Error: Email is already in use!", AuthErrors.EMAIL_TAKEN));
         }
 
         User user = new User();
