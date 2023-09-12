@@ -8,7 +8,7 @@ import com.example.educationapp.dto.response.student.ResponseLessonStudentDto;
 import com.example.educationapp.entity.*;
 import com.example.educationapp.exception.BadDataException;
 import com.example.educationapp.mapper.student.StudentCourseMapper;
-import com.example.educationapp.repo.specification.HomeworkDoneRepo;
+import com.example.educationapp.repo.HomeworkDoneRepo;
 import com.example.educationapp.utils.CourseUtils;
 import com.example.educationapp.utils.HomeworkUtils;
 import com.example.educationapp.utils.LessonUtils;
@@ -43,12 +43,12 @@ public class StudentService {
     }
 
     public ResponseLessonStudentDto getLessonInfoForStudent(Long id, Long lessonId) {
-        Lesson lesson = lessonUtils.getLessonForValidatedCourse(id, lessonId);
+        Lesson lesson = lessonUtils.getLessonForStudentValidatedCourse(id, lessonId);
         return studentCourseMapper.toResponseLessonDto(lesson);
     }
 
     public ResponseHomeworkTaskStudentDto getHomeworkTaskInfoForStudent(Long id, Long lessonId, Long homeworkTaskId) {
-        HomeworkTask homeworkTask = homeworkUtils.getHomeworkTaskForValidatedLesson(id, lessonId, homeworkTaskId);
+        HomeworkTask homeworkTask = homeworkUtils.getHomeworkTaskForStudentValidatedLesson(id, lessonId, homeworkTaskId);
         return studentCourseMapper.toResponseHomeworkTaskDto(homeworkTask);
     }
 
@@ -62,7 +62,7 @@ public class StudentService {
         if (!homeworkUtils.validateUniqueHomeworkDoneForTask(id, lessonId, homeworkTaskId)) {
             HomeworkDone homeworkDone = studentCourseMapper.toHomeworkDone(requestHomeworkDoneStudentDto);
             homeworkDone.setStudent(homeworkUtils.getStudentForHomeworkDone(id, lessonId, homeworkTaskId));
-            homeworkDone.setTask(homeworkUtils.getHomeworkTaskForValidatedLesson(id, lessonId, homeworkTaskId));
+            homeworkDone.setTask(homeworkUtils.getHomeworkTaskForStudentValidatedLesson(id, lessonId, homeworkTaskId));
             homeworkDone.setSubmissionDate(LocalDateTime.now(ZoneOffset.UTC));
             homeworkDone.setStatus(HomeworkDoneStatus.PENDING);
             homeworkDoneRepo.save(homeworkDone);

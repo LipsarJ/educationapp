@@ -28,7 +28,7 @@ public class AuthorManagementService {
         Course course = courseUtils.validateAndGetCourseForAuthor(id);
         Set<User> authors = course.getAuthors();
         return authors.stream()
-                .map(userMapper::toDto)
+                .map(userMapper::toResponseUserDto)
                 .collect(Collectors.toList());
     }
 
@@ -45,7 +45,7 @@ public class AuthorManagementService {
             }
         }
         return authors.stream()
-                .map(userMapper::toDto)
+                .map(userMapper::toResponseUserDto)
                 .collect(Collectors.toList());
     }
 
@@ -62,7 +62,7 @@ public class AuthorManagementService {
             }
         }
         return authors.stream()
-                .map(userMapper::toDto)
+                .map(userMapper::toResponseUserDto)
                 .collect(Collectors.toList());
     }
 
@@ -71,7 +71,7 @@ public class AuthorManagementService {
         Course course = courseUtils.validateAndGetCourseForAuthor(id);
         Set<User> teachers = course.getTeachers();
         return teachers.stream()
-                .map(userMapper::toDto)
+                .map(userMapper::toResponseUserDto)
                 .collect(Collectors.toList());
     }
 
@@ -88,7 +88,7 @@ public class AuthorManagementService {
             }
         }
         return teachers.stream()
-                .map(userMapper::toDto)
+                .map(userMapper::toResponseUserDto)
                 .collect(Collectors.toList());
     }
 
@@ -105,7 +105,7 @@ public class AuthorManagementService {
             }
         }
         return teachers.stream()
-                .map(userMapper::toDto)
+                .map(userMapper::toResponseUserDto)
                 .collect(Collectors.toList());
     }
 }

@@ -14,8 +14,17 @@ public class LessonUtils {
     private final CourseUtils courseUtils;
     private final LessonRepo lessonRepo;
 
-    public Lesson getLessonForValidatedCourse(Long id, Long lessonId) {
+    public Lesson getLessonForStudentValidatedCourse(Long id, Long lessonId) {
         Course course = courseUtils.validateAndGetCourseForStudent(id);
+        Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found"));
+        if(!course.getLessonList().contains(lesson)) {
+            throw new BadDataException("This lesson is not for this course");
+        }
+        return lesson;
+    }
+
+    public Lesson getLessonForTeacherValidatedCourse(Long id, Long lessonId) {
+        Course course = courseUtils.validateAndGetCourseForTeacher(id);
         Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found"));
         if(!course.getLessonList().contains(lesson)) {
             throw new BadDataException("This lesson is not for this course");
