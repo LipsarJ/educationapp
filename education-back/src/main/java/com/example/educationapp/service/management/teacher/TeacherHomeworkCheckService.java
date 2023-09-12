@@ -29,36 +29,18 @@ public class TeacherHomeworkCheckService {
     public Page<ResponseHomeworkDoneStudentDto> getAllHomeworksDoneForTask(Long id, Long lessonId,
                                                                            Long homeworkTaskId, Pageable pageable, Boolean checked) {
         HomeworkTask homeworkTask = homeworkUtils.getHomeworkTaskForTeacherValidatedLesson(id, lessonId, homeworkTaskId);
-        List<HomeworkDone> homeworkDoneList;
+        Page<HomeworkDone> homeworkDonePage;
         if (checked == null) {
-            homeworkDoneList = homeworkTask.getHomeworkDoneList();
+            homeworkDonePage = homeworkDoneRepo.findAllByTask(homeworkTask,pageable);
         } else if (checked) {
-            homeworkDoneList = homeworkDoneRepo.findAllByTaskAndGradeIsNotNull(homeworkTask);
+            homeworkDonePage = homeworkDoneRepo.findAllByTaskAndGradeIsNotNull(homeworkTask, pageable);
         } else {
-            homeworkDoneList = homeworkDoneRepo.findAllByTaskAndGradeIsNull(homeworkTask);
+            homeworkDonePage = homeworkDoneRepo.findAllByTaskAndGradeIsNull(homeworkTask, pageable);
         }
 
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-
-        List<HomeworkDone> pageHomeworkDone;
-
-        if (startItem < homeworkDoneList.size()) {
-            int toIndex = Math.min(startItem + pageSize, homeworkDoneList.size());
-            pageHomeworkDone = homeworkDoneList.subList(startItem, toIndex);
-        } else {
-            pageHomeworkDone = Collections.emptyList();
-        }
-
-        return new PageImpl<>(
-                pageHomeworkDone.stream()
-                        .map(homeworkDone -> new ResponseHomeworkDoneStudentDto(homeworkDone.getId(), homeworkDone.getSubmissionDate(), homeworkDone.getGrade(),
-                                homeworkDone.getStudentDescription(), homeworkDone.getTeacherFeedback(), userMapper.toUserInfoDto(homeworkDone.getTeacher())))
-                        .collect(Collectors.toList()),
-                pageable,
-                homeworkDoneList.size()
-        );
+        return homeworkDonePage.map(homeworkDone -> new ResponseHomeworkDoneStudentDto(homeworkDone.getId(), homeworkDone.getSubmissionDate(),
+                homeworkDone.getGrade(), homeworkDone.getStudentDescription(),
+                homeworkDone.getTeacherFeedback(), userMapper.toUserInfoDto(homeworkDone.getTeacher())));
     }
 
     public ResponseHomeworkDoneStudentDto setGradeToHomeworkDone(Long id, Long lessonId, Long homeworkTaskId,

@@ -31,28 +31,9 @@ public class TeacherManagementService {
     public Page<UserInfoDto> getAllStudentsForCourse(Long id, Pageable pageable) {
         Course course = courseUtils.validateAndGetCourseForTeacher(id);
 
-        List<User> studentsList = new ArrayList<>(course.getStudents());
+        Page<User> studentsPage = userRepo.findByCourse(course, pageable);
 
-        int pageSize = pageable.getPageSize();
-        int currentPage = pageable.getPageNumber();
-        int startItem = currentPage * pageSize;
-
-        List<User> pageStudents;
-
-        if (startItem < studentsList.size()) {
-            int toIndex = Math.min(startItem + pageSize, studentsList.size());
-            pageStudents = studentsList.subList(startItem, toIndex);
-        } else {
-            pageStudents = Collections.emptyList();
-        }
-
-        return new PageImpl<>(
-                pageStudents.stream()
-                        .map(user -> new UserInfoDto(user.getId(), user.getUsername(), user.getFirstname(), user.getMiddlename(), user.getLastname()))
-                        .collect(Collectors.toList()),
-                pageable,
-                studentsList.size()
-        );
+        return studentsPage.map(user -> new UserInfoDto(user.getId(), user.getUsername(), user.getFirstname(), user.getMiddlename(), user.getLastname()));
     }
 
     public List<ResponseUserDto> addStudentsForCourse(Long id, AddOrRemoveStudentsDto addOrRemoveStudentsDto) {
