@@ -50,25 +50,25 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
 
     @ExceptionHandler(ForbiddenException.class)
     public ResponseEntity<ErrorResponse> handleForbiddenException(ForbiddenException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), null);
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
     }
 
     @ExceptionHandler(TokenRefreshException.class)
     public ResponseEntity<ErrorResponse> handleTokenRefreshException(TokenRefreshException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), null);
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
 
     @ExceptionHandler(BadDataException.class)
     public ResponseEntity<ErrorResponse> handleBadDataException(BadDataException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), null);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
     }
 }

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Field, Form, Formik} from 'formik';
 import {Button, Container, FormControl, FormErrorMessage, Heading, Input} from '@chakra-ui/react';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
+import {ErrorCodes} from './ErrorCodes'
 
 interface SignupData {
     username: string;
@@ -16,12 +17,24 @@ interface SignupData {
 const Register: React.FC = () => {
     const navigate = useNavigate();
 
+    const [usernames, setUsernames] = useState<string[]>([]);
+    const [emails, setEmails] = useState<string[]>([]);
+    const addUsername = (newUsername: string) => {
+        setUsernames([...usernames, newUsername]);
+    };
+
+    const addEmail = (newEmail: string) => {
+        setEmails([...emails, newEmail]);
+    };
+
     const validateUsername = (value: string) => {
         let error;
         if (!value) {
             error = "Имя пользователя обязательно";
         } else if (value.length < 3 || value.length > 20) {
             error = "Имя пользователя должно быть от 3 до 20 символов";
+        } else if (usernames.includes(value)) {
+            error = "Имя пользователя занято"
         }
         return error;
     };
@@ -66,6 +79,8 @@ const Register: React.FC = () => {
             error = 'Почта обязательна'
         } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
             error = "Неверный формат электронной почты"
+        } else if (emails.includes(value)) {
+            error = "Данный e-mail уже используется"
         }
         return error
     }
@@ -76,19 +91,17 @@ const Register: React.FC = () => {
             const response = await axios.post('http://localhost:8080/api/v1/auth/signup', values, {
                 withCredentials: true
             });
+            addUsername(values.username);
             console.log(response.data);
             navigate('/login');
         } catch (error: any) {
             console.error(error);
-            if(error.response)
-            {
-                const status = error.response.status;
-                const responseData = error.response.data;
-
-                if (status == 400)
-                {
-                    alert(responseData.message);
-                }
+            const errorCode = error.response.data.errorCode;
+            if (errorCode == ErrorCodes.UsernameTaken) {
+                addUsername(values.username);
+            }
+            if (errorCode == ErrorCodes.EmailTaken) {
+                addEmail(values.email);
             }
         }
     };
@@ -111,7 +124,7 @@ const Register: React.FC = () => {
                     <Form style={{minWidth: '100%'}}>
                         <Field name='username' validate={validateUsername}>
                             {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.username && form.touched.username} width="100%">
+                                <FormControl isInvalid={form.errors.username} width="100%">
                                     <Input {...field}
                                            mb={2}
                                            width="100%"

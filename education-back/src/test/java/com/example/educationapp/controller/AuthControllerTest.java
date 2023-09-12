@@ -98,7 +98,7 @@ public class AuthControllerTest {
         SignupDto signupDto = new SignupDto("newuser", "new@test.com", "newpassword", "Middle", "First", "Last");
 
         when(userRepo.existsByUsername("newuser")).thenReturn(false);
-        when(userRepo.existsByEmail("new@test.com")).thenReturn(false);
+        when(userRepo.existsByEmailIgnoreCase("new@test.com")).thenReturn(false);
         when(jwtUtils.generateJwtCookie(any(UserDetailsImpl.class))).thenReturn(ResponseCookie.from("jwtCookie", "jwtToken").httpOnly(true).path("/").build());
 
         mockMvc.perform(post("/api/v1/auth/signup")
