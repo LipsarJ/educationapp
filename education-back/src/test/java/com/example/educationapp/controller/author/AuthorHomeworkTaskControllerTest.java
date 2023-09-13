@@ -4,7 +4,6 @@ import com.example.educationapp.dto.request.RequestHomeworkTaskDto;
 import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
 import com.example.educationapp.exception.HomeworkTaskNameException;
 import com.example.educationapp.exception.LessonNotFoundException;
-import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.service.AuthorHomeworkTaskService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

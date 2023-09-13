@@ -1,12 +1,9 @@
 package com.example.educationapp.controller;
 
 import com.example.educationapp.dto.response.UserInfoDto;
-import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.service.impl.UserServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
