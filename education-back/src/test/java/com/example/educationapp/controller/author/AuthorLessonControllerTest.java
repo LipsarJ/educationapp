@@ -5,7 +5,6 @@ import com.example.educationapp.dto.response.ResponseLessonDto;
 import com.example.educationapp.entity.LessonStatus;
 import com.example.educationapp.exception.InvalidStatusException;
 import com.example.educationapp.exception.LessonNotFoundException;
-import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.service.AuthorLessonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

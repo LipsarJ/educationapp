@@ -1,5 +1,4 @@
-import React, {createContext, useState, useContext, useEffect} from 'react';
-import axios from '../utils/axiosConfig';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 
 const AuthContext = createContext<AuthContextProps | null>(null);
 
@@ -30,6 +29,7 @@ interface User {
 }
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+
     const [isAuthenticated, setAuthenticated] = useState(() => {
         return JSON.parse(localStorage.getItem('isAuthenticated') || 'false');
     });
@@ -43,6 +43,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         localStorage.setItem('isAuthenticated', JSON.stringify(isAuthenticated));
         localStorage.setItem('user', JSON.stringify(user));
     }, [isAuthenticated, user]);
+
 
     return (
         <AuthContext.Provider value={{ isAuthenticated, setAuthenticated, user, setUser }}>

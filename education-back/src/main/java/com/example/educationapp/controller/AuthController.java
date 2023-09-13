@@ -1,6 +1,7 @@
 package com.example.educationapp.controller;
 
 import com.example.educationapp.controlleradvice.ErrorResponse;
+import com.example.educationapp.controlleradvice.AuthErrors;
 import com.example.educationapp.dto.request.LoginDto;
 import com.example.educationapp.dto.request.SignupDto;
 import com.example.educationapp.dto.response.UserLoginDto;
@@ -87,7 +88,7 @@ public class AuthController {
                     .body(userLoginDto);
         } catch (AuthenticationException ex) {
             return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
-                    .body(new ErrorResponse("Invalid username or password"));
+                    .body(new ErrorResponse("Invalid username or password", AuthErrors.BAD_CREDITIANS));
         }
     }
 
@@ -103,11 +104,11 @@ public class AuthController {
     })
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupDto signUpDto) {
         if (userRepo.existsByUsername(signUpDto.username())) {
-            return ResponseEntity.badRequest().body(new ErrorResponse("Error: Username is already taken!"));
+            return ResponseEntity.badRequest().body(new ErrorResponse("Error: Username is already taken!", AuthErrors.USERNAME_TAKEN));
         }
 
-        if (userRepo.existsByEmail(signUpDto.email())) {
-            return ResponseEntity.badRequest().body(new ErrorResponse("Error: Email is already in use!"));
+        if (userRepo.existsByEmailIgnoreCase(signUpDto.email())) {
+            return ResponseEntity.badRequest().body(new ErrorResponse("Error: Email is already in use!", AuthErrors.EMAIL_TAKEN));
         }
 
         User user = new User();
@@ -121,7 +122,7 @@ public class AuthController {
 
         userRepo.save(user);
 
-        return ResponseEntity.ok(new ErrorResponse("User registered successfully!"));
+        return ResponseEntity.ok(new ErrorResponse("User registered successfully!", null));
     }
 
     @PostMapping("/signout")
@@ -137,7 +138,7 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
-                .body(new ErrorResponse("You've been signed out!"));
+                .body(new ErrorResponse("You've been signed out!", null));
     }
 
     @PostMapping("/refreshtoken")
@@ -162,11 +163,11 @@ public class AuthController {
 
                         return ResponseEntity.ok()
                                 .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                                .body(new ErrorResponse("Token is refreshed successfully!"));
+                                .body(new ErrorResponse("Token is refreshed successfully!", null));
                     })
                     .orElseThrow(() -> new TokenRefreshException(refreshToken, "Refresh token is not in the database!"));
         }
 
-        return ResponseEntity.badRequest().body(new ErrorResponse("Refresh Token is empty!"));
+        return ResponseEntity.badRequest().body(new ErrorResponse("Refresh Token is empty!", null));
     }
 }

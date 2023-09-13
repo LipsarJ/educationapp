@@ -6,7 +6,6 @@ import com.example.educationapp.entity.CourseStatus;
 import com.example.educationapp.exception.CourseNameException;
 import com.example.educationapp.exception.InvalidStatusException;
 import com.example.educationapp.exception.UserNotFoundException;
-import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.service.AuthorCourseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;

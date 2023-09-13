@@ -17,7 +17,7 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 
     Boolean existsByUsername(String username);
 
-    Boolean existsByEmail(String email);
+    Boolean existsByEmailIgnoreCase(String email);
 
     @Query("select c from Course c join c.authors a where a = :author")
     List<Course> findCoursesByAuthor(User author);

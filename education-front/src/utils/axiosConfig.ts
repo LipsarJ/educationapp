@@ -1,11 +1,16 @@
-import axios from 'axios';
+import axios, {AxiosInstance} from 'axios';
 
-const instance = axios.create({
+export const instanceAxios = axios.create({
     baseURL: 'http://localhost:8080',
     withCredentials: true
 });
+const logout = () => {
 
-instance.interceptors.response.use(
+    localStorage.removeItem('isAuthenticated');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+};
+instanceAxios.interceptors.response.use(
     (response) => {
         return response;
     },
@@ -17,11 +22,15 @@ instance.interceptors.response.use(
             !error.config._retry
         ) {
             originalRequest._retry = true;
-            const response = await axios.post('http://localhost:8080/api/v1/auth/refreshtoken', {}, {withCredentials: true});
-            return instance(originalRequest);
+            try {
+                const response = await axios.post('http://localhost:8080/api/v1/auth/refreshtoken', {}, {withCredentials: true});
+                return instanceAxios(originalRequest);
+            } catch (error) {
+                logout();
+                return Promise.reject(error);
+            }
         }
         return Promise.reject(error);
     }
 );
 
-export default instance;
