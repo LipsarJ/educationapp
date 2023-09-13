@@ -3,7 +3,7 @@ import {Button, Container, Heading, Input} from '@chakra-ui/react';
 import axios from 'axios';
 import {useAuth} from '../../contexts/AuthContext';
 import {useNavigate} from 'react-router-dom';
-import {ErrorCodes} from './ErrorCodes'
+import {ErrorCodes} from './ErrorCodes';
 
 interface LoginData {
     username: string;
