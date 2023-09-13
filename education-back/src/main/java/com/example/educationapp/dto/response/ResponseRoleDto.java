@@ -6,16 +6,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Schema(description = "Информация о пользователе для методов безопасности")
-public class UserInfoDto {
+@Schema(description = "ДТО для отображения информации о роли")
+public class ResponseRoleDto {
     private Long id;
-    private String username;
-    private String firstname;
-    private String middlename;
-    private String lastname;
+    private String roleName;
 }

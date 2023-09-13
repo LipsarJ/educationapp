@@ -170,13 +170,13 @@ class AuthorLessonServiceTest {
         lesson.setHomeworkTaskList(homeworkTasks);
         List<MediaLesson> mediaLessons = new ArrayList<>();
         mediaLessons.add(new MediaLesson());
-        lesson.setMediaLessonSet(mediaLessons);
+        lesson.setMediaLessonList(mediaLessons);
         when(courseUtils.validateAndGetCourseForAuthor(courseId)).thenReturn(course);
         when(lessonRepo.findById(lessonId)).thenReturn(Optional.of(lesson));
 
         lesson.setLessonStatus(LessonStatus.NOT_ACTIVE);
         lesson.setHomeworkTaskList(new ArrayList<>());
-        lesson.setMediaLessonSet(new ArrayList<>());
+        lesson.setMediaLessonList(new ArrayList<>());
 
         authorLessonService.deleteLesson(courseId, lessonId);
 

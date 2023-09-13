@@ -24,7 +24,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
 
-        userContext.setUserDto(userMapper.toDto(user));
+        userContext.setUserDto(userMapper.toResponseUserDto(user));
 
         return UserDetailsImpl.build(user);
     }

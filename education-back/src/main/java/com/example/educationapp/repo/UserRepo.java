@@ -25,4 +25,7 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
     boolean existsByEmailAndIdNot(String email, Long userId);
 
     Set<User> findByIdIn(List<Long> userIds);
+
+    @Query("select s from User s join s.studentCourseSet c where c =:course")
+    Page<User> findByCourse(Course course, Pageable pageable);
 }

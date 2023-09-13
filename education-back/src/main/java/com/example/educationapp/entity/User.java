@@ -55,6 +55,12 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime updateDate;
 
+    @OneToMany(mappedBy = "teacher")
+    private Set<HomeworkDone> homeworkDoneTeacherSet;
+
+    @OneToMany(mappedBy = "student")
+    private Set<HomeworkDone> homeworkDoneSet;
+
     @ManyToMany
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

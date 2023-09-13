@@ -68,15 +68,15 @@ public class UserServiceImplTest {
         UserInfoDto firstUserDto = resultPage.getContent().get(0);
         assert firstUserDto.getId() == 1L;
         assert firstUserDto.getUsername().equals("user1");
-        assert firstUserDto.getFirstName().equals("John");
-        assert firstUserDto.getMiddleName().equals("Doe");
-        assert firstUserDto.getLastName().equals("Smith");
+        assert firstUserDto.getFirstname().equals("John");
+        assert firstUserDto.getMiddlename().equals("Doe");
+        assert firstUserDto.getLastname().equals("Smith");
 
         UserInfoDto secondUserDto = resultPage.getContent().get(1);
         assert secondUserDto.getId() == 2L;
         assert secondUserDto.getUsername().equals("user2");
-        assert secondUserDto.getFirstName().equals("Jane");
-        assert secondUserDto.getMiddleName().equals("Doe");
-        assert secondUserDto.getLastName().equals("Johnson");
+        assert secondUserDto.getFirstname().equals("Jane");
+        assert secondUserDto.getMiddlename().equals("Doe");
+        assert secondUserDto.getLastname().equals("Johnson");
     }
 }
