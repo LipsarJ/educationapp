@@ -37,7 +37,7 @@ const Login: React.FC = () => {
     };
 
     return (
-        <Container centerContent mt="15" maxWidth="lg">
+        <Container centerContent mt="5" maxWidth="lg">
             <Heading mb={4} size="lg">Войти</Heading>
             {error && <div style={{color: 'red'}}>{error}</div>}
             <Input
