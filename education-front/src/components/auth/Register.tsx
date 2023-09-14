@@ -107,7 +107,7 @@ const Register: React.FC = () => {
     };
 
     return (
-        <Container mt="15" centerContent>
+        <Container mt="5" centerContent>
             <Heading mb={4} size="lg">Зарегистрироваться</Heading>
             <Formik
                 initialValues={{
