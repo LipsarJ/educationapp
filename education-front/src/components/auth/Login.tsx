@@ -1,8 +1,8 @@
-import React, {useState} from 'react';
-import {Button, Container, Heading, Input} from '@chakra-ui/react';
+import React, { useState } from 'react';
+import { Button, Container, Heading, Input, Flex } from '@chakra-ui/react';
 import axios from 'axios';
-import {useAuth} from '../../contexts/AuthContext';
-import {useNavigate} from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
 import {ErrorCodes} from './ErrorCodes';
 
 interface LoginData {
@@ -39,12 +39,12 @@ const Login: React.FC = () => {
     return (
         <Container centerContent mt="5" maxWidth="lg">
             <Heading mb={4} size="lg">Войти</Heading>
-            {error && <div style={{color: 'red'}}>{error}</div>}
+            {error && <div style={{ color: 'red' }}>{error}</div>}
             <Input
                 placeholder="Username"
                 size="md"
                 w="100%"
-                onChange={(e) => setLoginData({...loginData, username: e.target.value})}
+                onChange={(e) => setLoginData({ ...loginData, username: e.target.value })}
                 mb={3}
             />
             <Input
@@ -53,11 +53,18 @@ const Login: React.FC = () => {
                 size="md"
                 w="100%"
                 mb={3}
-                onChange={(e) => setLoginData({...loginData, password: e.target.value})}
+                onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
             />
-            <Button colorScheme="blue" size="md" pr={20} pl={20} onClick={handleLogin}>
-                Войти
-            </Button>
+            <Flex
+                w="100%"
+            >
+                <Button colorScheme="blue" size="md" flex="1" mr={2} onClick={handleLogin}>
+                    Войти
+                </Button>
+                <Button as={Link} to="/register" colorScheme="blue" ml={2} size="md" flex="1">
+                    Зарегистрироваться
+                </Button>
+            </Flex>
         </Container>
     );
 };
