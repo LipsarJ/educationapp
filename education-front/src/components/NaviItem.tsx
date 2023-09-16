@@ -18,16 +18,16 @@ export default function NavItem({
         >
             <Menu placement="right">
                 <Link
-                    backgroundColor="white"
+                    backgroundColor="#82AAAD"
+                    borderRadius = "8"
                     p={3}
-                    borderRadius={8}
                     _hover={{textDecor: 'none', backgroundColor: "#AEC8CA"}}
                     w="100%"
                     as={NavLink} to={url}
                 >
                     <MenuButton w="100%">
-                        <Flex>
-                            <Icon as={icon} fontSize="xl" color="#82AAAD"/>
+                        <Flex flexDir = "row">
+                            <Icon as={icon} fontSize="xl" color="#3D3D3D"/>
                             <Text ml={5} display="flex">{title}</Text>
                         </Flex>
                     </MenuButton>

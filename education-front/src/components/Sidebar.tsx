@@ -25,63 +25,69 @@ export default function Sidebar({isSidebarOpen}: { isSidebarOpen: boolean }) {
     };
 
     return (
-        <Flex
-            h={isAuthenticated ? "95vh" : "100vh"}
-            position={isMobile ? "fixed" : "relative"}
-            display={isSidebarOpen ? "flex" : "none"}
-            backgroundColor="blue.500"
-            width="250px"
-            transition="left 0.3s ease-in-out"
-            zIndex="1000"
-            flexDir="column"
-        >
             <Flex
-                p="5%"
+                h={isAuthenticated ? "95vh" : "100vh"}
+                position="fixed"
+                display={isSidebarOpen ? "flex" : "none"}
+                width="250px"
+                zIndex="1000"
+                backgroundColor="#F9F9F9"
                 flexDir="column"
-                w="100%"
-                alignItems="flex-start"
-                as="nav"
             >
-                <NavItem title="Домашняя страница" icon={FiHome} description="Домашняя страница" url="/"/>
-                {!isAuthenticated ? (
-                    <NavItem title="Войти" icon={FiLogIn} description="Вход" url="/login"/>
-                ) : (
-                    <>
-                        <NavItem title="Поиск сотрудников" icon={IoPeople} description="Поиск сотрудников"
-                                 url="/persons"/>
-                        <div onClick={handleLogout} style={{cursor: 'pointer', width:"100%"}}>
-                            <NavItem
-                                title="Выйти"
-                                icon={FiLogOut}
-                                description="Выход"
-                                url=""
-                            />
-                        </div>
-                    </>
-                )}
-            </Flex>
 
-            <Flex
-                p="5%"
-                bottom="100%"
-                w="100%"
-                alignItems="flex-start"
-                mb={4}
-                flexDir = "column"
-            >
-                <Divider display={isSidebarOpen && user ? "flex" : "none"}/> {/* Изменили navSize на isSidebarOpen */}
-                {user && (
-                    <Flex mt={4} align="center">
-                        <Avatar size="sm"/>
-                        <Flex flexDir="column" ml={4}
-                              display={isSidebarOpen ? "flex" : "none"}> {/* Изменили navSize на isSidebarOpen */}
-                            <Heading as="h3" size="sm" textColor="white">
-                                {user.username}
-                            </Heading>
+                <Heading as="h1" size="xl" textAlign = "center" color = "black" mt={4}>
+                    Education
+                    App
+                </Heading>
+
+                <Flex
+                    p="5%"
+                    flexDir="column"
+                    w="100%"
+                    alignItems="flex-start"
+                    as="nav"
+                >
+                    <NavItem title="Домашняя страница" icon={FiHome} description="Домашняя страница" url="/"/>
+                    {!isAuthenticated ? (
+                        <NavItem title="Войти" icon={FiLogIn} description="Вход" url="/login"/>
+                    ) : (
+                        <>
+                            <NavItem title="Поиск сотрудников" icon={IoPeople} description="Поиск сотрудников"
+                                     url="/persons"/>
+                            <div onClick={handleLogout} style={{cursor: 'pointer', width: "100%"}}>
+                                <NavItem
+                                    title="Выйти"
+                                    icon={FiLogOut}
+                                    description="Выход"
+                                    url=""
+                                />
+                            </div>
+                        </>
+                    )}
+                </Flex>
+
+                <Flex
+                    p="5%"
+                    bottom="100%"
+                    w="100%"
+                    alignItems="flex-start"
+                    mb={4}
+                    flexDir="column"
+                >
+                    <Divider
+                        display={isSidebarOpen && user ? "flex" : "none"}/> {/* Изменили navSize на isSidebarOpen */}
+                    {user && (
+                        <Flex mt={4} align="center">
+                            <Avatar size="sm"/>
+                            <Flex flexDir="column" ml={4}
+                                  display={isSidebarOpen ? "flex" : "none"}> {/* Изменили navSize на isSidebarOpen */}
+                                <Heading as="h3" size="sm" textColor="white">
+                                    {user.username}
+                                </Heading>
+                            </Flex>
                         </Flex>
-                    </Flex>
-                )}
+                    )}
+                </Flex>
             </Flex>
-        </Flex>
     )
 }
