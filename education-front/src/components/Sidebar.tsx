@@ -25,7 +25,7 @@ export default function Sidebar({isSidebarOpen, isMobile}: { isSidebarOpen: bool
     return (
         <Flex
             h="100%"
-            position={isSidebarOpen ? "fixed" : "relative"}
+            position="fixed"
             display={isSidebarOpen ? "flex" : "none"}
             width="250px"
             zIndex="1000"

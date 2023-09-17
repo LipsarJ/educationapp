@@ -24,15 +24,14 @@ function App() {
             <AuthProvider>
                 <CSSReset/>
                 <BrowserRouter>
-                    <Flex justify-content = "flex-start">
+                    <Flex>
                         <Sidebar isSidebarOpen={isSidebarOpen} isMobile = {isMobile}/>
                         {isMobile &&
                             <SidebarOverlay isOpen={isSidebarOpen} onClose={toggleSidebar}/>
                         }
                     </Flex>
-                    <Flex flexDir="column" w="100%"
-                          marginLeft={isSidebarOpen && !isMobile ? '250px' : '0'}>
-                        <Header onToggleSidebar={toggleSidebar}/>
+                    <Flex flexDir="column" position = "relative" marginLeft={isSidebarOpen && !isMobile ? '250px' : '0'} flex="1">
+                        <Header onToggleSidebar={toggleSidebar} isSidebarOpen={isSidebarOpen} isMobile={isMobile}/>
                         <Routes>
                             <Route path="/" element={<Home/>}/>
                             <Route path="/persons" element={<EmployeeSearch/>}/>

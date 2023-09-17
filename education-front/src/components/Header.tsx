@@ -5,9 +5,11 @@ import {useLocation} from 'react-router-dom';
 
 interface HeaderProps {
     onToggleSidebar: () => void;
+    isSidebarOpen: boolean;
+    isMobile: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({onToggleSidebar}) => {
+const Header: React.FC<HeaderProps> = ({onToggleSidebar, isSidebarOpen, isMobile}) => {
     const location = useLocation();
     let currentPage = '';
 
@@ -29,6 +31,7 @@ const Header: React.FC<HeaderProps> = ({onToggleSidebar}) => {
     }
     return (
         <Flex alignItems="center" justifyContent="space-between" bg="blue.500" p={3} w="100%" flexDir="row">
+            {isMobile && isSidebarOpen ? <Flex h ={10} w={10}/> :
             <IconButton
                 aria-label="Open Sidebar"
                 background="none"
@@ -36,6 +39,7 @@ const Header: React.FC<HeaderProps> = ({onToggleSidebar}) => {
                 icon={<FiMenu/>}
                 onClick={onToggleSidebar}
             />
+            }
             <Text fontWeight="bold" fontSize="lg" color="black" textAlign="center" mr={10}>
                 {currentPage}
             </Text>
