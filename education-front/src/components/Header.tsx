@@ -35,12 +35,13 @@ const Header: React.FC<HeaderProps> = ({onToggleSidebar, isSidebarOpen, isMobile
             <IconButton
                 aria-label="Open Sidebar"
                 background="none"
+                color = "white"
                 zIndex="1001"
                 icon={<FiMenu/>}
                 onClick={onToggleSidebar}
             />
             }
-            <Text fontWeight="bold" fontSize="lg" color="black" textAlign="center" mr={10}>
+            <Text fontWeight="bold" fontSize="lg" color="white" textAlign="center" mr={10}>
                 {currentPage}
             </Text>
             <Flex></Flex>
