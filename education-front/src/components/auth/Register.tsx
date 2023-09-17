@@ -17,26 +17,18 @@ interface SignupData {
 const Register: React.FC = () => {
     const navigate = useNavigate();
 
-    const [usernames, setUsernames] = useState<string[]>([]);
-    const [emails, setEmails] = useState<string[]>([]);
-    const addUsername = (newUsername: string) => {
-        setUsernames([...usernames, newUsername]);
-    };
-
-    const addEmail = (newEmail: string) => {
-        setEmails([...emails, newEmail]);
-    };
+    const [errorUsername, setErrorUsername] = useState("");
+    const [errorEmail, setErrorEmail] = useState("");
+    console.log(errorEmail);
+    console.log(errorUsername);
 
     const validateUsername = (value: string) => {
-        let error;
         if (!value) {
-            error = "Имя пользователя обязательно";
+            setErrorUsername("Имя пользователя обязательно");
         } else if (value.length < 3 || value.length > 20) {
-            error = "Имя пользователя должно быть от 3 до 20 символов";
-        } else if (usernames.includes(value)) {
-            error = "Имя пользователя занято"
+            setErrorUsername("Имя пользователя должно быть от 3 до 20 символов");
         }
-        return error;
+        return errorUsername;
     };
 
     const validatePassword = (value: string) => {
@@ -74,15 +66,12 @@ const Register: React.FC = () => {
     };
 
     const validateEmail = (value: string) => {
-        let error
         if (!value) {
-            error = 'Почта обязательна'
+            setErrorEmail('Почта обязательна');
         } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(value)) {
-            error = "Неверный формат электронной почты"
-        } else if (emails.includes(value)) {
-            error = "Данный e-mail уже используется"
+            setErrorEmail("Неверный формат электронной почты")
         }
-        return error
+        return errorEmail
     }
 
     const handleRegister = async (values: SignupData) => {
@@ -91,23 +80,22 @@ const Register: React.FC = () => {
             const response = await axios.post('http://localhost:8080/api/v1/auth/signup', values, {
                 withCredentials: true
             });
-            addUsername(values.username);
             console.log(response.data);
             navigate('/login');
         } catch (error: any) {
             console.error(error);
             const errorCode = error.response.data.errorCode;
             if (errorCode == ErrorCodes.UsernameTaken) {
-                addUsername(values.username);
+                setErrorUsername("Имя пользователя занято");
             }
             if (errorCode == ErrorCodes.EmailTaken) {
-                addEmail(values.email);
+                setErrorEmail("E-mail уже используется");
             }
         }
     };
 
     return (
-        <Container mt="15" centerContent>
+        <Container mt="5" centerContent>
             <Heading mb={4} size="lg">Зарегистрироваться</Heading>
             <Formik
                 initialValues={{
@@ -118,30 +106,47 @@ const Register: React.FC = () => {
                     firstname: '',
                     lastname: ''
                 }}
+                validateOnChange={false}
+                validateOnBlur={false}
                 onSubmit={handleRegister}
             >
                 {() => (
                     <Form style={{minWidth: '100%'}}>
                         <Field name='username' validate={validateUsername}>
                             {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.username} width="100%">
+                                <FormControl isInvalid={errorUsername && form.touched.username} width="100%"
+                                             onChange={() => {
+                                                 if (errorUsername) {
+                                                     setErrorUsername('');
+                                                 }
+                                                 field.onChange(field.name);
+                                             }}>
                                     <Input {...field}
                                            mb={2}
                                            width="100%"
-                                           placeholder="Имя пользователя"/>
-                                    <FormErrorMessage mt={0} mb={2}>{form.errors.username}</FormErrorMessage>
+                                           placeholder="Имя пользователя"
+                                    />
+                                    <FormErrorMessage mt={0} mb={2}>{errorUsername}</FormErrorMessage>
                                 </FormControl>
                             )}
                         </Field>
 
                         <Field name='email' validate={validateEmail}>
                             {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.email && form.touched.email} width="100%">
+                                <FormControl isInvalid={errorEmail && form.touched.email} width="100%"
+                                             onChange={() => {
+                                                 if (errorEmail) {
+                                                     setErrorEmail('');
+                                                 }
+                                                 field.onChange(field.name);
+                                             }}
+                                >
                                     <Input {...field}
                                            mb={2}
                                            width="100%"
-                                           placeholder="Email"/>
-                                    <FormErrorMessage mt={0} mb={2}>{form.errors.email}</FormErrorMessage>
+                                           placeholder="Email"
+                                    />
+                                    <FormErrorMessage mt={0} mb={2}>{errorEmail}</FormErrorMessage>
                                 </FormControl>
                             )}
                         </Field>
@@ -189,7 +194,8 @@ const Register: React.FC = () => {
                                 </FormControl>
                             )}
                         </Field>
-                        <Button mt={5} colorScheme="blue" size="lg" type='submit' mx="auto" display="block">
+                        <Button mt={5} color="white" bg="facebook.400" size="lg" type='submit' mx="auto"
+                                display="block">
                             Зарегистрироваться
                         </Button>
                     </Form>

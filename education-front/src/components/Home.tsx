@@ -1,32 +1,35 @@
 import React from 'react';
-import { useAuth } from '../contexts/AuthContext';
-import { Box, Heading, Text, VStack } from '@chakra-ui/react';
+import {useAuth} from '../contexts/AuthContext';
+import {Flex, Heading, Text, VStack} from '@chakra-ui/react';
 
 const Home: React.FC = () => {
-    const { isAuthenticated, user } = useAuth();
+    const {isAuthenticated, user} = useAuth();
 
     return (
-        <VStack pl={5} pr={5} spacing={8} alignItems="center">
-            {isAuthenticated ? (
-                <>
-                    <Heading mt={5} as="h1" size="2xl">
-                        Добро пожаловать, {user?.username}!
-                    </Heading>
-                    <Text fontSize="xl">
-                        Наше приложение — это образовательная платформа, где ученики могут проходить курсы, а учителя — создавать и проверять их.
-                    </Text>
-                </>
-            ) : (
-                <>
-                    <Heading mt={5} as="h1" size="2xl">
-                        Добро пожаловать!
-                    </Heading>
-                    <Text fontSize="xl">
-                        Пожалуйста, зарегистрируйтесь или войдите в приложение для дальнейшего использования.
-                    </Text>
-                </>
-            )}
-        </VStack>
+        <Flex w="50%" margin="0 auto" textAlign="center" flexDir="column">
+            <VStack spacing={8} alignItems="center" mt={5}>
+                {isAuthenticated ? (
+                    <>
+                        <Heading as="h1" size="xl">
+                            Добро пожаловать, {user?.username}!
+                        </Heading>
+                        <Text fontSize="xl" color = "#3D3D3D">
+                            Наше приложение — это образовательная платформа, где ученики могут проходить курсы, а
+                            учителя — создавать и проверять их.
+                        </Text>
+                    </>
+                ) : (
+                    <>
+                        <Heading as="h1" size="xl">
+                            Добро пожаловать!
+                        </Heading>
+                        <Text fontSize="xl" color = "#3D3D3D">
+                            Пожалуйста, зарегистрируйтесь или войдите в приложение для дальнейшего использования.
+                        </Text>
+                    </>
+                )}
+            </VStack>
+        </Flex>
     );
 };
 

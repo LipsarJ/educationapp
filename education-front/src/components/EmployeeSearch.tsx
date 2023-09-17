@@ -78,7 +78,7 @@ const EmployeeSearch: React.FC = () => {
                         value={searchText}
                         onChange={(e) => setSearchText(e.target.value)}
                     />
-                    <Button colorScheme="facebook" onClick={() => {
+                    <Button color="white" bg="facebook.400" onClick={() => {
                         handleSearch();
                     }}>
                         Найти
@@ -98,7 +98,8 @@ const EmployeeSearch: React.FC = () => {
             </VStack>
             <HStack mt={4}>
                 <Button
-                    colorScheme="facebook"
+                    color="white"
+                    bg="facebook.400"
                     onClick={() => {
                        handlePrev()
                     }}
@@ -107,7 +108,8 @@ const EmployeeSearch: React.FC = () => {
                     Назад
                 </Button>
                 <Button
-                    colorScheme="facebook"
+                    color="white"
+                    bg="facebook.400"
                     onClick={() => {
                         handleNext();
                     }}

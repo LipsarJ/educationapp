@@ -1,50 +1,50 @@
 import React from 'react';
-import {Flex, Button, Link, Spacer, Box} from '@chakra-ui/react';
-import {useAuth} from '../contexts/AuthContext';
-import {instanceAxios} from '../utils/axiosConfig';
-import {NavLink, useNavigate} from 'react-router-dom';
+import {Flex, IconButton, Text} from '@chakra-ui/react';
+import {FiMenu} from 'react-icons/fi';
+import {useLocation} from 'react-router-dom';
 
-const Header: React.FC = () => {
-    const navigate = useNavigate();
+interface HeaderProps {
+    onToggleSidebar: () => void;
+    isSidebarOpen: boolean;
+    isMobile: boolean;
+}
 
-    const {isAuthenticated, setAuthenticated, setUser} = useAuth();
+const Header: React.FC<HeaderProps> = ({onToggleSidebar, isSidebarOpen, isMobile}) => {
+    const location = useLocation();
+    let currentPage = '';
 
-    const handleLogout = async () => {
-        try {
-            const response = await instanceAxios.post('/api/v1/auth/signout');
-        } catch (e) {
-            console.error(e)
-        }
-        setAuthenticated(false);
-        setUser(null);
-        navigate('/login'); // перенаправляем на страницу входа
-    };
-
+    switch (location.pathname) {
+        case '/':
+            currentPage = 'Домашняя страница';
+            break;
+        case '/login':
+            currentPage = 'Вход';
+            break;
+        case '/register':
+            currentPage = 'Регистрация';
+            break;
+        case '/persons':
+            currentPage = 'Пользователи';
+            break;
+        default:
+            currentPage = '';
+    }
     return (
-        <Flex bg="#1877F2" p={4} color="white">
-            {!isAuthenticated && (<>
-                <Box p="2">
-                    <Link as={NavLink} to="/login" m={2} _hover={{textDecoration: 'underline'}}>
-                        Войти
-                    </Link>
-                </Box>
-                <Box p="2">
-                    <Link as={NavLink} to="/register" m={2} _hover={{textDecoration: 'underline'}}>
-                        Зарегистрироваться
-                    </Link>
-                </Box>
-            </>)}
-            <Box p="2">
-                <Link as={NavLink} to="/persons" m={2} _hover={{textDecoration: 'underline'}}>
-                    Персоналии
-                </Link>
-            </Box>
-            <Spacer/>
-            {isAuthenticated && (
-                <Button colorScheme="facebook" variant="solid" onClick={handleLogout}>
-                    Выйти
-                </Button>
-            )}
+        <Flex alignItems="center" justifyContent="space-between" bg="blue.500" p={3} w="100%" flexDir="row">
+            {isMobile && isSidebarOpen ? <Flex h ={10} w={10}/> :
+            <IconButton
+                aria-label="Open Sidebar"
+                background="none"
+                color = "white"
+                zIndex="1001"
+                icon={<FiMenu/>}
+                onClick={onToggleSidebar}
+            />
+            }
+            <Text fontWeight="bold" fontSize="lg" color="white" textAlign="center" mr={10}>
+                {currentPage}
+            </Text>
+            <Flex></Flex>
         </Flex>
     );
 };
