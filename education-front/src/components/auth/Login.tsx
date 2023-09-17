@@ -58,10 +58,10 @@ const Login: React.FC = () => {
             <Flex
                 w="100%"
             >
-                <Button colorScheme="blue" size="md" flex="1" mr={2} onClick={handleLogin}>
+                <Button bg="facebook.400" size="md" flex="1" mr={2} color="white" onClick={handleLogin}>
                     Войти
                 </Button>
-                <Button as={Link} to="/register" colorScheme="blue" ml={2} size="md" flex="1">
+                <Button as={Link} to="/register" bg="facebook.400" ml={2} size="md" flex="1" color="white">
                     Зарегистрироваться
                 </Button>
             </Flex>

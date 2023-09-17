@@ -189,7 +189,7 @@ const Register: React.FC = () => {
                                 </FormControl>
                             )}
                         </Field>
-                        <Button mt={5} colorScheme="blue" size="lg" type='submit' mx="auto" display="block">
+                        <Button mt={5} color="white" bg="facebook.400" size="lg" type='submit' mx="auto" display="block">
                             Зарегистрироваться
                         </Button>
                     </Form>

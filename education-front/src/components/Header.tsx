@@ -28,7 +28,7 @@ const Header: React.FC<HeaderProps> = ({onToggleSidebar}) => {
             currentPage = '';
     }
     return (
-        <Flex alignItems="center" justifyContent="space-between" bg="#82AAAD" p={3} w="100%" flexDir="row">
+        <Flex alignItems="center" justifyContent="space-between" bg="blue.500" p={3} w="100%" flexDir="row">
             <IconButton
                 aria-label="Open Sidebar"
                 background="none"

@@ -8,7 +8,7 @@ import Home from './components/Home';
 import EmployeeSearch from './components/EmployeeSearch';
 import Header from './components/Header'; // Импортируйте компонент Header
 import Sidebar from './components/Sidebar';
-import theme from './themes';
+import theme from './theme';
 import SidebarOverlay from './components/SidebarOverlay';
 
 function App() {
@@ -20,15 +20,18 @@ function App() {
     const [isMobile] = useMediaQuery('(max-width: 768px)');
 
     return (
-        <ChakraProvider theme = {theme}>
+        <ChakraProvider theme={theme}>
             <AuthProvider>
                 <CSSReset/>
                 <BrowserRouter>
-                    <Flex transition="display 0.3s ease-in-out">
-                        <Sidebar isSidebarOpen={isSidebarOpen}/>
-                        <SidebarOverlay isOpen={isSidebarOpen} onClose={toggleSidebar} />
+                    <Flex justify-content = "flex-start">
+                        <Sidebar isSidebarOpen={isSidebarOpen} isMobile = {isMobile}/>
+                        {isMobile &&
+                            <SidebarOverlay isOpen={isSidebarOpen} onClose={toggleSidebar}/>
+                        }
                     </Flex>
-                    <Flex flexDir="column" position = "fixed" w="100%"marginLeft={isSidebarOpen && !isMobile ? '250px' : '0'} >
+                    <Flex flexDir="column" w="100%"
+                          marginLeft={isSidebarOpen && !isMobile ? '250px' : '0'}>
                         <Header onToggleSidebar={toggleSidebar}/>
                         <Routes>
                             <Route path="/" element={<Home/>}/>
