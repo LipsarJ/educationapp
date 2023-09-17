@@ -62,7 +62,7 @@ const Login: React.FC = () => {
                     Войти
                 </Button>
                 <Button as={Link} to="/register" bg="facebook.400" ml={2} size="md" flex="1" color="white">
-                    Зарегистрироваться
+                    Регистрация
                 </Button>
             </Flex>
         </Container>
