@@ -44,6 +44,23 @@ services:
       - ./compose-data/minio/minio-config:/root/.minio
     command: server /data --console-address ":9005"
 
+  nginx:
+    image: nginx:latest
+    container_name: "nginx"
+    volumes:
+      - "html:/usr/share/nginx/html"
+      - "dhparam:/etc/nginx/dhparam"
+      - "vhost:/etc/nginx/vhost.d"
+      - "certs:/etc/nginx/certs"
+      - "/run/docker.sock:/tmp/docker.sock:ro"
+      - "./nginx.conf:/etc/nginx/conf.d/nginx.conf"
+    restart: "always"
+    networks:
+      - postgresql-net
+    ports:
+      - "80:80"
+      - "443:443"
+
   education:
     container_name: education
     build:
