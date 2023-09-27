@@ -1,7 +1,7 @@
 import axios, {AxiosInstance} from 'axios';
 
 export const instanceAxios = axios.create({
-    baseURL: '/api/v1',
+    baseURL: process.env.REACT_APP_API_URL,
     withCredentials: true
 });
 const logout = () => {
