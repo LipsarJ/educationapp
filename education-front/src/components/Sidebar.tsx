@@ -13,7 +13,7 @@ export default function Sidebar({isSidebarOpen, isMobile}: { isSidebarOpen: bool
     const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
     const handleLogout = async () => {
         try {
-            const response = await instanceAxios.post('/api/v1/auth/signout');
+            const response = await instanceAxios.post('/auth/signout');
         } catch (e) {
             console.error(e)
         }

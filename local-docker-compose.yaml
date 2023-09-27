@@ -20,6 +20,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
   minio:
     image: minio/minio
     container_name: minio
@@ -42,13 +43,28 @@ services:
       - ./compose-data/minio/minio-data:/data
       - ./compose-data/minio/minio-config:/root/.minio
     command: server /data --console-address ":9005"
+
+
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./education-front/build:/var/www/html
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - education-net
+    depends_on:
+      - education
+    build:
+      dockerfile: ./education-back/Dockerfile-nginx
+
   education:
     container_name: education
     build:
-      context: .
-      dockerfile: education-back/Dockerfile
-    ports:
-      - "8080:8080"
+      context: ./education-back
+      dockerfile: Dockerfile-back
     environment:
       - DATABASE_HOST=postgres-education
       - DATABASE_PORT=5432
@@ -58,6 +74,7 @@ services:
     networks:
       - minio-net
       - postgresql-net
+      - education-net
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
       interval: 10s
@@ -68,8 +85,11 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+
 networks:
   postgresql-net:
     driver: bridge
   minio-net:
+    driver: bridge
+  education-net:
     driver: bridge

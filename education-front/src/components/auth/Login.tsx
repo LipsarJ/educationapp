@@ -18,7 +18,7 @@ const Login: React.FC = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await axios.post('http://localhost:8080/api/v1/auth/signin', loginData, {
+            const response = await axios.post(process.env.REACT_APP_API_URL+'/auth/signin', loginData, {
                 withCredentials: true
             });
             setAuthenticated(true);
