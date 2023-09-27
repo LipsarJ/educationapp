@@ -54,7 +54,7 @@ services:
       - ./education-front/build:/var/www/html
       - ./default.conf:/etc/nginx/conf.d/default.conf
     networks:
-      - nginx-net
+      - education-net
     depends_on:
       - education
     build:
@@ -76,7 +76,7 @@ services:
     networks:
       - minio-net
       - postgresql-net
-      - nginx-net
+      - education-net
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
       interval: 10s
@@ -93,5 +93,5 @@ networks:
     driver: bridge
   minio-net:
     driver: bridge
-  nginx-net:
+  education-net:
     driver: bridge

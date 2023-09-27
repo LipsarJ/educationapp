@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
 import {Field, Form, Formik} from 'formik';
 import {Button, Container, FormControl, FormErrorMessage, Heading, Input} from '@chakra-ui/react';
-import {instanceAxios} from '../../utils/axiosConfig';
 import {useNavigate} from 'react-router-dom';
 import {ErrorCodes} from './ErrorCodes'
+import axios from 'axios';
 
 interface SignupData {
     username: string;
@@ -77,7 +77,7 @@ const Register: React.FC = () => {
     const handleRegister = async (values: SignupData) => {
         let error;
         try {
-            const response = await instanceAxios.post('/auth/signup', values, {
+            const response = await axios.post('/api/v1/auth/signup', values, {
                 withCredentials: true
             });
             console.log(response.data);

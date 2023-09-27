@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button, Container, Heading, Input, Flex } from '@chakra-ui/react';
-import {instanceAxios} from '../../utils/axiosConfig';
+import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import {ErrorCodes} from './ErrorCodes';
@@ -18,7 +18,7 @@ const Login: React.FC = () => {
 
     const handleLogin = async () => {
         try {
-            const response = await instanceAxios.post('/auth/signin', loginData, {
+            const response = await axios.post('/api/v1/auth/signin', loginData, {
                 withCredentials: true
             });
             setAuthenticated(true);
