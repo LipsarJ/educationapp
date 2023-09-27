@@ -77,7 +77,7 @@ const Register: React.FC = () => {
     const handleRegister = async (values: SignupData) => {
         let error;
         try {
-            const response = await axios.post('/api/v1/auth/signup', values, {
+            const response = await axios.post(process.env.REACT_APP_API_URL+'/auth/signup', values, {
                 withCredentials: true
             });
             console.log(response.data);
