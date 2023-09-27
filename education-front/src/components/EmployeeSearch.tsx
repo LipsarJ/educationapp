@@ -30,7 +30,7 @@ const EmployeeSearch: React.FC = () => {
 
     const fetchEmployees = async (currentPage: number) => {
         try {
-            const response = await instanceAxios.get('/api/v1/users', {
+            const response = await instanceAxios.get('/users', {
                 params: {
                     filterText: searchText,
                     page: currentPage,

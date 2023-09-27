@@ -1,7 +1,7 @@
 import axios, {AxiosInstance} from 'axios';
 
 export const instanceAxios = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: '/api/v1',
     withCredentials: true
 });
 const logout = () => {
@@ -23,7 +23,7 @@ instanceAxios.interceptors.response.use(
         ) {
             originalRequest._retry = true;
             try {
-                const response = await axios.post('http://localhost:8080/api/v1/auth/refreshtoken', {}, {withCredentials: true});
+                const response = await axios.post('/api/v1/auth/refreshtoken', {}, {withCredentials: true});
                 return instanceAxios(originalRequest);
             } catch (error) {
                 logout();

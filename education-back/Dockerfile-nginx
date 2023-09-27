@@ -1,0 +1,4 @@
+RUN chmod -R 644 /var/www/html/
+USER nginx
+GROUP nginx
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

@@ -44,24 +44,27 @@ services:
       - ./compose-data/minio/minio-config:/root/.minio
     command: server /data --console-address ":9005"
 
+
   nginx:
-    image: nginx:latest
-    container_name: "nginx"
-    volumes:
-      - "/run/docker.sock:/tmp/docker.sock:ro"
-      - "./nginx.conf:/etc/nginx/conf.d/nginx.conf"
-    restart: "always"
-    networks:
-      - postgresql-net
+    image: nginx:alpine
+    container_name: nginx
     ports:
       - "80:80"
-      - "443:443"
+    volumes:
+      - ./education-front/build:/var/www/html
+      - ./default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - nginx-net
+    depends_on:
+      - education
+    build:
+      dockerfile: ./education-back/Dockerfile-nginx
 
   education:
     container_name: education
     build:
-      context: .
-      dockerfile: education-back/Dockerfile
+      context: ./education-back
+      dockerfile: Dockerfile-back
     ports:
       - "8080:8080"
     environment:
@@ -73,6 +76,7 @@ services:
     networks:
       - minio-net
       - postgresql-net
+      - nginx-net
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
       interval: 10s
@@ -83,8 +87,11 @@ services:
         condition: service_healthy
       minio:
         condition: service_healthy
+
 networks:
   postgresql-net:
     driver: bridge
   minio-net:
+    driver: bridge
+  nginx-net:
     driver: bridge
