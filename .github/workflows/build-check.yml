@@ -65,4 +65,4 @@ jobs:
           port: 22
           script: |
             cd root/educationapp
-            docker-compose -f prod-docker-compose.yaml restart education
+            docker compose -f prod-docker-compose.yaml restart education
