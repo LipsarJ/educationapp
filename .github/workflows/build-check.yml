@@ -64,4 +64,4 @@ jobs:
           key: ${{ secrets.SERVER_SSH }}
           script: |
             cd educationapp
-            docker compose -f prod-docker-compose.yaml restart education
+            docker compose -f prod-docker-compose.yaml up education -d --build
