@@ -43,7 +43,7 @@ const Login: React.FC = () => {
             if (errorCode == ErrorCodes.BadCredits) {
                 setError('Неверный логин или пароль');
             } else {
-                console.error(error);
+                setError('Что-то пошло не так, попробуйте позже.');
             }
         }
         setLoadingLogin(false);
