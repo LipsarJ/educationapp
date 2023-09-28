@@ -4,6 +4,7 @@ import {Button, Container, FormControl, FormErrorMessage, Heading, Input} from '
 import {useNavigate} from 'react-router-dom';
 import {ErrorCodes} from './ErrorCodes'
 import axios from 'axios';
+import {ThreeDots} from 'react-loader-spinner';
 
 interface SignupData {
     username: string;
@@ -19,8 +20,9 @@ const Register: React.FC = () => {
 
     const [errorUsername, setErrorUsername] = useState("");
     const [errorEmail, setErrorEmail] = useState("");
-    console.log(errorEmail);
-    console.log(errorUsername);
+    const [isLoading, setLoading] = useState(false);
+    const [globalError, setGlobalError] = useState("");
+    const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
     const validateUsername = (value: string) => {
         if (!value) {
@@ -75,28 +77,37 @@ const Register: React.FC = () => {
     }
 
     const handleRegister = async (values: SignupData) => {
+        setGlobalError("");
         let error;
+        setLoading(true);
         try {
-            const response = await axios.post(process.env.REACT_APP_API_URL+'/auth/signup', values, {
+            const response = await axios.post(process.env.REACT_APP_API_URL + '/auth/signup', values, {
                 withCredentials: true
             });
             console.log(response.data);
             navigate('/login');
         } catch (error: any) {
             console.error(error);
-            const errorCode = error.response.data.errorCode;
-            if (errorCode == ErrorCodes.UsernameTaken) {
-                setErrorUsername("Имя пользователя занято");
+            if (error && error.response && error.response.data && error.response.data.errorCode) {
+                const errorCode = error.response.data.errorCode;
+                if (errorCode == ErrorCodes.UsernameTaken) {
+                    setErrorUsername("Имя пользователя занято");
+                }
+                if (errorCode == ErrorCodes.EmailTaken) {
+                    setErrorEmail("E-mail уже используется");
+                }
             }
-            if (errorCode == ErrorCodes.EmailTaken) {
-                setErrorEmail("E-mail уже используется");
+            else {
+                setGlobalError("Что-то пошло не так, попробуйте позже.");
             }
         }
+        setLoading(false);
     };
 
     return (
         <Container mt="5" centerContent>
             <Heading mb={4} size="lg">Зарегистрироваться</Heading>
+            {globalError && <div style={{ color: 'red' }}>{globalError}</div>}
             <Formik
                 initialValues={{
                     username: '',
@@ -152,7 +163,14 @@ const Register: React.FC = () => {
                         </Field>
                         <Field name='password' validate={validatePassword}>
                             {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.password && form.touched.password} width="100%">
+                                <FormControl isInvalid={form.errors.password && form.touched.password} width="100%"
+                                             onChange={() => {
+                                                 if (form.errors.password) {
+                                                     form.setFieldError('password', ''); // Удаление ошибки
+                                                 }
+                                                 field.onChange(field.name);
+                                             }}
+                                >
                                     <Input {...field}
                                            mb={2}
                                            width="100%"
@@ -163,7 +181,14 @@ const Register: React.FC = () => {
                         </Field>
                         <Field name='firstname' validate={validateFirstname}>
                             {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.firstname && form.touched.firstname} width="100%">
+                                <FormControl isInvalid={form.errors.firstname && form.touched.firstname} width="100%"
+                                             onChange={() => {
+                                                 if (form.errors.firstname) {
+                                                     form.setFieldError('firstname', ''); // Удаление ошибки
+                                                 }
+                                                 field.onChange(field.name);
+                                             }}
+                                >
                                     <Input {...field}
                                            mb={2}
                                            width="100%"
@@ -174,7 +199,14 @@ const Register: React.FC = () => {
                         </Field>
                         <Field name='lastname' validate={validateLastname}>
                             {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.lastname && form.touched.lastname} width="100%">
+                                <FormControl isInvalid={form.errors.lastname && form.touched.lastname} width="100%"
+                                             onChange={() => {
+                                                 if (form.errors.lastname) {
+                                                     form.setFieldError('lastname', ''); // Удаление ошибки
+                                                 }
+                                                 field.onChange(field.name);
+                                             }}
+                                >
                                     <Input {...field}
                                            mb={2}
                                            width="100%"
@@ -185,7 +217,14 @@ const Register: React.FC = () => {
                         </Field>
                         <Field name='middlename' validate={validateMiddlename}>
                             {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.middlename && form.touched.middlename} width="100%">
+                                <FormControl isInvalid={form.errors.middlename && form.touched.middlename} width="100%"
+                                             onChange={() => {
+                                                 if (form.errors.middlename) {
+                                                     form.setFieldError('middlename', ''); // Удаление ошибки
+                                                 }
+                                                 field.onChange(field.name);
+                                             }}
+                                >
                                     <Input {...field}
                                            mb={2}
                                            width="100%"
@@ -195,8 +234,13 @@ const Register: React.FC = () => {
                             )}
                         </Field>
                         <Button mt={5} color="white" bg="facebook.400" size="lg" type='submit' mx="auto"
-                                display="block">
-                            Зарегистрироваться
+                                display="block" >
+                            {isLoading ? (<ThreeDots height={"10px"} color="white"/>)
+                                :
+                                (<>
+                                        Зарегистрироваться
+                                    </>
+                                )}
                         </Button>
                     </Form>
                 )}
