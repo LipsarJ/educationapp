@@ -23,7 +23,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public Page<UserInfoDto> getUsersWithPaginationAndFilter(String filterText, Pageable pageable) {
         Specification<User> spec = UserSpecifications.searchByFilterText(filterText);
-        Page<User> usersPage = userRepo.findAllIgnoreCase(spec, pageable);
+        Page<User> usersPage = userRepo.findAll(spec, pageable);
 
         return usersPage.map(user -> new UserInfoDto(user.getId(), user.getUsername(), user.getFirstname(), user.getMiddlename(), user.getLastname()));
     }
