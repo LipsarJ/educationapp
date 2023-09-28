@@ -122,7 +122,7 @@ public class AuthController {
 
         userRepo.save(user);
 
-        return ResponseEntity.ok(new ErrorResponse("User registered Baaaad", null));
+        return ResponseEntity.ok(new ErrorResponse("User registered successfully)", null));
     }
 
     @PostMapping("/signout")
