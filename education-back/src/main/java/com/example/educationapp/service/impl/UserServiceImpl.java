@@ -24,10 +24,7 @@ public class UserServiceImpl implements UserService {
     public Page<UserInfoDto> getUsersWithPaginationAndFilter(String filterText, Pageable pageable) {
         Specification<User> spec = UserSpecifications.searchByFilterText(filterText);
         Page<User> usersPage = userRepo.findAll(spec, pageable);
-
-        if (usersPage.isEmpty()) {
-            throw new UserNotFoundException("No users found with the given filter on this page.");
-        }
+        
         return usersPage.map(user -> new UserInfoDto(user.getId(), user.getUsername(), user.getFirstname(), user.getMiddlename(), user.getLastname()));
     }
 }
