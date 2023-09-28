@@ -64,5 +64,5 @@ jobs:
           key: ${{ secrets.SERVER_SSH }}
           port: 22
           script: |
-            cd root/educationapp
+            cd educationapp
             docker compose -f prod-docker-compose.yaml restart education
