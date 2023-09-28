@@ -32,4 +32,4 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SERVER_SSH }}
           source: "./education-front/build"
-          target: ""
+          target: "./root/educationapp"
