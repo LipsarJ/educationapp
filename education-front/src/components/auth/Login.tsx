@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import {ErrorCodes} from './ErrorCodes';
+import {ThreeDots} from 'react-loader-spinner'
 
 interface LoginData {
     username: string;
@@ -15,8 +16,19 @@ const Login: React.FC = () => {
     const {setAuthenticated, setUser} = useAuth();
     const [loginData, setLoginData] = useState<LoginData>({username: '', password: ''});
     const [error, setError] = useState<string | null>(null);
+    const [isLoadingLogin, setLoadingLogin] = useState(false);
+    const [isLoadingRegister, setLoadingRegister] = useState(false);
+
+    const fetchDataLogin = () => {
+        setLoadingLogin(true);
+    }
+
+    const fetchDataRegister = () => {
+        setLoadingLogin(true);
+    }
 
     const handleLogin = async () => {
+        fetchDataLogin();
         try {
             const response = await axios.post(process.env.REACT_APP_API_URL+'/auth/signin', loginData, {
                 withCredentials: true
@@ -34,6 +46,7 @@ const Login: React.FC = () => {
                 console.error(error);
             }
         }
+        setLoadingLogin(false);
     };
 
     return (
@@ -59,10 +72,12 @@ const Login: React.FC = () => {
                 w="100%"
             >
                 <Button bg="facebook.400" size="md" flex="1" mr={2} color="white" onClick={handleLogin}>
-                    Войти
+                    {isLoadingLogin ? (<ThreeDots height={"10px"} color="white" />) : (<>
+                        Войти</>)}
                 </Button>
-                <Button as={Link} to="/register" bg="facebook.400" ml={2} size="md" flex="1" color="white">
-                    Регистрация
+                <Button as={Link} to="/register" bg="facebook.400" ml={2} size="md" flex="1" color="white" onClick={fetchDataRegister}>
+                    {isLoadingRegister ? (<ThreeDots height={"10px"} color="white" />) : (<>
+                    Регистрация</>)}
                 </Button>
             </Flex>
         </Container>
