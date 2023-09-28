@@ -15,9 +15,9 @@ import {instanceAxios} from '../utils/axiosConfig';
 interface Employee {
     id: number;
     username: string;
-    firstName: string;
-    middleName: string;
-    lastName: string;
+    firstname: string;
+    middlename: string;
+    lastname: string;
 }
 
 const EmployeeSearch: React.FC = () => {
@@ -90,9 +90,9 @@ const EmployeeSearch: React.FC = () => {
                 {employees.map((emp) => (
                     <Box key={emp.id} w="full" p={5} borderWidth={1} borderRadius="md" borderColor={borderColor}>
                         <Text>Username: {emp.username}</Text>
-                        <Text>First Name: {emp.firstName}</Text>
-                        <Text>Middle Name: {emp.middleName}</Text>
-                        <Text>Last Name: {emp.lastName}</Text>
+                        <Text>First Name: {emp.firstname}</Text>
+                        <Text>Middle Name: {emp.middlename}</Text>
+                        <Text>Last Name: {emp.lastname}</Text>
                     </Box>
                 ))}
             </VStack>
