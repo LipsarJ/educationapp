@@ -125,7 +125,7 @@ const Register: React.FC = () => {
                     <Form style={{minWidth: '100%'}}>
                         <Field name='username' validate={validateUsername}>
                             {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={errorUsername && form.touched.username} width="100%"
+                                <FormControl isInvalid={errorUsername && form.touched.username && globalError == ""} width="100%"
                                              onChange={() => {
                                                  if (errorUsername) {
                                                      setErrorUsername('');
@@ -144,7 +144,7 @@ const Register: React.FC = () => {
 
                         <Field name='email' validate={validateEmail}>
                             {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={errorEmail && form.touched.email} width="100%"
+                                <FormControl isInvalid={errorEmail && form.touched.email && globalError == ""} width="100%"
                                              onChange={() => {
                                                  if (errorEmail) {
                                                      setErrorEmail('');
@@ -163,7 +163,7 @@ const Register: React.FC = () => {
                         </Field>
                         <Field name='password' validate={validatePassword}>
                             {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.password && form.touched.password} width="100%"
+                                <FormControl isInvalid={form.errors.password && form.touched.password && globalError == ""} width="100%"
                                              onChange={() => {
                                                  if (form.errors.password) {
                                                      form.setFieldError('password', ''); // Удаление ошибки
@@ -181,7 +181,7 @@ const Register: React.FC = () => {
                         </Field>
                         <Field name='firstname' validate={validateFirstname}>
                             {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.firstname && form.touched.firstname} width="100%"
+                                <FormControl isInvalid={form.errors.firstname && form.touched.firstname && globalError == ""} width="100%"
                                              onChange={() => {
                                                  if (form.errors.firstname) {
                                                      form.setFieldError('firstname', ''); // Удаление ошибки
@@ -199,7 +199,7 @@ const Register: React.FC = () => {
                         </Field>
                         <Field name='lastname' validate={validateLastname}>
                             {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.lastname && form.touched.lastname} width="100%"
+                                <FormControl isInvalid={form.errors.lastname && form.touched.lastname && globalError == ""} width="100%"
                                              onChange={() => {
                                                  if (form.errors.lastname) {
                                                      form.setFieldError('lastname', ''); // Удаление ошибки
@@ -217,7 +217,7 @@ const Register: React.FC = () => {
                         </Field>
                         <Field name='middlename' validate={validateMiddlename}>
                             {({field, form}: { field: any; form: any }) => (
-                                <FormControl isInvalid={form.errors.middlename && form.touched.middlename} width="100%"
+                                <FormControl isInvalid={form.errors.middlename && form.touched.middlename && globalError == ""} width="100%"
                                              onChange={() => {
                                                  if (form.errors.middlename) {
                                                      form.setFieldError('middlename', ''); // Удаление ошибки
