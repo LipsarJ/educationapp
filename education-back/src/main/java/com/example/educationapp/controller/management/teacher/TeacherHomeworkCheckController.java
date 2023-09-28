@@ -1,6 +1,6 @@
 package com.example.educationapp.controller.management.teacher;
 
-import com.example.educationapp.controlleradvice.ErrorResponse;
+import com.example.educationapp.controlleradvice.SimpleResponse;
 import com.example.educationapp.dto.request.teacher.RequestTeacherCheckHomeworkDto;
 import com.example.educationapp.dto.response.HomeworkDoneInfoPage;
 import com.example.educationapp.dto.response.student.ResponseHomeworkDoneStudentDto;
@@ -31,10 +31,10 @@ public class TeacherHomeworkCheckController {
                             schema = @Schema(implementation = HomeworkDoneInfoPage.class))),
             @ApiResponse(responseCode = "404", description = "Урок, задача или ДЗ не найдены",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class))),
+                            schema = @Schema(implementation = SimpleResponse.class))),
             @ApiResponse(responseCode = "400", description = "Введены неверные данные",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public HomeworkDoneInfoPage getAllHomeworksDoneForTask(@PathVariable Long id, @PathVariable Long lessonId,
                                                            @PathVariable Long homeworkTaskId,
@@ -59,10 +59,10 @@ public class TeacherHomeworkCheckController {
                             schema = @Schema(implementation = ResponseHomeworkDoneStudentDto.class))),
             @ApiResponse(responseCode = "404", description = "Урок, задача, выполненное ДЗ или студент не найдены",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class))),
+                            schema = @Schema(implementation = SimpleResponse.class))),
             @ApiResponse(responseCode = "400", description = "Введены неверные данные",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public ResponseHomeworkDoneStudentDto setGradeToHomework(@PathVariable Long id, @PathVariable Long lessonId,
                                                              @PathVariable Long homeworkTaskId, @PathVariable Long homeworkDoneId,

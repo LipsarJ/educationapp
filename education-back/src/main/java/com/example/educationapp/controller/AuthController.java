@@ -1,6 +1,6 @@
 package com.example.educationapp.controller;
 
-import com.example.educationapp.controlleradvice.ErrorResponse;
+import com.example.educationapp.controlleradvice.SimpleResponse;
 import com.example.educationapp.controlleradvice.AuthErrors;
 import com.example.educationapp.dto.request.LoginDto;
 import com.example.educationapp.dto.request.SignupDto;
@@ -56,7 +56,7 @@ public class AuthController {
                             schema = @Schema(implementation = UserLoginDto.class))),
             @ApiResponse(responseCode = "401", description = "Если неверные данные для аутентификации",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDto loginDto) {
         try {
@@ -88,7 +88,7 @@ public class AuthController {
                     .body(userLoginDto);
         } catch (AuthenticationException ex) {
             return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
-                    .body(new ErrorResponse("Invalid username or password", AuthErrors.BAD_CREDITIANS));
+                    .body(new SimpleResponse("Invalid username or password", AuthErrors.BAD_CREDITIANS));
         }
     }
 
@@ -97,18 +97,18 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Возвращает сообщение об успешной регистрации пользователя",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ErrorResponse.class))),
+                            schema = @Schema(implementation = SimpleResponse.class))),
             @ApiResponse(responseCode = "400", description = "Если данные пользователя некорректны",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupDto signUpDto) {
         if (userRepo.existsByUsername(signUpDto.username())) {
-            return ResponseEntity.badRequest().body(new ErrorResponse("Error: Username is already taken!", AuthErrors.USERNAME_TAKEN));
+            return ResponseEntity.badRequest().body(new SimpleResponse("Error: Username is already taken!", AuthErrors.USERNAME_TAKEN));
         }
 
         if (userRepo.existsByEmailIgnoreCase(signUpDto.email())) {
-            return ResponseEntity.badRequest().body(new ErrorResponse("Error: Email is already in use!", AuthErrors.EMAIL_TAKEN));
+            return ResponseEntity.badRequest().body(new SimpleResponse("Error: Email is already in use!", AuthErrors.EMAIL_TAKEN));
         }
 
         User user = new User();
@@ -122,14 +122,14 @@ public class AuthController {
 
         userRepo.save(user);
 
-        return ResponseEntity.ok(new ErrorResponse("User registered successfully)", null));
+        return ResponseEntity.ok(new SimpleResponse("User registered successfully!", null));
     }
 
     @PostMapping("/signout")
     @Operation(summary = "Выход пользователя")
     @ApiResponse(responseCode = "200", description = "Возвращает сообщение о успешном выходе пользователя",
             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                    schema = @Schema(implementation = ErrorResponse.class)))
+                    schema = @Schema(implementation = SimpleResponse.class)))
     public ResponseEntity<?> logoutUser() {
 
         ResponseCookie jwtCookie = jwtUtils.getCleanJwtCookie();
@@ -138,7 +138,7 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
-                .body(new ErrorResponse("You've been signed out!", null));
+                .body(new SimpleResponse("You've been signed out!", null));
     }
 
     @PostMapping("/refreshtoken")
@@ -146,10 +146,10 @@ public class AuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Возвращает сообщение об успешном обновлении токена",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ErrorResponse.class))),
+                            schema = @Schema(implementation = SimpleResponse.class))),
             @ApiResponse(responseCode = "400", description = "Если токен обновления недействителен",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public ResponseEntity<?> refreshToken(HttpServletRequest request) {
         String refreshToken = jwtUtils.getJwtRefreshFromCookies(request);
@@ -163,11 +163,11 @@ public class AuthController {
 
                         return ResponseEntity.ok()
                                 .header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
-                                .body(new ErrorResponse("Token is refreshed successfully!", null));
+                                .body(new SimpleResponse("Token is refreshed successfully!", null));
                     })
                     .orElseThrow(() -> new TokenRefreshException(refreshToken, "Refresh token is not in the database!"));
         }
 
-        return ResponseEntity.badRequest().body(new ErrorResponse("Refresh Token is empty!", null));
+        return ResponseEntity.badRequest().body(new SimpleResponse("Refresh Token is empty!", null));
     }
 }
