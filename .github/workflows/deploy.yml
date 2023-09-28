@@ -4,6 +4,10 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'education-front/**'
+
+  workflow_dispatch:
 
 jobs:
   build-and-deploy:
@@ -29,20 +33,3 @@ jobs:
           key: ${{ secrets.SERVER_SSH }}
           source: "education-front/build"
           target: "/root/educationapp/education-front/build"
-
-      - name: Build Backend
-        run: |
-          chmod 777 education-back
-          cd education-back
-          ./gradlew build
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH }}
-
-      - name: Upload Backend Build
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "education-back/build/libs"
-          target: "/root/educationapp/education-back/build/libs"
