@@ -33,6 +33,7 @@ jobs:
       - name: Build Backend
         run: |
           cd education-back
+          chmod 777 education-back
           ./gradlew build
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH }}
