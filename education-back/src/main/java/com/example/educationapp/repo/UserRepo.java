@@ -4,6 +4,7 @@ import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -30,4 +31,6 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 
     @Query("select s from User s join s.studentCourseSet c where c =:course")
     Page<User> findByCourse(Course course, Pageable pageable);
+
+    Page<User> findAllIgnoreCase(Specification<User> spec, Pageable pageable);
 }
