@@ -49,26 +49,26 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleNotFoundException(NotFoundException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), null);
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+    public ResponseEntity<SimpleResponse> handleNotFoundException(NotFoundException ex) {
+        SimpleResponse simpleResponse = new SimpleResponse(ex.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(simpleResponse);
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    public ResponseEntity<ErrorResponse> handleForbiddenException(ForbiddenException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), null);
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(errorResponse);
+    public ResponseEntity<SimpleResponse> handleForbiddenException(ForbiddenException ex) {
+        SimpleResponse simpleResponse = new SimpleResponse(ex.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(simpleResponse);
     }
 
     @ExceptionHandler(TokenRefreshException.class)
-    public ResponseEntity<ErrorResponse> handleTokenRefreshException(TokenRefreshException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), null);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+    public ResponseEntity<SimpleResponse> handleTokenRefreshException(TokenRefreshException ex) {
+        SimpleResponse simpleResponse = new SimpleResponse(ex.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(simpleResponse);
     }
 
     @ExceptionHandler(BadDataException.class)
-    public ResponseEntity<ErrorResponse> handleBadDataException(BadDataException ex) {
-        ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), null);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+    public ResponseEntity<SimpleResponse> handleBadDataException(BadDataException ex) {
+        SimpleResponse simpleResponse = new SimpleResponse(ex.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(simpleResponse);
     }
 }

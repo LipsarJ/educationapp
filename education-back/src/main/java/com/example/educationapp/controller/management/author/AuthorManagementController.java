@@ -1,6 +1,6 @@
 package com.example.educationapp.controller.management.author;
 
-import com.example.educationapp.controlleradvice.ErrorResponse;
+import com.example.educationapp.controlleradvice.SimpleResponse;
 import com.example.educationapp.dto.request.management.author.AddOrRemoveAuthorsDto;
 import com.example.educationapp.dto.request.management.author.AddOrRemoveTeachersDto;
 import com.example.educationapp.dto.response.ResponseUserDto;
@@ -31,7 +31,7 @@ public class AuthorManagementController {
                             schema = @Schema(implementation = ResponseUserDto.class))),
             @ApiResponse(responseCode = "404", description = "Курс не найден",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public List<ResponseUserDto> getAuthorsForCourse(@PathVariable Long id) {
         return authorManagementService.getAllAuthorsForCourse(id);
@@ -45,7 +45,7 @@ public class AuthorManagementController {
                             schema = @Schema(implementation = ResponseUserDto.class))),
             @ApiResponse(responseCode = "404", description = "Курс не найден",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public List<ResponseUserDto> addAuthorsForCourse(@PathVariable Long id, @RequestBody AddOrRemoveAuthorsDto addOrRemoveAuthorsDto) {
         return authorManagementService.addAuthorsForCourse(id, addOrRemoveAuthorsDto);
@@ -59,7 +59,7 @@ public class AuthorManagementController {
                             schema = @Schema(implementation = ResponseUserDto.class))),
             @ApiResponse(responseCode = "404", description = "Курс не найден",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public List<ResponseUserDto> removeAuthorsForCourse(@PathVariable Long id, @RequestBody AddOrRemoveAuthorsDto addOrRemoveAuthorsDto) {
         return authorManagementService.removeAuthorsForCourse(id, addOrRemoveAuthorsDto);
@@ -73,7 +73,7 @@ public class AuthorManagementController {
                             schema = @Schema(implementation = ResponseUserDto.class))),
             @ApiResponse(responseCode = "404", description = "Курс не найден",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public List<ResponseUserDto> getTeachersForCourse(@PathVariable Long id) {
         return authorManagementService.getAllTeachersForCourse(id);
@@ -87,7 +87,7 @@ public class AuthorManagementController {
                             schema = @Schema(implementation = ResponseUserDto.class))),
             @ApiResponse(responseCode = "404", description = "Курс не найден",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public List<ResponseUserDto> addTeachersForCourse(@PathVariable Long id, @RequestBody AddOrRemoveTeachersDto addOrRemoveTeachersDto) {
         return authorManagementService.addTeachersForCourse(id, addOrRemoveTeachersDto);
@@ -101,7 +101,7 @@ public class AuthorManagementController {
                             schema = @Schema(implementation = ResponseUserDto.class))),
             @ApiResponse(responseCode = "404", description = "Курс не найден",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public List<ResponseUserDto> removeTeachersForCourse(@PathVariable Long id, @RequestBody AddOrRemoveTeachersDto addOrRemoveTeachersDto) {
         return authorManagementService.removeTeachersForCourse(id, addOrRemoveTeachersDto);

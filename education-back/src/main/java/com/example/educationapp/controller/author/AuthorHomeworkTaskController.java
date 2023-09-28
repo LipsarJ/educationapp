@@ -1,6 +1,6 @@
 package com.example.educationapp.controller.author;
 
-import com.example.educationapp.controlleradvice.ErrorResponse;
+import com.example.educationapp.controlleradvice.SimpleResponse;
 import com.example.educationapp.dto.request.RequestHomeworkTaskDto;
 import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
 import com.example.educationapp.service.AuthorHomeworkTaskService;
@@ -52,7 +52,7 @@ public class AuthorHomeworkTaskController {
                             schema = @Schema(implementation = ResponseHomeworkTaskDto.class))),
             @ApiResponse(responseCode = "404", description = "Если задание не найдено",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public ResponseEntity<ResponseHomeworkTaskDto> getTask(@PathVariable Long courseId, @PathVariable Long lessonId,
                                                            @PathVariable Long id) {
@@ -68,7 +68,7 @@ public class AuthorHomeworkTaskController {
                             schema = @Schema(implementation = ResponseHomeworkTaskDto.class))),
             @ApiResponse(responseCode = "404", description = "Если задание не найдено",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public ResponseEntity<ResponseHomeworkTaskDto> updateTask(@PathVariable Long courseId, @PathVariable Long lessonId,
                                                               @PathVariable Long id, @RequestBody RequestHomeworkTaskDto requestHomeworkTaskDto) {

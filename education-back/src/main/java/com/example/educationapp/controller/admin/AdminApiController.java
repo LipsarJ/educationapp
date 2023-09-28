@@ -1,17 +1,14 @@
 package com.example.educationapp.controller.admin;
 
-import com.example.educationapp.controlleradvice.ErrorResponse;
+import com.example.educationapp.controlleradvice.SimpleResponse;
 import com.example.educationapp.dto.request.UpdateUserDto;
 import com.example.educationapp.dto.request.admin.UpdatePasswordDto;
-import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.dto.response.admin.UserAdminResponseDto;
 import com.example.educationapp.service.admin.AdminApiService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,7 +36,7 @@ public class AdminApiController {
                             responseCode = "400",
                             description = "Если запрос некорректный",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ErrorResponse.class))
+                                    schema = @Schema(implementation = SimpleResponse.class))
                     )
             }
     )
@@ -61,7 +58,7 @@ public class AdminApiController {
                             responseCode = "404",
                             description = "Если пользователь не найден",
                             content = @Content(mediaType = MediaType.APPLICATION_JSON_VALUE,
-                                    schema = @Schema(implementation = ErrorResponse.class))
+                                    schema = @Schema(implementation = SimpleResponse.class))
                     ),
             }
     )

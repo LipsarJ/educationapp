@@ -1,6 +1,6 @@
 package com.example.educationapp.controller.management.teacher;
 
-import com.example.educationapp.controlleradvice.ErrorResponse;
+import com.example.educationapp.controlleradvice.SimpleResponse;
 import com.example.educationapp.dto.request.management.teacher.AddOrRemoveStudentsDto;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.dto.response.UserInfoDto;
@@ -35,10 +35,10 @@ public class TeacherManagement {
                             schema = @Schema(implementation = UserInfoPage.class))),
             @ApiResponse(responseCode = "404", description = "Курс или студент не найдены",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class))),
+                            schema = @Schema(implementation = SimpleResponse.class))),
             @ApiResponse(responseCode = "400", description = "Введены невенрные данные",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public UserInfoPage getAllStudentsForCourse(@PathVariable Long id, Pageable pageable) {
         Page<UserInfoDto> studentsPage = teacherManagementService.getAllStudentsForCourse(id, pageable);
@@ -58,10 +58,10 @@ public class TeacherManagement {
                             schema = @Schema(implementation = ResponseUserDto.class))),
             @ApiResponse(responseCode = "404", description = "Курс или студент не найдены",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class))),
+                            schema = @Schema(implementation = SimpleResponse.class))),
             @ApiResponse(responseCode = "400", description = "Введены невенрные данные",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public List<ResponseUserDto> addStudentsForCourse(@PathVariable Long id, @RequestBody AddOrRemoveStudentsDto addOrRemoveStudentsDto) {
         return teacherManagementService.addStudentsForCourse(id, addOrRemoveStudentsDto);
@@ -75,10 +75,10 @@ public class TeacherManagement {
                             schema = @Schema(implementation = ResponseUserDto.class))),
             @ApiResponse(responseCode = "404", description = "Курс или студент не найдены",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class))),
+                            schema = @Schema(implementation = SimpleResponse.class))),
             @ApiResponse(responseCode = "400", description = "Введены невенрные данные",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public List<ResponseUserDto> removeStudentsForCourse(@PathVariable Long id, @RequestBody AddOrRemoveStudentsDto addOrRemoveStudentsDto) {
         return teacherManagementService.removeStudentsForCourse(id, addOrRemoveStudentsDto);

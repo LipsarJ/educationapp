@@ -1,6 +1,6 @@
 package com.example.educationapp.controller.author;
 
-import com.example.educationapp.controlleradvice.ErrorResponse;
+import com.example.educationapp.controlleradvice.SimpleResponse;
 import com.example.educationapp.dto.request.RequestLessonDto;
 import com.example.educationapp.dto.response.ResponseLessonDto;
 import com.example.educationapp.service.AuthorLessonService;
@@ -50,7 +50,7 @@ public class AuthorLessonController {
                             schema = @Schema(implementation = ResponseLessonDto.class))),
             @ApiResponse(responseCode = "404", description = "Если урок не найден",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public ResponseEntity<ResponseLessonDto> getLesson(@PathVariable Long courseId, @PathVariable Long id) {
         ResponseLessonDto responseLessonDto = authorLessonService.getLesson(courseId, id);
@@ -65,7 +65,7 @@ public class AuthorLessonController {
                             schema = @Schema(implementation = ResponseLessonDto.class))),
             @ApiResponse(responseCode = "404", description = "Если урок не найден",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public ResponseEntity<ResponseLessonDto> updateLesson(@PathVariable Long courseId, @PathVariable Long id, @RequestBody RequestLessonDto requestLessonDto) {
         ResponseLessonDto updatedLessonDto = authorLessonService.updateLesson(courseId, id, requestLessonDto);

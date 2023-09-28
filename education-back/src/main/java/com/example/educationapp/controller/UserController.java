@@ -1,6 +1,6 @@
 package com.example.educationapp.controller;
 
-import com.example.educationapp.controlleradvice.ErrorResponse;
+import com.example.educationapp.controlleradvice.SimpleResponse;
 import com.example.educationapp.dto.response.UserInfoDto;
 import com.example.educationapp.dto.response.UserInfoPage;
 import com.example.educationapp.service.UserService;
@@ -32,10 +32,10 @@ public class UserController {
                             schema = @Schema(implementation = UserInfoDto.class))),
             @ApiResponse(responseCode = "404", description = "Если пользователь не найден.",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class))),
+                            schema = @Schema(implementation = SimpleResponse.class))),
             @ApiResponse(responseCode = "400", description = "Если введены неверные параметры пагинации.",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ErrorResponse.class)))
+                            schema = @Schema(implementation = SimpleResponse.class)))
     })
     public UserInfoPage getUsersWithPagination(
             @RequestParam(name = "filterText", required = false) @Schema(example = "Lipsar") String filterText,
