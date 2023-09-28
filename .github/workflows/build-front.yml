@@ -1,6 +1,10 @@
 name: build-front
 
 on:
+  pull_request:
+    types: [ opened, reopened, synchronize ]
+    paths:
+      - 'education-front/**'
   push:
     branches:
       - master
@@ -26,6 +30,7 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH }}
 
       - name: Upload Frontend Build
+        if: ${{ github.event_name == 'push' }}
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SSH_HOST }}
