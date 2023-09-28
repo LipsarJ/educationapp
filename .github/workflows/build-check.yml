@@ -53,7 +53,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_SERVER }}
+          key: ${{ secrets.SERVER_SSH }}
           source: "./education-back/build/libs"
           target: "/root/educationapp/"
       - name: SSH into the server
@@ -61,7 +61,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_SERVER }}
+          key: ${{ secrets.SERVER_SSH }}
           port: 22
           script: |
             cd root/educationapp
