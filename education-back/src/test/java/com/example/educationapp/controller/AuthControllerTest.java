@@ -107,7 +107,7 @@ public class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(signupDto)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.message").value("User registered Baaaad!"));
+                .andExpect(jsonPath("$.message").value("User registered Baaaad"));
     }
 
     @Test
