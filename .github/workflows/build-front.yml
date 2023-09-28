@@ -31,5 +31,5 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SERVER_SSH }}
-          source: "education-front/build"
-          target: "/root/educationapp/education-front/build"
+          source: "./education-front/build"
+          target: "./root/educationapp/education-front/build"
