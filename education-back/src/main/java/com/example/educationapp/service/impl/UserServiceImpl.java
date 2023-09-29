@@ -2,7 +2,6 @@ package com.example.educationapp.service.impl;
 
 import com.example.educationapp.dto.response.UserInfoDto;
 import com.example.educationapp.entity.User;
-import com.example.educationapp.exception.UserNotFoundException;
 import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.repo.specification.UserSpecifications;
 import com.example.educationapp.service.UserService;

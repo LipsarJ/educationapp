@@ -1,10 +1,11 @@
 package com.example.educationapp.controller.author;
 
+import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.RequestLessonDto;
 import com.example.educationapp.dto.response.ResponseLessonDto;
 import com.example.educationapp.entity.LessonStatus;
-import com.example.educationapp.exception.InvalidStatusException;
-import com.example.educationapp.exception.LessonNotFoundException;
+import com.example.educationapp.exception.extend.InvalidStatusException;
+import com.example.educationapp.exception.extend.LessonNotFoundException;
 import com.example.educationapp.service.AuthorLessonService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -143,7 +144,7 @@ public class AuthorLessonControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         when(authorLessonService.createLesson(anyLong(), eq(requestDto)))
-                .thenThrow(new InvalidStatusException("Lesson can be only created with Active status."));
+                .thenThrow(new InvalidStatusException("Lesson can be only created with Active status.", Errors.STATUS_IS_INVALID));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/author/lessons/{courseId}", 1L).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)

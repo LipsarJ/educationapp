@@ -1,5 +1,6 @@
 package com.example.educationapp.service.student;
 
+import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.student.RequestHomeworkDoneStudentDto;
 import com.example.educationapp.dto.response.student.ResponseCourseStudentDto;
 import com.example.educationapp.dto.response.student.ResponseHomeworkDoneStudentDto;
@@ -7,6 +8,7 @@ import com.example.educationapp.dto.response.student.ResponseHomeworkTaskStudent
 import com.example.educationapp.dto.response.student.ResponseLessonStudentDto;
 import com.example.educationapp.entity.*;
 import com.example.educationapp.exception.BadDataException;
+import com.example.educationapp.exception.NotFoundException;
 import com.example.educationapp.mapper.student.StudentCourseMapper;
 import com.example.educationapp.repo.HomeworkDoneRepo;
 import com.example.educationapp.utils.CourseUtils;
@@ -69,7 +71,7 @@ public class StudentService {
             return studentCourseMapper.toResponseHomeworkDoneDto(homeworkDone);
         }
         else {
-            throw new BadDataException("You already have solution for this task.");
+            throw new BadDataException("You already have solution for this task.", Errors.HWD_ALREADY_EXISTS);
         }
     }
 
@@ -82,7 +84,7 @@ public class StudentService {
             return studentCourseMapper.toResponseHomeworkDoneDto(homeworkDone);
         }
         else {
-            throw new BadDataException("Solution for this task is not found");
+            throw new NotFoundException("Solution for this task is not found");
         }
     }
 }

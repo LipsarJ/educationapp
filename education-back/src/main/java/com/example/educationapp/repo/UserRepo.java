@@ -31,4 +31,6 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 
     @Query("select s from User s join s.studentCourseSet c where c =:course")
     Page<User> findByCourse(Course course, Pageable pageable);
+
+    Integer countByStudentCourseSet(Course courses);
 }

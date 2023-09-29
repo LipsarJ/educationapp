@@ -1,11 +1,13 @@
 package com.example.educationapp.service.management.author;
 
+import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.management.author.AddOrRemoveAuthorsDto;
 import com.example.educationapp.dto.request.management.author.AddOrRemoveTeachersDto;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.User;
 import com.example.educationapp.exception.BadDataException;
+import com.example.educationapp.exception.ForbiddenException;
 import com.example.educationapp.mapper.UserMapper;
 import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.utils.CourseUtils;
@@ -41,7 +43,7 @@ public class AuthorManagementService {
                 author.getAuthorCourseSet().add(course);
                 userRepo.save(author);
             } else {
-                throw new BadDataException(String.format("User with id: %s is already author of this course", author.getId()));
+                throw new BadDataException(String.format("User with id: %s is already author of this course", author.getId()), Errors.AUTHOR_ALREADY_EXISTS);
             }
         }
         return authors.stream()
@@ -58,7 +60,7 @@ public class AuthorManagementService {
                 author.getAuthorCourseSet().remove(course);
                 userRepo.save(author);
             } else {
-                throw new BadDataException(String.format("User with id: %s is not author of this course", author.getId()));
+                throw new ForbiddenException(String.format("User with id: %s is not author of this course", author.getId()));
             }
         }
         return authors.stream()
@@ -84,7 +86,7 @@ public class AuthorManagementService {
                 teacher.getTeacherCourseSet().add(course);
                 userRepo.save(teacher);
             } else {
-                throw new BadDataException(String.format("User with id: %s is already teacher of this course", teacher.getId()));
+                throw new BadDataException(String.format("User with id: %s is already teacher of this course", teacher.getId()), Errors.TEACHER_ALREADY_EXISTS);
             }
         }
         return teachers.stream()
@@ -101,7 +103,7 @@ public class AuthorManagementService {
                 teacher.getTeacherCourseSet().remove(course);
                 userRepo.save(teacher);
             } else {
-                throw new BadDataException(String.format("User with id: %s is not teacher of this course", teacher.getId()));
+                throw new ForbiddenException(String.format("User with id: %s is not teacher of this course", teacher.getId()));
             }
         }
         return teachers.stream()

@@ -26,6 +26,12 @@ const Header: React.FC<HeaderProps> = ({onToggleSidebar, isSidebarOpen, isMobile
         case '/persons':
             currentPage = 'Пользователи';
             break;
+        case '/courses':
+            currentPage = 'Курсы';
+            break;
+        case '/courses/create':
+            currentPage = "Создание курса"
+            break;
         default:
             currentPage = '';
     }

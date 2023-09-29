@@ -5,13 +5,13 @@ import com.example.educationapp.entity.HomeworkDone;
 import com.example.educationapp.entity.HomeworkTask;
 import com.example.educationapp.entity.Lesson;
 import com.example.educationapp.entity.User;
-import com.example.educationapp.exception.BadDataException;
-import com.example.educationapp.exception.HomeworkDoneNotFoundException;
-import com.example.educationapp.exception.HomeworkTaskNotFoundException;
-import com.example.educationapp.exception.UserNotFoundException;
+import com.example.educationapp.exception.ForbiddenException;
+import com.example.educationapp.exception.extend.HomeworkDoneNotFoundException;
+import com.example.educationapp.exception.extend.HomeworkTaskNotFoundException;
+import com.example.educationapp.exception.extend.UserNotFoundException;
+import com.example.educationapp.repo.HomeworkDoneRepo;
 import com.example.educationapp.repo.HomeworkTaskRepo;
 import com.example.educationapp.repo.UserRepo;
-import com.example.educationapp.repo.HomeworkDoneRepo;
 import com.example.educationapp.security.service.UserContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -29,7 +29,7 @@ public class HomeworkUtils {
         Lesson lesson = lessonUtils.getLessonForStudentValidatedCourse(id, lessonId);
         HomeworkTask homeworkTask = homeworkTaskRepo.findById(homeworkTaskId).orElseThrow(() -> new HomeworkTaskNotFoundException("HomeworkTask is not found"));
         if (!lesson.getHomeworkTaskList().contains(homeworkTask)) {
-            throw new BadDataException("This homework task is not for this lesson");
+            throw new ForbiddenException("This homework task is not for this lesson");
         }
         return homeworkTask;
     }
@@ -38,7 +38,7 @@ public class HomeworkUtils {
         Lesson lesson = lessonUtils.getLessonForTeacherValidatedCourse(id, lessonId);
         HomeworkTask homeworkTask = homeworkTaskRepo.findById(homeworkTaskId).orElseThrow(() -> new HomeworkTaskNotFoundException("HomeworkTask is not found"));
         if (!lesson.getHomeworkTaskList().contains(homeworkTask)) {
-            throw new BadDataException("This homework task is not for this lesson");
+            throw new ForbiddenException("This homework task is not for this lesson");
         }
         return homeworkTask;
     }
@@ -64,7 +64,7 @@ public class HomeworkUtils {
         Lesson lesson = lessonUtils.getLessonForTeacherValidatedCourse(id, lessonId);
         HomeworkTask homeworkTask = homeworkTaskRepo.findById(homeworkTaskId).orElseThrow(() -> new HomeworkTaskNotFoundException("HomeworkTask is not found"));
         if (!lesson.getHomeworkTaskList().contains(homeworkTask)) {
-            throw new BadDataException("This homework task is not for this lesson");
+            throw new ForbiddenException("This homework task is not for this lesson");
         }
         HomeworkDone homeworkDone = homeworkDoneRepo.findById(homeworkDoneId).orElseThrow(() -> new HomeworkDoneNotFoundException(String.format("Homework solution with id: %s is not found", homeworkDoneId)));
         homeworkDone.setTeacher(teacher);

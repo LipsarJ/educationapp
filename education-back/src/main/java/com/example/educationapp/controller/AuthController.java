@@ -1,7 +1,7 @@
 package com.example.educationapp.controller;
 
+import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.controlleradvice.SimpleResponse;
-import com.example.educationapp.controlleradvice.AuthErrors;
 import com.example.educationapp.dto.request.LoginDto;
 import com.example.educationapp.dto.request.SignupDto;
 import com.example.educationapp.dto.response.UserLoginDto;
@@ -32,7 +32,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -88,7 +91,7 @@ public class AuthController {
                     .body(userLoginDto);
         } catch (AuthenticationException ex) {
             return ResponseEntity.status(org.springframework.http.HttpStatus.UNAUTHORIZED)
-                    .body(new SimpleResponse("Invalid username or password", AuthErrors.BAD_CREDITIANS));
+                    .body(new SimpleResponse("Invalid username or password", Errors.BAD_CREDITIANS));
         }
     }
 
@@ -104,11 +107,11 @@ public class AuthController {
     })
     public ResponseEntity<?> registerUser(@Valid @RequestBody SignupDto signUpDto) {
         if (userRepo.existsByUsername(signUpDto.username())) {
-            return ResponseEntity.badRequest().body(new SimpleResponse("Error: Username is already taken!", AuthErrors.USERNAME_TAKEN));
+            return ResponseEntity.badRequest().body(new SimpleResponse("Error: Username is already taken!", Errors.USERNAME_TAKEN));
         }
 
         if (userRepo.existsByEmailIgnoreCase(signUpDto.email())) {
-            return ResponseEntity.badRequest().body(new SimpleResponse("Error: Email is already in use!", AuthErrors.EMAIL_TAKEN));
+            return ResponseEntity.badRequest().body(new SimpleResponse("Error: Email is already in use!", Errors.EMAIL_TAKEN));
         }
 
         User user = new User();

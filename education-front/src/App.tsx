@@ -4,7 +4,9 @@ import {AuthProvider} from './contexts/AuthContext';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
+import CreateCourse from './components/authors/CreateCourse'
 import Home from './components/Home';
+import Courses from './components/authors/Courses'
 import EmployeeSearch from './components/EmployeeSearch';
 import Header from './components/Header'; // Импортируйте компонент Header
 import Sidebar from './components/Sidebar';
@@ -37,6 +39,8 @@ function App() {
                             <Route path="/persons" element={<EmployeeSearch/>}/>
                             <Route path="/login" element={<Login/>}/>
                             <Route path="/register" element={<Register/>}/>
+                            <Route path="/courses" element={<Courses/>}/>
+                            <Route path="/courses/create" element={<CreateCourse/>}/>
                         </Routes>
                     </Flex>
                 </BrowserRouter>

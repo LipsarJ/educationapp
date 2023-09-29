@@ -1,13 +1,14 @@
 package com.example.educationapp.service;
 
+import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.RequestHomeworkTaskDto;
 import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
 import com.example.educationapp.entity.HomeworkTask;
 import com.example.educationapp.entity.Lesson;
 import com.example.educationapp.entity.MediaHomeworkTask;
-import com.example.educationapp.exception.HomeworkTaskNameException;
-import com.example.educationapp.exception.HomeworkTaskNotFoundException;
-import com.example.educationapp.exception.LessonNotFoundException;
+import com.example.educationapp.exception.extend.HomeworkTaskNameException;
+import com.example.educationapp.exception.extend.HomeworkTaskNotFoundException;
+import com.example.educationapp.exception.extend.LessonNotFoundException;
 import com.example.educationapp.mapper.HomeworkTaskMapper;
 import com.example.educationapp.repo.HomeworkTaskRepo;
 import com.example.educationapp.repo.LessonRepo;
@@ -47,7 +48,7 @@ public class AuthorHomeworkTaskService {
         Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
 
         if (homeworkTaskRepo.existsByTitle(requestHomeworkTaskDto.getTitle())) {
-            throw new HomeworkTaskNameException("Homework Task with this name is already exists.");
+            throw new HomeworkTaskNameException("Homework Task with this name is already exists.", Errors.HW_ALREADY_EXISTS);
         }
 
         HomeworkTask homeworkTask = homeworkTaskMapper.toEntity(requestHomeworkTaskDto);
@@ -75,7 +76,7 @@ public class AuthorHomeworkTaskService {
         HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new HomeworkTaskNotFoundException("Homework Task is not found"));
 
         if (homeworkTaskRepo.existsByTitleAndIdNot(requestHomeworkTaskDto.getTitle(), id)) {
-            throw new HomeworkTaskNameException("Homework task with this name is already exists.");
+            throw new HomeworkTaskNameException("Homework task with this name is already exists.", Errors.HW_ALREADY_EXISTS);
         }
         HomeworkTask updatedHomeworkTask = homeworkTaskMapper.toEntity(requestHomeworkTaskDto);
         homeworkTask.setTitle(updatedHomeworkTask.getTitle());

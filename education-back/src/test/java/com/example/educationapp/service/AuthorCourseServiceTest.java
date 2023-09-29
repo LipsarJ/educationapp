@@ -99,7 +99,7 @@ public class AuthorCourseServiceTest {
         when(userRepo.findById(user.getId())).thenReturn(Optional.of(user));
         when(courseMapper.toEntity(requestCourseDto)).thenReturn(course);
         when(courseRepo.save(course)).thenReturn(course);
-        when(courseMapper.toResponseDto(course)).thenReturn(new ResponseCourseDto(course.getId(), course.getCourseName(), course.getCourseStatus(), OffsetDateTime.now(), OffsetDateTime.now()));
+        when(courseMapper.toResponseDto(course)).thenReturn(new ResponseCourseDto(course.getId(), course.getCourseName(), course.getCourseStatus(), OffsetDateTime.now(), OffsetDateTime.now(), 0));
 
         ResponseCourseDto response = authorCourseService.createCourse(requestCourseDto);
 

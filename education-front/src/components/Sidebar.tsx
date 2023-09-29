@@ -1,6 +1,6 @@
 import React from 'react'
 import {Avatar, Divider, Flex, Heading, useMediaQuery} from '@chakra-ui/react'
-import {FiHome, FiLogIn, FiLogOut,} from 'react-icons/fi'
+import {FiHome, FiLogIn, FiLogOut, FiBook} from 'react-icons/fi'
 import {IoPeople} from 'react-icons/io5'
 import NavItem from './NaviItem'
 import {useAuth} from '../contexts/AuthContext';
@@ -51,6 +51,9 @@ export default function Sidebar({isSidebarOpen, isMobile}: { isSidebarOpen: bool
                     <NavItem title="Войти" icon={FiLogIn} description="Вход" url="/login"/>
                 ) : (
                     <>
+                        {user && user.roles.includes("AUTHOR")
+                            && (<NavItem title="Мои курсы" icon={FiBook} description="Список курсов" url="/courses"/>)
+                        }
                         <NavItem title="Поиск сотрудников" icon={IoPeople} description="Поиск сотрудников"
                                  url="/persons"/>
                         <div onClick={handleLogout} style={{cursor: 'pointer', width: "100%"}}>
