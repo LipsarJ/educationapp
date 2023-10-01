@@ -12,6 +12,11 @@ import Header from './components/Header'; // Импортируйте компо
 import Sidebar from './components/Sidebar';
 import theme from './theme';
 import SidebarOverlay from './components/SidebarOverlay';
+import CourseDetails from './components/CourseDetails'
+import CreateLesson from './components/authors/CreateLesson'
+import LessonDetails from './components/LessonDetails'
+import CreateTask from './components/authors/CreateTask'
+import TaskDetails from './components/TaskDetails'
 
 function App() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -41,6 +46,11 @@ function App() {
                             <Route path="/register" element={<Register/>}/>
                             <Route path="/courses" element={<Courses/>}/>
                             <Route path="/courses/create" element={<CreateCourse/>}/>
+                            <Route path="/courses/:id" element={<CourseDetails/>}/>
+                            <Route path="/lessons/create/:courseId" element={<CreateLesson/>}/>
+                            <Route path="/lessons/:id/:lessonId" element={<LessonDetails/>}/>
+                            <Route path="/tasks/create/:courseId/:lessonId" element={<CreateTask/>}/>
+                            <Route path="/tasks/:courseId/:lessonId/:id" element={<TaskDetails/>}/>
                         </Routes>
                     </Flex>
                 </BrowserRouter>

@@ -4,6 +4,7 @@ import com.example.educationapp.entity.CourseStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "ДТО для курса, который получаем при запросе от пользователя")
 public class RequestCourseDto {
     @NotBlank
+    @Size(min = 3, max = 20)
     @Schema(description = "Имя курса, которое вводит пользователь", example = "Введение в программирование")
     private String courseName;
 

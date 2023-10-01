@@ -21,9 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -70,7 +69,9 @@ public class AuthorCourseService {
 
     public ResponseCourseDto getCourse(Long id) {
         Course course = courseUtils.validateAndGetCourseForAuthor(id);
-        return courseMapper.toResponseDto(course);
+        ResponseCourseDto responseCourseDto = courseMapper.toResponseDto(course);
+        responseCourseDto.setCountStd(userRepo.countByStudentCourseSet(course));
+        return responseCourseDto;
     }
 
     @Transactional
@@ -80,8 +81,14 @@ public class AuthorCourseService {
             throw new CourseNameException("Course name is already exists", Errors.COURSE_NAME_TAKEN);
         }
 
+        CourseStatus newStatus;
         CourseStatus currentStatus = course.getCourseStatus();
-        CourseStatus newStatus = requestCourseDto.getCourseStatus();
+
+        if (requestCourseDto.getCourseStatus() == null) {
+            newStatus = course.getCourseStatus();
+        } else {
+            newStatus = requestCourseDto.getCourseStatus();
+        }
 
         if (!courseUtils.isStatusChangeValid(currentStatus, newStatus)) {
             throw new InvalidStatusException("Invalid status change.", Errors.STATUS_IS_INVALID);
@@ -89,29 +96,41 @@ public class AuthorCourseService {
 
 
         course.setCourseName(requestCourseDto.getCourseName());
-        course.setCourseStatus(requestCourseDto.getCourseStatus());
+        course.setCourseStatus(newStatus);
         courseRepo.save(course);
+        ResponseCourseDto responseCourseDto = courseMapper.toResponseDto(course);
 
-        return courseMapper.toResponseDto(course);
+        return responseCourseDto;
     }
 
     @Transactional
     public void deleteCourse(Long id) {
         Course course = courseUtils.validateAndGetCourseForAuthor(id);
         ResponseUserDto responseUserDto = userContext.getUserDto();
+
         if (course.getCourseStatus() != CourseStatus.TEMPLATE) {
             throw new InvalidStatusException("Course can only be deleted if it's in TEMPLATE status.", Errors.STATUS_IS_INVALID);
         }
-        User user = userRepo.findById(responseUserDto.getId()).orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        User user = userRepo.findById(responseUserDto.getId())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         user.getAuthorCourseSet().remove(course);
         userRepo.save(user);
-        for (Lesson lesson : course.getLessonList()) {
-            authorLessonService.deleteLesson(id, lesson.getId());
+
+        for (User student : course.getStudents()) {
+            student.getStudentCourseSet().remove(course);
+            userRepo.save(student);
         }
-        course.getStudents().clear();
-        course.getTeachers().clear();
-        course.getAuthors().clear();
-        course.getLessonList().clear();
+
+        for (User author : course.getAuthors()) {
+            author.getAuthorCourseSet().remove(course);
+            userRepo.save(author);
+        }
+
+        for (User teacher : course.getTeachers()) {
+            teacher.getTeacherCourseSet().remove(course);
+            userRepo.save(teacher);
+        }
 
         courseRepo.delete(course);
     }

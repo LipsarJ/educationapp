@@ -44,10 +44,10 @@ public class HomeworkTask {
     @JsonIgnore
     private Lesson lesson;
 
-    @OneToMany(mappedBy = "taskMedia")
+    @OneToMany(mappedBy = "taskMedia", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MediaHomeworkTask> mediaHomeworkTaskList = new ArrayList<MediaHomeworkTask>();
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<HomeworkDone> homeworkDoneList = new ArrayList<HomeworkDone>();
 
     @PrePersist

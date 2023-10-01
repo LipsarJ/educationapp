@@ -43,7 +43,7 @@ public class HomeworkDone {
     @JoinColumn(name = "teacher_id")
     private User teacher;
 
-    @OneToMany(mappedBy = "homeworkDone")
+    @OneToMany(mappedBy = "homeworkDone", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MediaHomeworkDone> mediaHomeworkDoneList = new ArrayList<MediaHomeworkDone>();
 
     @Override

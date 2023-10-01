@@ -2,55 +2,58 @@ import React, {useState} from 'react';
 import {Field, Form, Formik} from 'formik';
 import {Button, Container, FormControl, FormErrorMessage, Heading, Input} from '@chakra-ui/react';
 import axios from 'axios';
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import {ThreeDots} from 'react-loader-spinner';
 import {ErrorCodes} from '../auth/ErrorCodes'
 
-interface CourseData {
-    courseName: string;
-    courseStatus: string;
+interface LessonData {
+    lessonName: string;
+    lessonStatus: string;
+    content: string;
 }
 
 const CreateCourse: React.FC = () => {
     const [isLoading, setLoading] = useState(false);
     const [globalError, setGlobalError] = useState('');
-    const [errorCourseName, setErrorCourseName] = useState('');
-    const [errorCourseStatus, setErrorCourseStatus] = useState('');
+    const [errorLessonName, setErrorLessonName] = useState('');
+    const [errorLessonStatus, setErrorLessonStatus] = useState('');
+    const {courseId} = useParams();
     const navigate = useNavigate();
 
-    const validateCourseName = (value: string) => {
+    const validateLessonName = (value: string) => {
         if (!value) {
-            setErrorCourseName("Имя курса обязательно");
+            setErrorLessonName("Имя урока обязательно");
         } else if (value.length < 3 || value.length > 50) {
-            setErrorCourseName("Имя курса должно быть от 3 до 50 символов");
+            setErrorLessonName("Имя урока должно быть от 3 до 50 символов");
         }
-        return errorCourseName;
+        return errorLessonName;
     };
 
-    const validateCourseStatus = (value: string) => {
+    const validateLessonStatus = (value: string) => {
         if (!value) {
-            setErrorCourseStatus("Статус обязателен");
+            setErrorLessonStatus("Статус обязателен");
         }
-        return errorCourseStatus;
+        return errorLessonStatus;
     };
 
-    const handleCreateCourse = async (values: CourseData) => {
-        if (!errorCourseStatus && !errorCourseName) {
+    const handleCreateLesson = async (values: LessonData) => {
+        if (!errorLessonName && !errorLessonStatus) {
             let error;
             setGlobalError('');
             setLoading(true);
             try {
-                const response = await axios.post(process.env.REACT_APP_API_URL + '/author/courses', values, {
+                const response = await axios.post(`${process.env.REACT_APP_API_URL}/author/lessons/${courseId}`, values, {
                     withCredentials: true,
                 });
-                navigate("/courses");
+                navigate(`/courses/${courseId}`);
             } catch (error: any) {
                 console.error(error);
                 if (error && error.response && error.response.data && error.response.data.errorCode) {
-                    if (error.response.data.errorCode == ErrorCodes.CourseNameTaken) {
-                        setErrorCourseName("Имя курса уже существует.")
+                    console.log(error.response.data.errorCode);
+                    if (error.response.data.errorCode == ErrorCodes.LessonNameTaken) {
+                        setErrorLessonName("Имя урока уже существует.")
                     } else if (error.response.data.errorCode == ErrorCodes.StatusIsInvalid) {
-                        setErrorCourseStatus("Урок может быть создан только в статусе TEMPLATE")
+                        setErrorLessonStatus("Урок может быть создан только в статусе ACTIVE")
                     }
                 } else {
                     setGlobalError('Что-то пошло не так, попробуйте позже.');
@@ -63,28 +66,29 @@ const CreateCourse: React.FC = () => {
     return (
         <Container mt="5" centerContent>
             <Heading mb={4} size="lg">
-                Создать курс
+                Создать урок
             </Heading>
             {globalError && <div style={{color: 'red'}}>{globalError}</div>}
             <Formik
                 initialValues={{
-                    courseName: '',
-                    courseStatus: 'TEMPLATE',
+                    lessonName: '',
+                    lessonStatus: 'NOT_ACTIVE',
+                    content: ''
                 }}
                 validateOnChange={false}
                 validateOnBlur={false}
-                onSubmit={handleCreateCourse}
+                onSubmit={handleCreateLesson}
             >
                 {() => (
                     <Form style={{minWidth: '100%'}}>
-                        <Field name="courseName" validate={validateCourseName}>
+                        <Field name="lessonName" validate={validateLessonName}>
                             {({field, form}: { field: any; form: any }) => (
                                 <FormControl
-                                    isInvalid={errorCourseName && form.touched.courseName}
+                                    isInvalid={errorLessonName && form.touched.lessonName}
                                     width="100%"
                                     onChange={() => {
-                                        if (errorCourseName) {
-                                            setErrorCourseName('');
+                                        if (errorLessonName) {
+                                            setErrorLessonName('');
                                         }
                                         field.onChange(field.name);
                                     }}
@@ -93,22 +97,22 @@ const CreateCourse: React.FC = () => {
                                         {...field}
                                         mb={2}
                                         width="100%"
-                                        placeholder="Имя курса"
+                                        placeholder="Имя урока"
                                     />
                                     <FormErrorMessage mt={0} mb={2}>
-                                        {errorCourseName}
+                                        {errorLessonName}
                                     </FormErrorMessage>
                                 </FormControl>
                             )}
                         </Field>
-                        <Field name="courseStatus" validate={validateCourseStatus}>
+                        <Field name="lessonStatus" validate={validateLessonStatus}>
                             {({field, form}: { field: any; form: any }) => (
                                 <FormControl
-                                    isInvalid={errorCourseStatus && form.touched.courseStatus}
+                                    isInvalid={errorLessonStatus && form.touched.lessonStatus}
                                     width="100%"
                                     onChange={() => {
-                                        if (errorCourseStatus) {
-                                            setErrorCourseStatus('');
+                                        if (errorLessonStatus) {
+                                            setErrorLessonStatus('');
                                         }
                                         field.onChange(field.name);
                                     }}
@@ -117,11 +121,25 @@ const CreateCourse: React.FC = () => {
                                         {...field}
                                         mb={2}
                                         width="100%"
-                                        placeholder="Статус курса"
+                                        placeholder="Статус урока"
                                     />
                                     <FormErrorMessage mt={0} mb={2}>
-                                        {errorCourseStatus}
+                                        {errorLessonStatus}
                                     </FormErrorMessage>
+                                </FormControl>
+                            )}
+                        </Field>
+                        <Field name="content">
+                            {({field, form}: { field: any; form: any }) => (
+                                <FormControl
+                                    width="100%"
+                                >
+                                    <Input
+                                        {...field}
+                                        mb={2}
+                                        width="100%"
+                                        placeholder="Содержимое урока"
+                                    />
                                 </FormControl>
                             )}
                         </Field>
@@ -137,7 +155,7 @@ const CreateCourse: React.FC = () => {
                             {isLoading ? (
                                 <ThreeDots height={'10px'} color="white"/>
                             ) : (
-                                <>Создать курс</>
+                                <>Создать урок</>
                             )}
                         </Button>
                     </Form>

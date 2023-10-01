@@ -31,7 +31,6 @@ const Login: React.FC = () => {
             });
             setAuthenticated(true);
             setUser(response.data);
-            console.log(response.data);
             navigate('/');
         } catch (error: any) {
             const errorCode = error.response.data.errorCode;

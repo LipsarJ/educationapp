@@ -53,7 +53,7 @@ public class Course {
     @JsonIgnore
     private Set<User> authors = new HashSet<>();
 
-    @OneToMany(mappedBy = "lessonsCourse")
+    @OneToMany(mappedBy = "lessonsCourse", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Lesson> lessonList = new ArrayList<Lesson>();
 
     @PrePersist

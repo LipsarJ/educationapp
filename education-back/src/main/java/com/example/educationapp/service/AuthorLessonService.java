@@ -42,7 +42,7 @@ public class AuthorLessonService {
     @Transactional
     public ResponseLessonDto createLesson(Long courseId, RequestLessonDto requestLessonDto) {
         Course course = courseUtils.validateAndGetCourseForAuthor(courseId);
-        if (requestLessonDto.getLessonStatus() == LessonStatus.NOT_ACTIVE) {
+        if (requestLessonDto.getLessonStatus() != LessonStatus.ACTIVE) {
             throw new InvalidStatusException("Lesson can be only created with Active status.", Errors.STATUS_IS_INVALID);
         } else {
             requestLessonDto.setLessonStatus(LessonStatus.ACTIVE);
@@ -68,7 +68,12 @@ public class AuthorLessonService {
     public ResponseLessonDto updateLesson(Long courseId, Long id, RequestLessonDto requestLessonDto) {
         courseUtils.validateAndGetCourseForAuthor(courseId);
         Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found"));
-        LessonStatus newStatus = requestLessonDto.getLessonStatus();
+        LessonStatus newStatus;
+        if (requestLessonDto.getLessonStatus() != null) {
+            newStatus = requestLessonDto.getLessonStatus();
+        } else {
+            newStatus = lesson.getLessonStatus();
+        }
         if (lessonRepo.existsByLessonNameAndIdNot(requestLessonDto.getLessonName(), id)) {
             throw new LessonNameException("Lesson with this name is already exists.", Errors.LESSON_NAME_TAKEN);
         }
@@ -78,7 +83,7 @@ public class AuthorLessonService {
         }
 
         lesson.setLessonName(requestLessonDto.getLessonName());
-        lesson.setLessonStatus(requestLessonDto.getLessonStatus());
+        lesson.setLessonStatus(newStatus);
         lesson.setContent(requestLessonDto.getContent());
         lessonRepo.save(lesson);
         return lessonMapper.toResponseDto(lesson);
@@ -91,12 +96,6 @@ public class AuthorLessonService {
 
         if (lesson.getLessonStatus() != LessonStatus.NOT_ACTIVE) {
             throw new InvalidStatusException("Lesson can only be deleted if it's in NOT_ACTIVE status.", Errors.STATUS_IS_INVALID);
-        }
-        for (HomeworkTask homeworkTask : lesson.getHomeworkTaskList()) {
-            authorHomeworkTaskService.deleteTask(courseId, id, homeworkTask.getId());
-        }
-        for (MediaLesson mediaLesson : lesson.getMediaLessonList()) {
-            mediaLessonRepo.delete(mediaLesson);
         }
         course.getLessonList().remove(lesson);
         courseRepo.save(course);

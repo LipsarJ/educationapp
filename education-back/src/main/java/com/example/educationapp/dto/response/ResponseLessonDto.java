@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResponseLessonDto {
+public class    ResponseLessonDto {
     @Schema(description = "Идентификатор занятия", example = "1")
     private Long id;
 
