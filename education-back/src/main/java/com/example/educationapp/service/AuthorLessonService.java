@@ -42,10 +42,10 @@ public class AuthorLessonService {
     @Transactional
     public ResponseLessonDto createLesson(Long courseId, RequestLessonDto requestLessonDto) {
         Course course = courseUtils.validateAndGetCourseForAuthor(courseId);
-        if (requestLessonDto.getLessonStatus() != LessonStatus.ACTIVE) {
-            throw new InvalidStatusException("Lesson can be only created with Active status.", Errors.STATUS_IS_INVALID);
-        } else {
+        if (requestLessonDto.getLessonStatus() == null) {
             requestLessonDto.setLessonStatus(LessonStatus.ACTIVE);
+        } else if (requestLessonDto.getLessonStatus() != LessonStatus.ACTIVE){
+            throw new InvalidStatusException("Lesson can be only created with Active status.", Errors.STATUS_IS_INVALID);
         }
         if (lessonRepo.existsByLessonName(requestLessonDto.getLessonName())) {
             throw new LessonNameException("Lesson with this name is already exists.", Errors.LESSON_NAME_TAKEN);
