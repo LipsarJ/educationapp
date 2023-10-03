@@ -3,7 +3,7 @@ package com.example.educationapp.controller.author;
 import com.example.educationapp.controlleradvice.SimpleResponse;
 import com.example.educationapp.dto.request.RequestCourseDto;
 import com.example.educationapp.dto.response.ResponseCourseDto;
-import com.example.educationapp.service.AuthorCourseService;
+import com.example.educationapp.service.author.AuthorCourseService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;

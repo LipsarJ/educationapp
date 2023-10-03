@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {NavLink, useParams} from "react-router-dom";
-import axios from "axios";
+import {instanceAxios} from '../../utils/axiosConfig';
 import {
     Box,
     Button,
@@ -19,11 +19,13 @@ import {
 import {FiX} from "react-icons/fi";
 import {ErrorCodes} from "../auth/ErrorCodes";
 import {ThreeDots} from "react-loader-spinner";
+import {useAuth} from '../../contexts/AuthContext';
 
 const TaskCard: React.FC<{ task: any, onDelete: () => void }> = ({task, onDelete}) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isLodaing, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
     const {id, lessonId} = useParams();
 
     const toggleDeleteConfirmation = () => {
@@ -35,9 +37,7 @@ const TaskCard: React.FC<{ task: any, onDelete: () => void }> = ({task, onDelete
         setIsDeleting(true);
         setLoading(true);
         try {
-            await axios.delete(`${process.env.REACT_APP_API_URL}/author/homework-tasks/${id}/${lessonId}/${task.id}`, {
-                withCredentials: true,
-            });
+            await instanceAxios.delete(`/author/homework-tasks/${id}/${lessonId}/${task.id}`);
 
             toggleDeleteConfirmation();
             setIsDeleting(false);
@@ -75,20 +75,20 @@ const TaskCard: React.FC<{ task: any, onDelete: () => void }> = ({task, onDelete
             <Heading mt={1} size="md" textAlign="center" cursor="pointer">
                 <Text as={NavLink} to={`/tasks/${id}/${lessonId}/${task.id}`}>{task.title}</Text>
             </Heading>
-
-            <Box position="absolute" right="2" top="2">
-                <Box>
-                    <FiX
-                        color="red"
-                        onClick={toggleDeleteConfirmation}
-                        style={{
-                            cursor: 'pointer',
-                            fontSize: '18px'
-                        }}
-                    />
+            {user && user.roles.includes('AUTHOR') && (
+                <Box position="absolute" right="2" top="2">
+                    <Box>
+                        <FiX
+                            color="red"
+                            onClick={toggleDeleteConfirmation}
+                            style={{
+                                cursor: 'pointer',
+                                fontSize: '18px'
+                            }}
+                        />
+                    </Box>
                 </Box>
-
-            </Box>
+            )}
 
             <Divider w="100%"></Divider>
             <Box>

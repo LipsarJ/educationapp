@@ -1,12 +1,29 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import axios from "axios";
-import {Box, Button, Flex, FormControl, FormErrorMessage, Heading, Input, Text,} from "@chakra-ui/react";
+import {instanceAxios} from '../utils/axiosConfig';
+import {
+    Box,
+    Button,
+    Flex,
+    FormControl,
+    FormErrorMessage,
+    Heading,
+    Input,
+    Text,
+    Table,
+    Thead,
+    Tbody,
+    Tr,
+    Th,
+    Td
+} from "@chakra-ui/react";
 import {Field, Form, Formik} from "formik";
-import {FiArrowLeftCircle, FiCheckSquare, FiEdit2, FiPlus, FiUserPlus} from "react-icons/fi";
+import {FiArrowLeftCircle, FiCheckSquare, FiEdit2, FiPlus, FiUsers} from "react-icons/fi";
 import {ErrorCodes} from "./auth/ErrorCodes";
 import {Oval} from "react-loader-spinner";
-import LessonCard from './authors/LessonCard'
+import LessonCard from './authors/LessonCard';
+import Statuses from './authors/Statuses';
+import {useAuth} from '../contexts/AuthContext';
 
 interface Course {
     id: number;
@@ -15,6 +32,14 @@ interface Course {
     createDate: string;
     updateDate: string;
     countStd: number;
+}
+
+interface UserData {
+    id: number;
+    username: string;
+    firstname: string;
+    middlename: string;
+    lastname: string;
 }
 
 interface Lesson {
@@ -30,6 +55,11 @@ interface CourseDto {
     courseName: string;
 }
 
+interface CourseStatusDto {
+    courseName: string;
+    courseStatus: string;
+}
+
 const CourseDetails = () => {
     const {id} = useParams();
     const [course, setCourse] = useState<Course | null>(null);
@@ -39,20 +69,39 @@ const CourseDetails = () => {
     const [isChanged, setChanged] = useState(false);
     const [lessons, setLessons] = useState<Lesson[]>([]);
     const [isDeleted, setIsDeleted] = useState(false);
+    const [authors, setAuthors] = useState<UserData[]>([]);
+    const [teachers, setTeachers] = useState<UserData[]>([]);
+    const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get<Lesson[]>(
-                    `${process.env.REACT_APP_API_URL}/author/lessons/${id}`,
-                    {withCredentials: true}
-                );
-                setLessons(response.data);
-            } catch (error) {
-                console.error(error);
+    const fetchData = async () => {
+        if (user) {
+            if (user.roles.includes('AUTHOR')) {
+                try {
+                    const response = await instanceAxios.get<Lesson[]>(`/author/lessons/${id}`);
+                    setLessons(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            } else if (user.roles.includes('TEACHER')) {
+                try {
+                    const response = await instanceAxios.get<Lesson[]>(`/teacher/lessons/${id}`);
+                    setLessons(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            } else if (user.roles.includes('TEACHER')) {
+                try {
+                    const response = await instanceAxios.get<Lesson[]>(`/student/lessons/${id}`);
+                    setLessons(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
             }
         }
+    }
+
+    useEffect(() => {
 
         fetchData();
     }, [isDeleted]);
@@ -62,20 +111,53 @@ const CourseDetails = () => {
     };
 
     const fetchCourse = async () => {
-        try {
-            const response = await axios.get(
-                `${process.env.REACT_APP_API_URL}/author/courses/${id}`,
-                {withCredentials: true}
-            );
-            setCourse(response.data);
-        } catch (error) {
-            console.error(error);
+        if (user) {
+            if (user.roles.includes('AUTHOR')) {
+                try {
+                    const response = await instanceAxios.get(`/author/courses/${id}`);
+                    setCourse(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            } else if (user.roles.includes('TEACHER')) {
+                try {
+                    const response = await instanceAxios.get(`/teacher/courses/${id}`);
+                    setCourse(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            } else if (user.roles.includes('STUDENT')) {
+                try {
+                    const response = await instanceAxios.get(`/student/courses/${id}`);
+                    setCourse(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
         }
     };
 
     useEffect(() => {
         fetchCourse();
     }, []);
+
+    useEffect(() => {
+        const fetchAuthorsAndTeachers = async () => {
+            try {
+                const authorsResponse = await instanceAxios.get<UserData[]>(`/author/courses/${id}/authors`);
+                setAuthors(authorsResponse.data);
+
+                const teachersResponse = await instanceAxios.get<UserData[]>(`/author/courses/${id}/teachers`);
+                setTeachers(teachersResponse.data);
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        if (course) {
+            fetchAuthorsAndTeachers();
+        }
+    }, [id, course]);
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -93,11 +175,7 @@ const CourseDetails = () => {
     const handleSaveClick = async (values: CourseDto) => {
         if (!error) {
             try {
-                const response = await axios.put(
-                    `${process.env.REACT_APP_API_URL}/author/courses/${id}`,
-                    values,
-                    {withCredentials: true}
-                );
+                const response = await instanceAxios.put(`/author/courses/${id}`, values);
                 setCourse(response.data);
                 setChanged(false);
                 fetchCourse();
@@ -122,6 +200,18 @@ const CourseDetails = () => {
             }
         }
     };
+
+    const handleStatusChange = async (values: CourseStatusDto) => {
+        try {
+            const response = await instanceAxios.put(
+                `/author/courses/${id}`, values);
+            setCourse(response.data);
+            setChanged(false);
+            fetchCourse();
+        } catch (error: any) {
+            console.error(error);
+        }
+    }
 
     if (!course) {
         return (
@@ -166,7 +256,6 @@ const CourseDetails = () => {
                                                     border: "none",
                                                     cursor: "pointer"
                                                 }}
-                                                disabled={!isChanged}
                                                 onClick={() => {
                                                     setIsEditing(false);
                                                     setChanged(false);
@@ -189,7 +278,7 @@ const CourseDetails = () => {
                                                     border: "none",
                                                     cursor: isChanged && !error ? "pointer" : "not-allowed",
                                                 }}
-                                                disabled={!isChanged || !!error}
+                                                isDisabled={!isChanged || !!error}
                                                 onClick={() => {
                                                     if (isChanged) {
                                                         handleSubmit();
@@ -209,8 +298,13 @@ const CourseDetails = () => {
                     </Formik>
                 </Flex>
             ) : (
-                <Flex justifyContent="center" mt={3}>
-                    <Flex alignItems="center" flexDir="column">
+                <Flex justifyContent="center" mt={3} borderRadius={8}
+                      borderWidth="1px"
+                      borderColor="grey.500"
+                      w="500px"
+                      mx="auto"
+                >
+                    <Flex alignItems="center" flexDir="column" mt={3}>
                         <Text fontSize="lg" mb={2}>
                             Статус:{" "}
                             {course.courseStatus === "TEMPLATE"
@@ -228,42 +322,95 @@ const CourseDetails = () => {
                         <Text fontSize="lg" mb={2}>
                             Количество учеников: {course.countStd}
                         </Text>
-                        <Button
-                            leftIcon={<FiEdit2/>}
-                            mt={4}
-                            color="white"
-                            colorScheme="green"
-                            w="100%"
-                            onClick={() => {
-                                setIsEditing(true);
-                            }}
-                        >
-                            Редактировать
-                        </Button>
-                        <Flex justifyContent="space-between" mt={4} gap={5} borderRadius={8}>
-                            <Button
-                                color="white"
-                                bg="blue.500"
-                                leftIcon={<FiUserPlus/>}
-                                onClick={() => {
-                                    // Добавьте логику для перехода на страницу добавления авторов
-                                }}
-                                width="50%"
+                        {user && user.roles.includes('AUTHOR') && (
+                            <Flex mt={4} flexDir="row" justifyContent="space-between" w="100%" gap={5}>
+                                <Button
+                                    leftIcon={<FiEdit2/>}
+                                    color="white"
+                                    colorScheme="green"
+                                    onClick={() => {
+                                        setIsEditing(true);
+                                    }}
+                                    width="100%"
+                                >
+                                    Редактировать
+                                </Button>
+                                {course.courseStatus !== Statuses.CourseStatusOngoing && (
+                                    <Button
+                                        leftIcon={<FiCheckSquare/>}
+                                        color="white"
+                                        colorScheme="red"
+                                        onClick={() => {
+                                            handleStatusChange({
+                                                courseName: course.courseName,
+                                                courseStatus: Statuses.CourseStatusOngoing
+                                            });
+                                        }}
+                                        width="100%"
+                                    >
+                                        Запустить курс
+                                    </Button>
+                                )}
+                            </Flex>
+                        )}
+                        {user && user.roles.includes('AUTHOR') && (
+                            <Flex justifyContent="space-between" mt={4} gap={5} borderRadius={8}>
+                                <Button
+                                    color="white"
+                                    bg="blue.500"
+                                    leftIcon={<FiUsers/>}
+                                    onClick={() => {
+                                        navigate(`/users/${id}/${'AUTHOR'}`)
+                                    }}
+                                    width="50%"
+                                >
+                                    Изменить авторов
+                                </Button>
+                                <Button
+                                    color="white"
+                                    leftIcon={<FiUsers/>}
+                                    bg="blue.500"
+                                    onClick={() => {
+                                        navigate(`/users/${id}/${'TEACHER'}`)
+                                    }}
+                                    width="50%"
+                                >
+                                    Изменить учителей
+                                </Button>
+                            </Flex>
+                        )}
+                        {!authors || !teachers ? (
+                            <Flex justifyContent="center" alignItems="center" height="100vh">
+                                <Oval color="#295C48" secondaryColor="#2B415B"/>
+                            </Flex>
+                        ) : (
+                            <Flex
+                                mt={10}
+                                mb={4}
+                                gap={5}
+                                flexDir="row"
+                                justifyContent="space-between"
+                                alignItems="flex-start"
+                                w="100%"
                             >
-                                Добавить авторов
-                            </Button>
-                            <Button
-                                color="white"
-                                leftIcon={<FiUserPlus/>}
-                                bg="blue.500"
-                                onClick={() => {
-                                    // Добавьте логику для перехода на страницу добавления учителей
-                                }}
-                                width="50%"
-                            >
-                                Добавить учителей
-                            </Button>
-                        </Flex>
+                                <Flex flexDir="column" alignItems="center" flex="1">
+                                    <Heading size="md" mb={2}>
+                                        Авторы курса
+                                    </Heading>
+                                    {authors.map((author) => (
+                                        <Text key={author.id}>{author.username}</Text>
+                                    ))}
+                                </Flex>
+                                <Flex flexDir="column" alignItems="center" flex="1">
+                                    <Heading size="md" mb={2}>
+                                        Учителя курса
+                                    </Heading>
+                                    {teachers.map((teacher) => (
+                                        <Text key={teacher.id}>{teacher.username}</Text>
+                                    ))}
+                                </Flex>
+                            </Flex>
+                        )}
                     </Flex>
                 </Flex>
             )}
@@ -310,7 +457,20 @@ const CourseDetails = () => {
 
                 </>
             )}
-
+            {user && !user.roles.includes('AUTHOR') && (
+                <Flex
+                    gap={3}
+                    mt={3}
+                    flexWrap="wrap"
+                    flexDir="row"
+                    justifyContent="center"
+                >
+                    {lessons && lessons.map((lesson: Lesson) => (
+                        <LessonCard lesson={lesson} key={lesson.id} onDelete={handleDeleteLesson}/>
+                    ))
+                    }
+                </Flex>
+            )}
         </Box>
     );
 };

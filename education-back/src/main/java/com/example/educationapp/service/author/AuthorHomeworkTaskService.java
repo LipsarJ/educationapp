@@ -1,4 +1,4 @@
-package com.example.educationapp.service;
+package com.example.educationapp.service.author;
 
 import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.RequestHomeworkTaskDto;

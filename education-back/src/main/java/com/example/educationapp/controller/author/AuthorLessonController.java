@@ -1,15 +1,13 @@
 package com.example.educationapp.controller.author;
 
-import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.controlleradvice.SimpleResponse;
 import com.example.educationapp.dto.request.RequestLessonDto;
 import com.example.educationapp.dto.response.ResponseLessonDto;
-import com.example.educationapp.exception.extend.InvalidStatusException;
-import com.example.educationapp.service.AuthorLessonService;
+import com.example.educationapp.service.author.AuthorLessonService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

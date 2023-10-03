@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Field, Form, Formik} from 'formik';
 import {Button, Container, FormControl, FormErrorMessage, Heading, Input} from '@chakra-ui/react';
-import axios from 'axios';
+import {instanceAxios} from '../../utils/axiosConfig';
 import {useNavigate, useParams} from 'react-router-dom';
 import {ThreeDots} from 'react-loader-spinner';
 import {ErrorCodes} from '../auth/ErrorCodes'
@@ -42,10 +42,8 @@ const CreateCourse: React.FC = () => {
             setGlobalError('');
             setLoading(true);
             try {
-                const response = await axios.post(`${process.env.REACT_APP_API_URL}/author/lessons/${courseId}`, values, {
-                    withCredentials: true,
-                });
-                navigate(`/courses/${courseId}`);
+                const response = await instanceAxios.post(`/author/lessons/${courseId}`, values);
+                navigate(`/lessons/${courseId}/${response.data.id}`);
             } catch (error: any) {
                 console.error(error);
                 if (error && error.response && error.response.data && error.response.data.errorCode) {

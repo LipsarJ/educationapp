@@ -17,6 +17,7 @@ import CreateLesson from './components/authors/CreateLesson'
 import LessonDetails from './components/LessonDetails'
 import CreateTask from './components/authors/CreateTask'
 import TaskDetails from './components/TaskDetails'
+import Users from './components/Users'
 
 function App() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -51,6 +52,7 @@ function App() {
                             <Route path="/lessons/:id/:lessonId" element={<LessonDetails/>}/>
                             <Route path="/tasks/create/:courseId/:lessonId" element={<CreateTask/>}/>
                             <Route path="/tasks/:courseId/:lessonId/:id" element={<TaskDetails/>}/>
+                            <Route path="/users/:id/:roleName" element={<Users/>}/>
                         </Routes>
                     </Flex>
                 </BrowserRouter>

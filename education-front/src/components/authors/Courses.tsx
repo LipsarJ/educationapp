@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {FiPlus, FiX} from 'react-icons/fi';
-import axios from 'axios';
+import {instanceAxios} from '../../utils/axiosConfig';
+import {useAuth} from '../../contexts/AuthContext';
 import {
     Box,
     Button,
@@ -34,26 +35,42 @@ const Courses: React.FC = () => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [isDeleted, setIsDeleted] = useState(false);
     const navigate = useNavigate();
+    const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
 
     const handleDeleteCourse = async () => {
         setIsDeleted(!isDeleted);
     };
+    const fetchData = async () => {
+        if (user) {
+            if (user.roles.includes('AUTHOR')) {
+                try {
+                    const response = await instanceAxios.get<Course[]>('/author/courses');
+                    setCourses(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            } else if (user.roles.includes('TEACHER')) {
+                try {
+                    const response = await instanceAxios.get<Course[]>('/teacher/courses');
+                    setCourses(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            } else if (user.roles.includes('STUDENT')) {
+                try {
+                    const response = await instanceAxios.get<Course[]>('/student/courses');
+                    setCourses(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+        }
+    };
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get<Course[]>(
-                    process.env.REACT_APP_API_URL + '/author/courses',
-                    {withCredentials: true}
-                );
-                setCourses(response.data);
-            } catch (error) {
-                console.error(error);
-            }
-        };
 
         fetchData();
-    },[isDeleted]);
+    }, [isDeleted]);
 
 
     return (
@@ -70,25 +87,27 @@ const Courses: React.FC = () => {
                         flexWrap="wrap"
                         justifyContent="center"
                     >
-                        <Flex
-                            key="create-course"
-                            padding="16px"
-                            borderRadius="8"
-                            flexBasis="400px"
-                            h="300px"
-                            gap={3}
-                            alignItems="center"
-                            justifyContent="center"
-                            cursor="pointer"
-                            color="gray"
-                            boxShadow="md"
-                            onClick={() => navigate('/courses/create')}
-                            _hover={{
-                                bg: "#F9F9F9"
-                            }}
-                        >
-                            <FiPlus size={32}/>
-                        </Flex>
+                        {user && user.roles.includes("AUTHOR") && (
+                            <Flex
+                                key="create-course"
+                                padding="16px"
+                                borderRadius="8"
+                                flexBasis="400px"
+                                h="300px"
+                                gap={3}
+                                alignItems="center"
+                                justifyContent="center"
+                                cursor="pointer"
+                                color="gray"
+                                boxShadow="md"
+                                onClick={() => navigate('/courses/create')}
+                                _hover={{
+                                    bg: "#F9F9F9"
+                                }}
+                            >
+                                <FiPlus size={32}/>
+                            </Flex>
+                        )}
                         {courses && courses.map((course: Course) => (
                             <CourseCard course={course} key={course.id} onDelete={handleDeleteCourse}/>
                         ))}

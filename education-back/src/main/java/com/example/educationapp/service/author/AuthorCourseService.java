@@ -1,4 +1,4 @@
-package com.example.educationapp.service;
+package com.example.educationapp.service.author;
 
 import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.RequestCourseDto;
@@ -6,7 +6,6 @@ import com.example.educationapp.dto.response.ResponseCourseDto;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.CourseStatus;
-import com.example.educationapp.entity.Lesson;
 import com.example.educationapp.entity.User;
 import com.example.educationapp.exception.extend.CourseNameException;
 import com.example.educationapp.exception.extend.InvalidStatusException;
@@ -21,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Service

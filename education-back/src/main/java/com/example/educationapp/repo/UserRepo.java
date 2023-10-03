@@ -1,10 +1,10 @@
 package com.example.educationapp.repo;
 
 import com.example.educationapp.entity.Course;
+import com.example.educationapp.entity.Role;
 import com.example.educationapp.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -29,8 +29,14 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 
     Set<User> findByIdIn(List<Long> userIds);
 
-    @Query("select s from User s join s.studentCourseSet c where c =:course")
+    @Query("select u from User u join u.studentCourseSet c where c =:course")
     Page<User> findByCourse(Course course, Pageable pageable);
 
     Integer countByStudentCourseSet(Course courses);
+
+    @Query("select u from User u join u.roleSet r where r = :role")
+    Page<User> findAllByRole(Role role, Pageable pageable);
+
+    @Query("select c from Course c join c.teachers t where t = :teacher")
+    List<Course> findCoursesByTeacher(User teacher);
 }

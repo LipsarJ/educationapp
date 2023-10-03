@@ -1,12 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
-import axios from "axios";
+import {instanceAxios} from '../utils/axiosConfig';
 import {Box, Button, Flex, FormControl, FormErrorMessage, Heading, Input, Text,} from "@chakra-ui/react";
 import {Field, Form, Formik} from "formik";
 import {FiArrowLeftCircle, FiCheckSquare, FiEdit2} from "react-icons/fi";
 import {ErrorCodes} from "./auth/ErrorCodes";
 import {Oval, ThreeDots} from "react-loader-spinner";
 import {format} from "date-fns-tz";
+import {useAuth} from '../contexts/AuthContext';
 
 interface Task {
     id: number;
@@ -33,20 +34,37 @@ const TaskDetails = () => {
     const [errorDate, setErrorDate] = useState("");
     const [globalError, setGlobalError] = useState("");
     const [isChanged, setChanged] = useState(false);
+    const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchTask = async () => {
-            try {
-                const response = await axios.get<Task>(
-                    `${process.env.REACT_APP_API_URL}/author/homework-tasks/${courseId}/${lessonId}/${id}`,
-                    {withCredentials: true}
-                );
-                setTask(response.data);
-            } catch (error) {
-                console.error(error);
+    const fetchTask = async () => {
+        if (user) {
+            if (user.roles.includes('AUTHOR')) {
+                try {
+                    const response = await instanceAxios.get<Task>(`/author/homework-tasks/${courseId}/${lessonId}/${id}`);
+                    setTask(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            } else if (user.roles.includes('TEACHER')) {
+                try {
+                    const response = await instanceAxios.get<Task>(`/teacher/homework-tasks/${courseId}/${lessonId}/${id}`);
+                    setTask(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            } else if (user.roles.includes('STUDENT')) {
+                try {
+                    const response = await instanceAxios.get<Task>(`/student/homework-tasks/${courseId}/${lessonId}/${id}`);
+                    setTask(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
             }
-        };
+        }
+    };
+
+    useEffect(() => {
 
         fetchTask();
     }, [courseId, lessonId, id]);
@@ -105,11 +123,7 @@ const TaskDetails = () => {
             try {
                 const inputDate = new Date(values.deadlineDate);
                 values.deadlineDate = format(inputDate, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", {timeZone: 'UTC'});
-                const response = await axios.put(
-                    `${process.env.REACT_APP_API_URL}/author/homework-tasks/${courseId}/${lessonId}/${id}`,
-                    values,
-                    {withCredentials: true}
-                );
+                const response = await instanceAxios.put(`/author/homework-tasks/${courseId}/${lessonId}/${id}`, values);
                 setTask(response.data);
                 setChanged(false);
             } catch (error: any) {
@@ -271,8 +285,12 @@ const TaskDetails = () => {
                     </Formik>
                 </Flex>
             ) : (
-                <Flex alignItems="center" justifyContent="center" mt={3}>
-                    <Flex alignItems="center" textAlign="center" flexDir="column" mx="auto">
+                <Flex alignItems="center" justifyContent="center" mt={3} borderRadius={8}
+                      borderWidth="1px"
+                      borderColor="grey.500"
+                      w="500px"
+                      mx="auto">
+                    <Flex alignItems="center" textAlign="center" flexDir="column" mx="auto" mb={4} mt={3}>
                         <Text fontSize="lg"> Заголовок задания: {task.title}</Text>
                         <Text fontSize="lg"> Описание задания: {task.description}</Text>
                         <Text fontSize="lg" mb={2}>
@@ -282,18 +300,20 @@ const TaskDetails = () => {
                             Дата обновления: {task.updateDate}
                         </Text>
                         <Text fontSize="lg">Дата сдачи: {task.deadlineDate}</Text>
-                        <Button
-                            leftIcon={<FiEdit2/>}
-                            mt={4}
-                            color="white"
-                            colorScheme="green"
-                            onClick={() => {
-                                setIsEditing(true);
-                            }}
-                            width="100%"
-                        >
-                            Редактировать
-                        </Button>
+                        {user && user.roles.includes('AUTHOR') && (
+                            <Button
+                                leftIcon={<FiEdit2/>}
+                                mt={4}
+                                color="white"
+                                colorScheme="green"
+                                onClick={() => {
+                                    setIsEditing(true);
+                                }}
+                                width="100%"
+                            >
+                                Редактировать
+                            </Button>
+                        )}
                     </Flex>
                 </Flex>
             )}

@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Field, Form, Formik} from 'formik';
 import {Button, Container, FormControl, FormErrorMessage, Heading, Input} from '@chakra-ui/react';
-import axios from 'axios';
+import {instanceAxios} from '../../utils/axiosConfig';
 import {useNavigate, useParams} from 'react-router-dom';
 import {ThreeDots} from 'react-loader-spinner';
 import {ErrorCodes} from '../auth/ErrorCodes'
@@ -66,17 +66,15 @@ const CreateTask: React.FC = () => {
     };
 
     const handleCreateTask = async (values: TaskData) => {
-        if (!errorDate && !errorTitle) {
+        if (!errorDate && !errorTitle && !errorDesc) {
             let error;
             setGlobalError('');
             setLoading(true);
             try {
                 const inputDate = new Date(values.deadlineDate);
                 values.deadlineDate = format(inputDate, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", {timeZone: 'UTC'});
-                const response = await axios.post(`${process.env.REACT_APP_API_URL}/author/homework-tasks/${courseId}/${lessonId}`, values, {
-                    withCredentials: true,
-                });
-                navigate(`/lessons/${courseId}/${lessonId}`);
+                const response = await instanceAxios.post(`/author/homework-tasks/${courseId}/${lessonId}`, values);
+                navigate(`/tasks/${courseId}/${lessonId}/${response.data.id}`);
             } catch (error: any) {
                 console.error(error);
                 if (error && error.response && error.response.data && error.response.data.errorCode) {

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {NavLink, useNavigate, useParams} from "react-router-dom";
-import axios from "axios";
+import {instanceAxios} from '../utils/axiosConfig';
+import {useAuth} from '../contexts/AuthContext';
 import {
     Box,
     Button,
@@ -24,6 +25,7 @@ import {FiArrowLeftCircle, FiCheckSquare, FiEdit2, FiPlus, FiX} from "react-icon
 import {ErrorCodes} from "./auth/ErrorCodes";
 import {Oval, ThreeDots} from "react-loader-spinner";
 import TaskCard from './authors/TaskCard'
+import Statuses from './authors/Statuses'
 
 interface Task {
     id: number;
@@ -48,6 +50,12 @@ interface LessonDto {
     content: string;
 }
 
+interface LessonStatusDto {
+    lessonName: string;
+    content: string;
+    lessonStatus: string;
+}
+
 const LessonDetails = () => {
     const {id, lessonId} = useParams();
     const [lesson, setLesson] = useState<Lesson | null>(null);
@@ -58,18 +66,36 @@ const LessonDetails = () => {
     const [isChanged, setChanged] = useState(false);
     const [tasks, setTasks] = useState<Task[]>([]);
     const [isDeleted, setIsDeleted] = useState(false);
+    const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const response = await axios.get<Task[]>(
-                    `${process.env.REACT_APP_API_URL}/author/homework-tasks/${id}/${lessonId}`,
-                    {withCredentials: true}
-                );
-                setTasks(response.data);
-            } catch (error) {
-                console.error(error);
+            if (user) {
+                if (user.roles.includes('AUTHOR')) {
+                    const fetchData = async () => {
+                        try {
+                            const response = await instanceAxios.get<Task[]>(`/author/homework-tasks/${id}/${lessonId}`);
+                            setTasks(response.data);
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    }
+                } else if (user.roles.includes('TEACHER')) {
+                    try {
+                        const response = await instanceAxios.get<Task[]>(`/teacher/homework-tasks/${id}/${lessonId}`);
+                        setTasks(response.data);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                } else if (user.roles.includes('STUDENT')) {
+                    try {
+                        const response = await instanceAxios.get<Task[]>(`/student/homework-tasks/${id}/${lessonId}`);
+                        setTasks(response.data);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                }
             }
         };
 
@@ -81,14 +107,29 @@ const LessonDetails = () => {
     };
 
     const fetchLesson = async () => {
-        try {
-            const response = await axios.get(
-                `${process.env.REACT_APP_API_URL}/author/lessons/${id}/${lessonId}`,
-                {withCredentials: true}
-            );
-            setLesson(response.data);
-        } catch (error) {
-            console.error(error);
+        if (user) {
+            if (user.roles.includes('AUTHOR')) {
+                try {
+                    const response = await instanceAxios.get(`/author/lessons/${id}/${lessonId}`);
+                    setLesson(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            } else if (user.roles.includes('TEACHER')) {
+                try {
+                    const response = await instanceAxios.get(`/teacher/lessons/${id}/${lessonId}`);
+                    setLesson(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            } else if (user.roles.includes('STUDENT')) {
+                try {
+                    const response = await instanceAxios.get(`/student/lessons/${id}/${lessonId}`);
+                    setLesson(response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
         }
     };
 
@@ -115,11 +156,8 @@ const LessonDetails = () => {
             setGlobalError('');
             setLoading(true);
             try {
-                const response = await axios.put(
-                    `${process.env.REACT_APP_API_URL}/author/lessons/${id}/${lessonId}`,
-                    values,
-                    {withCredentials: true}
-                );
+                const response = await instanceAxios.put(
+                    `/author/lessons/${id}/${lessonId}`, values);
                 setLesson(response.data);
                 setChanged(false);
                 fetchLesson();
@@ -141,6 +179,17 @@ const LessonDetails = () => {
             setLoading(false);
         }
     };
+
+    const handleStatusChange = async (values: LessonStatusDto) => {
+        try {
+            const response = await instanceAxios.put(`/author/lessons/${id}/${lessonId}`, values);
+            setLesson(response.data);
+            setChanged(false);
+            fetchLesson();
+        } catch (error: any) {
+            console.error(error);
+        }
+    }
 
     if (!lesson) {
         return (
@@ -230,8 +279,13 @@ const LessonDetails = () => {
                     </Formik>
                 </Flex>
             ) : (
-                <Flex alignItems="center" justifyContent="center" mt={3}>
-                    <Flex alignItems="center" textAlign="center" flexDir="column" mx="auto">
+                <Flex alignItems="center" justifyContent="center" mt={3} borderWidth="1px"
+                      borderColor="grey.500"
+                      w="500px"
+                      mx="auto"
+                      borderRadius={8}
+                >
+                    <Flex alignItems="center" textAlign="center" flexDir="column" mx="auto" mt={3}>
                         <Text fontSize="lg" mb={2}>
                             Статус:{" "}
                             {lesson.lessonStatus === "ACTIVE"
@@ -246,18 +300,37 @@ const LessonDetails = () => {
                         <Text fontSize="lg" mb={2}>
                             Дата обновления: {lesson.updateDate}
                         </Text>
-                        <Button
-                            leftIcon={<FiEdit2/>}
-                            mt={4}
-                            color="white"
-                            colorScheme="green"
-                            onClick={() => {
-                                setIsEditing(true);
-                            }}
-                            width="100%"
-                        >
-                            Редактировать
-                        </Button>
+                        {user && user.roles.includes('AUTHOR') && (
+                            <Flex mt={4} mb={4} flexDir="row" justifyContent="space-between" w="100%" gap={5}>
+                                <Button
+                                    leftIcon={<FiEdit2/>}
+                                    color="white"
+                                    colorScheme="green"
+                                    onClick={() => {
+                                        setIsEditing(true);
+                                    }}
+                                    width="100%"
+                                >
+                                    Редактировать
+                                </Button>
+                                {lesson.lessonStatus !== Statuses.LessonStatusActive && (<Button
+                                        leftIcon={<FiCheckSquare/>}
+                                        color="white"
+                                        colorScheme="red"
+                                        onClick={() => {
+                                            handleStatusChange({
+                                                lessonName: lesson.lessonName,
+                                                content: lesson.content,
+                                                lessonStatus: Statuses.LessonStatusActive
+                                            });
+                                        }}
+                                        width="100%"
+                                    >
+                                        Запустить урок
+                                    </Button>
+                                )}
+                            </Flex>
+                        )}
                     </Flex>
                 </Flex>
             )}
@@ -298,6 +371,13 @@ const LessonDetails = () => {
                         </Flex>
                     </Flex>
                 </Box>
+            )}
+            {user && !user.roles.includes('AUTHOR') && (
+                <Flex gap={4} flexWrap="wrap" justifyContent="center" mt={3}>
+                    {tasks && tasks.map((task: Task) => (
+                        <TaskCard task={task} key={task.id} onDelete={handleDeleteTask}/>
+                    ))}
+                </Flex>
             )}
         </Box>
     );

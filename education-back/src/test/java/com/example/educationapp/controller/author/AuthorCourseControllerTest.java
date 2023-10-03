@@ -7,7 +7,7 @@ import com.example.educationapp.entity.CourseStatus;
 import com.example.educationapp.exception.extend.CourseNameException;
 import com.example.educationapp.exception.extend.InvalidStatusException;
 import com.example.educationapp.exception.extend.UserNotFoundException;
-import com.example.educationapp.service.AuthorCourseService;
+import com.example.educationapp.service.author.AuthorCourseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

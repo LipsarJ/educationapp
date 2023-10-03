@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {FiX} from 'react-icons/fi';
-import axios from 'axios';
+import {instanceAxios} from '../../utils/axiosConfig';
+import {useAuth} from '../../contexts/AuthContext';
 import {
     Box,
     Button,
@@ -24,6 +25,7 @@ const CourseCard: React.FC<{ course: any, onDelete: () => void }> = ({course, on
     const [isDeleting, setIsDeleting] = useState(false);
     const [isLodaing, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
 
     const toggleDeleteConfirmation = () => {
         setIsDeleting(!isDeleting);
@@ -34,9 +36,7 @@ const CourseCard: React.FC<{ course: any, onDelete: () => void }> = ({course, on
         try {
             setIsDeleting(true);
             setLoading(true);
-            await axios.delete(`${process.env.REACT_APP_API_URL}/author/courses/${course.id}`, {
-                withCredentials: true,
-            });
+            await instanceAxios.delete(`/author/courses/${course.id}`);
             setIsDeleting(false);
             toggleDeleteConfirmation();
             setLoading(false);
@@ -58,7 +58,7 @@ const CourseCard: React.FC<{ course: any, onDelete: () => void }> = ({course, on
         <Flex
             padding="16px"
             marginBottom="16px"
-            position = "relative"
+            position="relative"
             borderRadius="8"
             flexBasis="400px"
             h="300px"
@@ -98,18 +98,20 @@ const CourseCard: React.FC<{ course: any, onDelete: () => void }> = ({course, on
                     {course.countStd}
                 </Text>
             </Box>
-            <Box position="absolute" right="2" top="2">
-                <Box>
-                    <FiX
-                        color="red"
-                        onClick={toggleDeleteConfirmation}
-                        style={{
-                            cursor: 'pointer',
-                            fontSize: '18px'
-                        }}
-                    />
+            {user && user.roles.includes('AUTHOR') && (
+                <Box position="absolute" right="2" top="2">
+                    <Box>
+                        <FiX
+                            color="red"
+                            onClick={toggleDeleteConfirmation}
+                            style={{
+                                cursor: 'pointer',
+                                fontSize: '18px'
+                            }}
+                        />
+                    </Box>
                 </Box>
-            </Box>
+            )}
 
             <Modal isOpen={isDeleting} onClose={toggleDeleteConfirmation}>
                 <ModalOverlay/>

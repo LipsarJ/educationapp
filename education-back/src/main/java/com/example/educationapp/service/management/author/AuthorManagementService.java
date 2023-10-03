@@ -3,12 +3,14 @@ package com.example.educationapp.service.management.author;
 import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.management.author.AddOrRemoveAuthorsDto;
 import com.example.educationapp.dto.request.management.author.AddOrRemoveTeachersDto;
-import com.example.educationapp.dto.response.ResponseUserDto;
+import com.example.educationapp.dto.response.UserInfoDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.User;
 import com.example.educationapp.exception.BadDataException;
 import com.example.educationapp.exception.ForbiddenException;
+import com.example.educationapp.exception.extend.CourseNotFoundException;
 import com.example.educationapp.mapper.UserMapper;
+import com.example.educationapp.repo.CourseRepo;
 import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
@@ -25,17 +27,18 @@ public class AuthorManagementService {
     private final UserMapper userMapper;
     private final UserRepo userRepo;
     private final CourseUtils courseUtils;
+    private final CourseRepo courseRepo;
 
-    public List<ResponseUserDto> getAllAuthorsForCourse(Long id) {
-        Course course = courseUtils.validateAndGetCourseForAuthor(id);
+    public List<UserInfoDto> getAllAuthorsForCourse(Long id) {
+        Course course = courseRepo.findById(id).orElseThrow(() -> new CourseNotFoundException("Course is not found"));
         Set<User> authors = course.getAuthors();
         return authors.stream()
-                .map(userMapper::toResponseUserDto)
+                .map(userMapper::toUserInfoDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public List<ResponseUserDto> addAuthorsForCourse(Long id, AddOrRemoveAuthorsDto addOrRemoveAuthorsDto) {
+    public List<UserInfoDto> addAuthorsForCourse(Long id, AddOrRemoveAuthorsDto addOrRemoveAuthorsDto) {
         Set<User> authors = userRepo.findByIdIn(addOrRemoveAuthorsDto.getIds());
         Course course = courseUtils.validateAndGetCourseForAuthor(id);
         for (User author : authors) {
@@ -47,12 +50,12 @@ public class AuthorManagementService {
             }
         }
         return authors.stream()
-                .map(userMapper::toResponseUserDto)
+                .map(userMapper::toUserInfoDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public List<ResponseUserDto> removeAuthorsForCourse(Long id, AddOrRemoveAuthorsDto addOrRemoveAuthorsDto) {
+    public List<UserInfoDto> removeAuthorsForCourse(Long id, AddOrRemoveAuthorsDto addOrRemoveAuthorsDto) {
         Set<User> authors = userRepo.findByIdIn(addOrRemoveAuthorsDto.getIds());
         Course course = courseUtils.validateAndGetCourseForAuthor(id);
         for (User author : authors) {
@@ -64,21 +67,21 @@ public class AuthorManagementService {
             }
         }
         return authors.stream()
-                .map(userMapper::toResponseUserDto)
+                .map(userMapper::toUserInfoDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public List<ResponseUserDto> getAllTeachersForCourse(Long id) {
-        Course course = courseUtils.validateAndGetCourseForAuthor(id);
+    public List<UserInfoDto> getAllTeachersForCourse(Long id) {
+        Course course = courseRepo.findById(id).orElseThrow(() -> new CourseNotFoundException("Course is not found"));
         Set<User> teachers = course.getTeachers();
         return teachers.stream()
-                .map(userMapper::toResponseUserDto)
+                .map(userMapper::toUserInfoDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public List<ResponseUserDto> addTeachersForCourse(Long id, AddOrRemoveTeachersDto addOrRemoveTeachersDto) {
+    public List<UserInfoDto> addTeachersForCourse(Long id, AddOrRemoveTeachersDto addOrRemoveTeachersDto) {
         Set<User> teachers = userRepo.findByIdIn(addOrRemoveTeachersDto.getIds());
         Course course = courseUtils.validateAndGetCourseForAuthor(id);
         for (User teacher : teachers) {
@@ -90,12 +93,12 @@ public class AuthorManagementService {
             }
         }
         return teachers.stream()
-                .map(userMapper::toResponseUserDto)
+                .map(userMapper::toUserInfoDto)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public List<ResponseUserDto> removeTeachersForCourse(Long id, AddOrRemoveTeachersDto addOrRemoveTeachersDto) {
+    public List<UserInfoDto> removeTeachersForCourse(Long id, AddOrRemoveTeachersDto addOrRemoveTeachersDto) {
         Set<User> teachers = userRepo.findByIdIn(addOrRemoveTeachersDto.getIds());
         Course course = courseUtils.validateAndGetCourseForAuthor(id);
         for (User teacher : teachers) {
@@ -107,7 +110,7 @@ public class AuthorManagementService {
             }
         }
         return teachers.stream()
-                .map(userMapper::toResponseUserDto)
+                .map(userMapper::toUserInfoDto)
                 .collect(Collectors.toList());
     }
 }
