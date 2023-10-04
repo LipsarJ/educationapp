@@ -3,11 +3,12 @@ import {useNavigate, useParams} from "react-router-dom";
 import {instanceAxios} from '../utils/axiosConfig';
 import {Box, Button, Flex, FormControl, FormErrorMessage, Heading, Input, Text,} from "@chakra-ui/react";
 import {Field, Form, Formik} from "formik";
-import {FiArrowLeftCircle, FiCheckSquare, FiEdit2} from "react-icons/fi";
+import {FiArrowLeftCircle, FiCheckSquare, FiClipboard, FiEdit2, FiPlus} from "react-icons/fi";
 import {ErrorCodes} from "./auth/ErrorCodes";
 import {Oval, ThreeDots} from "react-loader-spinner";
 import {format} from "date-fns-tz";
 import {useAuth} from '../contexts/AuthContext';
+import TaskDoneCard from './teachers/TaskDoneCard'
 
 interface Task {
     id: number;
@@ -24,9 +25,27 @@ interface TaskDto {
     deadlineDate: string;
 }
 
+interface MyHomework {
+    id: number;
+    submissionDate: string;
+    grade: number;
+    studentDescription: string;
+    teacherFeedback: string;
+    teacherInfoDto: UserData;
+}
+
+interface UserData {
+    id: number;
+    username: string;
+    firstname: string;
+    middlename: string;
+    lastname: string;
+}
+
 const TaskDetails = () => {
-    const {courseId, lessonId, id} = useParams();
+    const {courseId, lessonId, homeworkTaskId} = useParams();
     const [task, setTask] = useState<Task | null>(null);
+    const [myHomework, setMyHomework] = useState<MyHomework | null>(null);
     const [isLoading, setLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [errorTitle, setErrorTitle] = useState("");
@@ -37,25 +56,35 @@ const TaskDetails = () => {
     const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
     const navigate = useNavigate();
 
+    const fetchMyHomework = async () => {
+        if (user && user.roles.includes('STUDENT')) {
+            try {
+                const response = await instanceAxios.get(`/student/course/${courseId}/lessons/${lessonId}/homeworks/${homeworkTaskId}/my-homework`);
+                setMyHomework(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    };
     const fetchTask = async () => {
         if (user) {
             if (user.roles.includes('AUTHOR')) {
                 try {
-                    const response = await instanceAxios.get<Task>(`/author/homework-tasks/${courseId}/${lessonId}/${id}`);
+                    const response = await instanceAxios.get<Task>(`/author/homework-tasks/${courseId}/${lessonId}/${homeworkTaskId}`);
                     setTask(response.data);
                 } catch (error) {
                     console.error(error);
                 }
             } else if (user.roles.includes('TEACHER')) {
                 try {
-                    const response = await instanceAxios.get<Task>(`/teacher/homework-tasks/${courseId}/${lessonId}/${id}`);
+                    const response = await instanceAxios.get<Task>(`/teacher/homework-tasks/${courseId}/${lessonId}/${homeworkTaskId}`);
                     setTask(response.data);
                 } catch (error) {
                     console.error(error);
                 }
             } else if (user.roles.includes('STUDENT')) {
                 try {
-                    const response = await instanceAxios.get<Task>(`/student/homework-tasks/${courseId}/${lessonId}/${id}`);
+                    const response = await instanceAxios.get<Task>(`/student/course/${courseId}/lessons/${lessonId}/homeworks/${homeworkTaskId}`);
                     setTask(response.data);
                 } catch (error) {
                     console.error(error);
@@ -67,7 +96,8 @@ const TaskDetails = () => {
     useEffect(() => {
 
         fetchTask();
-    }, [courseId, lessonId, id]);
+        fetchMyHomework();
+    }, [courseId, lessonId, homeworkTaskId]);
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -123,7 +153,7 @@ const TaskDetails = () => {
             try {
                 const inputDate = new Date(values.deadlineDate);
                 values.deadlineDate = format(inputDate, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX", {timeZone: 'UTC'});
-                const response = await instanceAxios.put(`/author/homework-tasks/${courseId}/${lessonId}/${id}`, values);
+                const response = await instanceAxios.put(`/author/homework-tasks/${courseId}/${lessonId}/${homeworkTaskId}`, values);
                 setTask(response.data);
                 setChanged(false);
             } catch (error: any) {
@@ -314,8 +344,43 @@ const TaskDetails = () => {
                                 Редактировать
                             </Button>
                         )}
+                        {user && user.roles.includes('TEACHER') && (
+                            <Button
+                                leftIcon={<FiClipboard/>}
+                                mt={4}
+                                color="white"
+                                colorScheme="green"
+                                onClick={() => {
+                                    navigate(`/tasks-done/${courseId}/${lessonId}/${homeworkTaskId}`);
+                                }}
+                                width="70%"
+                            >
+                                Список готовых заданий
+                            </Button>
+                        )}
                     </Flex>
                 </Flex>
+            )}
+            {user && user.roles.includes('STUDENT') && (
+                <Box>
+                    {myHomework && (
+                        <Heading size="lg" textAlign="center" mt={3} padding="16px">
+                            Ваше решение
+                        </Heading>)}
+                    {myHomework ? (
+                        <Flex justifyContent="center" mt={3}>
+                            <TaskDoneCard taskDone={myHomework} key={myHomework.id}/>
+                        </Flex>
+                    ) : (
+                        <Button leftIcon={<FiPlus/>} w="30%" colorScheme="blue"
+                                onClick={() => {
+                                    navigate(`/task-done/add-solution/${courseId}/${lessonId}/${homeworkTaskId}`);
+                                }}
+                        >
+                            Добавить решение
+                        </Button>
+                    )}
+                </Box>
             )}
         </Box>
     );

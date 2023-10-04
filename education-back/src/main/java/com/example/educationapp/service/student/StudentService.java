@@ -2,15 +2,20 @@ package com.example.educationapp.service.student;
 
 import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.student.RequestHomeworkDoneStudentDto;
-import com.example.educationapp.dto.response.student.ResponseCourseStudentDto;
+import com.example.educationapp.dto.response.ResponseCourseDto;
+import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
+import com.example.educationapp.dto.response.ResponseLessonDto;
 import com.example.educationapp.dto.response.student.ResponseHomeworkDoneStudentDto;
-import com.example.educationapp.dto.response.student.ResponseHomeworkTaskStudentDto;
-import com.example.educationapp.dto.response.student.ResponseLessonStudentDto;
 import com.example.educationapp.entity.*;
 import com.example.educationapp.exception.BadDataException;
 import com.example.educationapp.exception.NotFoundException;
+import com.example.educationapp.exception.extend.LessonNotFoundException;
+import com.example.educationapp.mapper.HomeworkTaskMapper;
+import com.example.educationapp.mapper.LessonMapper;
 import com.example.educationapp.mapper.student.StudentCourseMapper;
 import com.example.educationapp.repo.HomeworkDoneRepo;
+import com.example.educationapp.repo.HomeworkTaskRepo;
+import com.example.educationapp.repo.LessonRepo;
 import com.example.educationapp.utils.CourseUtils;
 import com.example.educationapp.utils.HomeworkUtils;
 import com.example.educationapp.utils.LessonUtils;
@@ -31,27 +36,52 @@ public class StudentService {
     private final HomeworkUtils homeworkUtils;
     private final StudentCourseMapper studentCourseMapper;
     private final HomeworkDoneRepo homeworkDoneRepo;
+    private final LessonRepo lessonRepo;
+    private final LessonMapper lessonMapper;
+    private final HomeworkTaskRepo homeworkTaskRepo;
+    private final HomeworkTaskMapper homeworkTaskMapper;
 
-    public List<ResponseCourseStudentDto> getAllCoursesForStudent() {
+    public List<ResponseCourseDto> getAllCoursesForStudent() {
         Set<Course> courses = courseUtils.getCoursesForStudent();
         return courses.stream()
                 .map(studentCourseMapper::toResponseCourseDto)
                 .collect(Collectors.toList());
     }
 
-    public ResponseCourseStudentDto getCourseInfoForStudent(Long id) {
+    public ResponseCourseDto getCourseInfoForStudent(Long id) {
         Course course = courseUtils.validateAndGetCourseForStudent(id);
         return studentCourseMapper.toResponseCourseDto(course);
     }
 
-    public ResponseLessonStudentDto getLessonInfoForStudent(Long id, Long lessonId) {
-        Lesson lesson = lessonUtils.getLessonForStudentValidatedCourse(id, lessonId);
-        return studentCourseMapper.toResponseLessonDto(lesson);
+    public List<ResponseLessonDto> getAllLessons(Long courseId) {
+        Course course = courseUtils.validateAndGetCourseForStudent(courseId);
+
+        List<Lesson> lessons = lessonRepo.findAllByLessonsCourse(course);
+        return lessons.stream()
+                .map(lessonMapper::toResponseDto)
+                .collect(Collectors.toList());
+
     }
 
-    public ResponseHomeworkTaskStudentDto getHomeworkTaskInfoForStudent(Long id, Long lessonId, Long homeworkTaskId) {
+    public ResponseLessonDto getLessonInfoForStudent(Long id, Long lessonId) {
+        Lesson lesson = lessonUtils.getLessonForStudentValidatedCourse(id, lessonId);
+        return lessonMapper.toResponseDto(lesson);
+    }
+
+    public List<ResponseHomeworkTaskDto> getAllTasks(Long courseId, Long lessonId) {
+        courseUtils.validateAndGetCourseForStudent(courseId);
+
+        Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found."));
+
+        List<HomeworkTask> tasks = homeworkTaskRepo.findAllByLesson(lesson);
+        return tasks.stream()
+                .map(homeworkTaskMapper::toResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    public ResponseHomeworkTaskDto getHomeworkTaskInfoForStudent(Long id, Long lessonId, Long homeworkTaskId) {
         HomeworkTask homeworkTask = homeworkUtils.getHomeworkTaskForStudentValidatedLesson(id, lessonId, homeworkTaskId);
-        return studentCourseMapper.toResponseHomeworkTaskDto(homeworkTask);
+        return homeworkTaskMapper.toResponseDto(homeworkTask);
     }
 
     public ResponseHomeworkDoneStudentDto getStudentHomeworkDone(Long id, Long lessonId, Long homeworkTaskId) {
@@ -69,21 +99,19 @@ public class StudentService {
             homeworkDone.setStatus(HomeworkDoneStatus.PENDING);
             homeworkDoneRepo.save(homeworkDone);
             return studentCourseMapper.toResponseHomeworkDoneDto(homeworkDone);
-        }
-        else {
+        } else {
             throw new BadDataException("You already have solution for this task.", Errors.HWD_ALREADY_EXISTS);
         }
     }
 
     public ResponseHomeworkDoneStudentDto editStudentHomeworkDone(Long id, Long lessonId,
-                                                                  Long homeworkTaskId, RequestHomeworkDoneStudentDto requestHomeworkDoneStudentDto){
+                                                                  Long homeworkTaskId, RequestHomeworkDoneStudentDto requestHomeworkDoneStudentDto) {
         HomeworkDone homeworkDone = homeworkUtils.getHomeworkDoneForStudent(id, lessonId, homeworkTaskId);
-        if(homeworkDone != null) {
+        if (homeworkDone != null) {
             homeworkDone.setStudentDescription(requestHomeworkDoneStudentDto.getStudentDescription());
             homeworkDoneRepo.save(homeworkDone);
             return studentCourseMapper.toResponseHomeworkDoneDto(homeworkDone);
-        }
-        else {
+        } else {
             throw new NotFoundException("Solution for this task is not found");
         }
     }

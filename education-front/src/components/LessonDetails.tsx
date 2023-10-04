@@ -73,13 +73,11 @@ const LessonDetails = () => {
         const fetchData = async () => {
             if (user) {
                 if (user.roles.includes('AUTHOR')) {
-                    const fetchData = async () => {
-                        try {
-                            const response = await instanceAxios.get<Task[]>(`/author/homework-tasks/${id}/${lessonId}`);
-                            setTasks(response.data);
-                        } catch (error) {
-                            console.error(error);
-                        }
+                    try {
+                        const response = await instanceAxios.get<Task[]>(`/author/homework-tasks/${id}/${lessonId}`);
+                        setTasks(response.data);
+                    } catch (error) {
+                        console.error(error);
                     }
                 } else if (user.roles.includes('TEACHER')) {
                     try {
@@ -90,7 +88,7 @@ const LessonDetails = () => {
                     }
                 } else if (user.roles.includes('STUDENT')) {
                     try {
-                        const response = await instanceAxios.get<Task[]>(`/student/homework-tasks/${id}/${lessonId}`);
+                        const response = await instanceAxios.get<Task[]>(`/student/course/${id}/lessons/${lessonId}/homeworks`);
                         setTasks(response.data);
                     } catch (error) {
                         console.error(error);
@@ -124,7 +122,7 @@ const LessonDetails = () => {
                 }
             } else if (user.roles.includes('STUDENT')) {
                 try {
-                    const response = await instanceAxios.get(`/student/lessons/${id}/${lessonId}`);
+                    const response = await instanceAxios.get(`/student/course/${id}/lessons/${lessonId}`);
                     setLesson(response.data);
                 } catch (error) {
                     console.error(error);

@@ -1,10 +1,10 @@
 package com.example.educationapp.controller.student;
 
 import com.example.educationapp.dto.request.student.RequestHomeworkDoneStudentDto;
-import com.example.educationapp.dto.response.student.ResponseCourseStudentDto;
+import com.example.educationapp.dto.response.ResponseCourseDto;
+import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
+import com.example.educationapp.dto.response.ResponseLessonDto;
 import com.example.educationapp.dto.response.student.ResponseHomeworkDoneStudentDto;
-import com.example.educationapp.dto.response.student.ResponseHomeworkTaskStudentDto;
-import com.example.educationapp.dto.response.student.ResponseLessonStudentDto;
 import com.example.educationapp.service.student.StudentService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,14 +39,14 @@ class StudentControllerTest {
 
     @Test
     void getAllCoursesForStudent() throws Exception {
-        ResponseCourseStudentDto courseDto = new ResponseCourseStudentDto();
+        ResponseCourseDto courseDto = new ResponseCourseDto();
         courseDto.setId(1L);
         courseDto.setCourseName("Math");
-        List<ResponseCourseStudentDto> courseList = Collections.singletonList(courseDto);
+        List<ResponseCourseDto> courseList = Collections.singletonList(courseDto);
 
         when(studentService.getAllCoursesForStudent()).thenReturn(courseList);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/student/courses")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/student/course")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1))
@@ -55,13 +55,13 @@ class StudentControllerTest {
 
     @Test
     void getCourseInfoForStudent() throws Exception {
-        ResponseCourseStudentDto courseDto = new ResponseCourseStudentDto();
+        ResponseCourseDto courseDto = new ResponseCourseDto();
         courseDto.setId(1L);
         courseDto.setCourseName("Math");
 
         when(studentService.getCourseInfoForStudent(1L)).thenReturn(courseDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/student/courses/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/student/course/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
@@ -69,14 +69,14 @@ class StudentControllerTest {
     }
 
     @Test
-    void getLessonInfoForStudent() throws Exception{
-        ResponseLessonStudentDto lessonDto = new ResponseLessonStudentDto();
+    void getLessonInfoForStudent() throws Exception {
+        ResponseLessonDto lessonDto = new ResponseLessonDto();
         lessonDto.setId(1L);
         lessonDto.setLessonName("Introduction to Algebra");
 
         when(studentService.getLessonInfoForStudent(1L, 1L)).thenReturn(lessonDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/student/courses/1/lessons/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/student/course/1/lessons/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
@@ -84,14 +84,14 @@ class StudentControllerTest {
     }
 
     @Test
-    void getHomeworkTaskInfoForStudent() throws Exception{
-        ResponseHomeworkTaskStudentDto homeworkTaskDto = new ResponseHomeworkTaskStudentDto();
+    void getHomeworkTaskInfoForStudent() throws Exception {
+        ResponseHomeworkTaskDto homeworkTaskDto = new ResponseHomeworkTaskDto();
         homeworkTaskDto.setId(1L);
         homeworkTaskDto.setTitle("Homework 1");
 
         when(studentService.getHomeworkTaskInfoForStudent(1L, 1L, 1L)).thenReturn(homeworkTaskDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/student/courses/1/lessons/1/homeworks/1")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/student/course/1/lessons/1/homeworks/1")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
@@ -99,14 +99,14 @@ class StudentControllerTest {
     }
 
     @Test
-    void getStudentHomeworkDone() throws Exception{
+    void getStudentHomeworkDone() throws Exception {
         ResponseHomeworkDoneStudentDto homeworkDoneDto = new ResponseHomeworkDoneStudentDto();
         homeworkDoneDto.setId(1L);
         homeworkDoneDto.setSubmissionDate(LocalDateTime.now());
 
         when(studentService.getStudentHomeworkDone(1L, 1L, 1L)).thenReturn(homeworkDoneDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/student/courses/1/lessons/1/homeworks/1/my-homework")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/student/course/1/lessons/1/homeworks/1/my-homework")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1))
@@ -114,7 +114,7 @@ class StudentControllerTest {
     }
 
     @Test
-    void createStudentHomeworkDone() throws Exception{
+    void createStudentHomeworkDone() throws Exception {
         RequestHomeworkDoneStudentDto requestDto = new RequestHomeworkDoneStudentDto();
         requestDto.setStudentDescription("My homework");
 
@@ -125,14 +125,14 @@ class StudentControllerTest {
 
         when(studentService.createHomeworkDone(1L, 1L, 1L, requestDto)).thenReturn(responseDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/student/courses/1/lessons/1/homeworks/1/my-homework")
+        mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/student/course/1/lessons/1/homeworks/1/my-homework")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"studentDescription\":\"My homework\"}"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
-    void editStudentHomeworkDone() throws Exception{
+    void editStudentHomeworkDone() throws Exception {
         RequestHomeworkDoneStudentDto requestDto = new RequestHomeworkDoneStudentDto();
         requestDto.setStudentDescription("Updated homework");
 
@@ -143,7 +143,7 @@ class StudentControllerTest {
 
         when(studentService.editStudentHomeworkDone(1L, 1L, 1L, requestDto)).thenReturn(responseDto);
 
-        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/student/courses/1/lessons/1/homeworks/1/my-homework")
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/student/course/1/lessons/1/homeworks/1/my-homework")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"studentDescription\":\"Updated homework\"}"))
                 .andExpect(MockMvcResultMatchers.status().isOk());

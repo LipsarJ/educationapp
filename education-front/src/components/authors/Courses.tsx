@@ -58,7 +58,7 @@ const Courses: React.FC = () => {
                 }
             } else if (user.roles.includes('STUDENT')) {
                 try {
-                    const response = await instanceAxios.get<Course[]>('/student/courses');
+                    const response = await instanceAxios.get<Course[]>('/student/course');
                     setCourses(response.data);
                 } catch (error) {
                     console.error(error);

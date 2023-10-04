@@ -1,10 +1,10 @@
 package com.example.educationapp.controller.student;
 
 import com.example.educationapp.dto.request.student.RequestHomeworkDoneStudentDto;
-import com.example.educationapp.dto.response.student.ResponseCourseStudentDto;
+import com.example.educationapp.dto.response.ResponseCourseDto;
+import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
+import com.example.educationapp.dto.response.ResponseLessonDto;
 import com.example.educationapp.dto.response.student.ResponseHomeworkDoneStudentDto;
-import com.example.educationapp.dto.response.student.ResponseHomeworkTaskStudentDto;
-import com.example.educationapp.dto.response.student.ResponseLessonStudentDto;
 import com.example.educationapp.service.student.StudentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -20,7 +20,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/student/courses")
+@RequestMapping("/api/v1/student/course")
 @PreAuthorize("hasAuthority('STUDENT')")
 public class StudentController {
     private final StudentService studentService;
@@ -29,11 +29,11 @@ public class StudentController {
     @Operation(summary = "Получить все курсы для студента")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешно", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ResponseCourseStudentDto.class))),
+                    schema = @Schema(implementation = ResponseCourseDto.class))),
             @ApiResponse(responseCode = "404", description = "Курс не найден", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public List<ResponseCourseStudentDto> getAllCoursesForStudent() {
+    public List<ResponseCourseDto> getAllCoursesForStudent() {
         return studentService.getAllCoursesForStudent();
     }
 
@@ -41,36 +41,60 @@ public class StudentController {
     @Operation(summary = "Получить информацию о курсе для студента")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешно", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ResponseCourseStudentDto.class))),
+                    schema = @Schema(implementation = ResponseCourseDto.class))),
             @ApiResponse(responseCode = "404", description = "Курс не найден", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public ResponseCourseStudentDto getCourseInfoForStudent(@PathVariable Long id) {
+    public ResponseCourseDto getCourseInfoForStudent(@PathVariable Long id) {
         return studentService.getCourseInfoForStudent(id);
+    }
+
+    @GetMapping("/{id}/lessons")
+    @Operation(summary = "Получить информацию об уроках для студента")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешно", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ResponseLessonDto.class))),
+            @ApiResponse(responseCode = "404", description = "Урок не найден", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public List<ResponseLessonDto> getLessonInfoForStudent(@PathVariable Long id) {
+        return studentService.getAllLessons(id);
     }
 
     @GetMapping("/{id}/lessons/{lessonId}")
     @Operation(summary = "Получить информацию о уроке для студента")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешно", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ResponseLessonStudentDto.class))),
+                    schema = @Schema(implementation = ResponseLessonDto.class))),
             @ApiResponse(responseCode = "404", description = "Урок не найден", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public ResponseLessonStudentDto getLessonInfoForStudent(@PathVariable Long id, @PathVariable Long lessonId) {
+    public ResponseLessonDto getLessonInfoForStudent(@PathVariable Long id, @PathVariable Long lessonId) {
         return studentService.getLessonInfoForStudent(id, lessonId);
+    }
+
+    @GetMapping("/{id}/lessons/{lessonId}/homeworks")
+    @Operation(summary = "Получить информацию о домашних заданиях для студента")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешно", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ResponseHomeworkTaskDto.class))),
+            @ApiResponse(responseCode = "404", description = "Домашнее задание не найдено", content = @Content(mediaType = "application/json",
+                    schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    public List<ResponseHomeworkTaskDto> getAllTasksInfoForStudent(@PathVariable Long id, @PathVariable Long lessonId) {
+        return studentService.getAllTasks(id, lessonId);
     }
 
     @GetMapping("/{id}/lessons/{lessonId}/homeworks/{homeworkTaskId}")
     @Operation(summary = "Получить информацию о домашнем задании для студента")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешно", content = @Content(mediaType = "application/json",
-                    schema = @Schema(implementation = ResponseHomeworkTaskStudentDto.class))),
+                    schema = @Schema(implementation = ResponseHomeworkTaskDto.class))),
             @ApiResponse(responseCode = "404", description = "Домашнее задание не найдено", content = @Content(mediaType = "application/json",
                     schema = @Schema(implementation = ErrorResponse.class)))
     })
-    public ResponseHomeworkTaskStudentDto getHomeworkTaskInfoForStudent(@PathVariable Long id, @PathVariable Long lessonId,
-                                                                        @PathVariable Long homeworkTaskId) {
+    public ResponseHomeworkTaskDto getHomeworkTaskInfoForStudent(@PathVariable Long id, @PathVariable Long lessonId,
+                                                                 @PathVariable Long homeworkTaskId) {
         return studentService.getHomeworkTaskInfoForStudent(id, lessonId, homeworkTaskId);
     }
 

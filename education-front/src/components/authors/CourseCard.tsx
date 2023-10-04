@@ -93,10 +93,14 @@ const CourseCard: React.FC<{ course: any, onDelete: () => void }> = ({course, on
                 <Text textAlign="center">
                     {course.updateDate}
                 </Text>
-                <Heading size="md" textAlign="center">Количество учеников:</Heading>
-                <Text textAlign="center">
-                    {course.countStd}
-                </Text>
+                {user && !user.roles.includes('STUDENT') && (
+                    <>
+                        <Heading size="md" textAlign="center">Количество учеников:</Heading>
+                        <Text textAlign="center">
+                            {course.countStd}
+                        </Text>
+                    </>
+                )}
             </Box>
             {user && user.roles.includes('AUTHOR') && (
                 <Box position="absolute" right="2" top="2">

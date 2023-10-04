@@ -20,6 +20,9 @@ const UserList = () => {
     const [page, setPage] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(10);
     const [searchText, setSearchText] = useState<string>('');
+    const [pageRight, setPageRight] = useState<number>(0);
+    const [pageSizeRight, setPageSizeRight] = useState<number>(10);
+    const [totalRight, setTotalRight] = useState<number>(0);
     const [selectedLeftUsers, setSelectedLeftUsers] = useState<number[]>([]);
     const [selectedRightUsers, setSelectedRightUsers] = useState<number[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -27,23 +30,35 @@ const UserList = () => {
     const [searchResultsRight, setSearchResultsRight] = useState<UserData[]>([]);
     const [total, setTotal] = useState<number>(0);
 
-    const loadUsers = async () => {
-        try {
-            setIsLoading(true);
-            let url = "";
-            if (roleName === "AUTHOR") {
-                url = `${process.env.REACT_APP_API_URL}/author/courses/${id}/authors`;
-            } else if (roleName === "TEACHER") {
-                url = `${process.env.REACT_APP_API_URL}/author/courses/${id}/teachers`;
+    const loadUsers = async (page: number) => {
+        setIsLoading(true);
+        let url = "";
+        if (roleName === "AUTHOR") {
+            url = `/author/courses/${id}/authors`;
+        } else if (roleName === "TEACHER") {
+            url = `/author/courses/${id}/teachers`;
+            try {
+                const response = await instanceAxios.get(url);
+                setIsLoading(false);
+                setUsersRight(response.data);
+            } catch (error) {
+                console.error("Ошибка при загрузке пользователей:", error);
             }
-
-            const response = await instanceAxios.get(url, {
-                withCredentials: true
-            });
-            setIsLoading(false);
-            setUsersRight(response.data);
-        } catch (error) {
-            console.error("Ошибка при загрузке пользователей:", error);
+        } else if (roleName === "STUDENT") {
+            try {
+                const response = await instanceAxios.get(`/teacher/course/${id}/students`, {
+                    params: {
+                        filterText: searchText,
+                        page: page,
+                        size: pageSizeRight,
+                    }
+                });
+                setIsLoading(false);
+                setUsersRight(response.data.userInfo);
+                setTotalRight(response.data.totalCount);
+            } catch (error) {
+                console.error("Ошибка при загрузке пользователей:", error);
+            }
         }
     };
 
@@ -66,13 +81,15 @@ const UserList = () => {
         });
 
         setSearchResultsLeft(filteredLeftUsers);
+        setTotal(filteredLeftUsers.length)
         setSearchResultsRight(filteredRightUsers);
+        setTotalRight(filteredRightUsers.length);
     };
 
     const fetchUsersLeft = async (page: number) => {
         try {
             setIsLoading(true);
-            const response = await instanceAxios.get(`${process.env.REACT_APP_API_URL}/users/${roleName}`, {
+            const response = await instanceAxios.get(`/users/${roleName}`, {
                 params: {
                     filterText: searchText,
                     page: page,
@@ -93,7 +110,7 @@ const UserList = () => {
     }, [roleName, searchText, page, pageSize, usersRight]);
 
     useEffect(() => {
-        loadUsers();
+        loadUsers(0);
     }, [roleName, id]);
 
     const handleLeftUserClick = (userId: number) => {
@@ -133,9 +150,9 @@ const UserList = () => {
     const handleAddAuthors = async (userIds: number[]) => {
         try {
             // Отправить запрос на добавление авторов
-            const response = await instanceAxios.put(`${process.env.REACT_APP_API_URL}/author/courses/${id}/add-authors`, {
+            const response = await instanceAxios.put(`/author/courses/${id}/add-authors`, {
                 ids: userIds,
-            }, {withCredentials: true});
+            });
         } catch (error) {
             console.error("Ошибка при добавлении авторов:", error);
         }
@@ -144,9 +161,9 @@ const UserList = () => {
     const handleRemoveAuthors = async (userIds: number[]) => {
         try {
             // Отправить запрос на удаление авторов
-            const response = await instanceAxios.put(`${process.env.REACT_APP_API_URL}/author/courses/${id}/remove-authors`, {
+            const response = await instanceAxios.put(`/author/courses/${id}/remove-authors`, {
                 ids: userIds,
-            }, {withCredentials: true});
+            });
 
         } catch (error) {
             console.error("Ошибка при удалении авторов:", error);
@@ -156,9 +173,9 @@ const UserList = () => {
     const handleAddTeachers = async (userIds: number[]) => {
         try {
             // Отправить запрос на добавление учителей
-            const response = await instanceAxios.put(`${process.env.REACT_APP_API_URL}/author/courses/${id}/add-teachers`, {
+            const response = await instanceAxios.put(`/author/courses/${id}/add-teachers`, {
                 ids: userIds,
-            }, {withCredentials: true});
+            });
         } catch (error) {
             console.error("Ошибка при добавлении учителей:", error);
         }
@@ -166,7 +183,27 @@ const UserList = () => {
 
     const handleRemoveTeachers = async (userIds: number[]) => {
         try {
-            const response = await instanceAxios.put(`${process.env.REACT_APP_API_URL}/author/courses/${id}/remove-teachers`, {
+            const response = await instanceAxios.put(`/author/courses/${id}/remove-teachers`, {
+                ids: userIds,
+            });
+        } catch (error) {
+            console.error("Ошибка при удалении учителей:", error);
+        }
+    };
+
+    const handleAddStudents = async (userIds: number[]) => {
+        try {
+            const response = await instanceAxios.put(`/teacher/course/${id}/add-students`, {
+                ids: userIds,
+            });
+        } catch (error) {
+            console.error("Ошибка при добавлении учителей:", error);
+        }
+    };
+
+    const handleRemoveStudents = async (userIds: number[]) => {
+        try {
+            const response = await instanceAxios.put(`/teacher/course/${id}/remove-students`, {
                 ids: userIds,
             }, {withCredentials: true});
         } catch (error) {
@@ -186,13 +223,34 @@ const UserList = () => {
         fetchUsersLeft(prevPage);
     };
 
+    const handleNextRight = () => {
+        const nextPage = pageRight + 1;
+        setPageRight(nextPage);
+        fetchUsersLeft(nextPage);
+    };
+
+    const handlePrevRight = () => {
+        const prevPage = Math.max(pageRight - 1, 0);
+        setPageRight(prevPage);
+        fetchUsersLeft(prevPage);
+    };
+
     const isPrevDisabled = page === 0;
     const isNextDisabled = total <= (page + 1) * pageSize;
+
+    const isPrevDisabledRight = pageRight === 0;
+    const isNextDisabledRight = totalRight <= (pageRight + 1) * pageSizeRight;
 
     return (
         <Flex flexDirection="column" alignItems="center" justifyContent="center">
             <Heading size="lg" textAlign="center" mb={4} padding="16px">
-                {roleName === 'AUTHOR' ? (<>Изменить авторов</>) : (<>Изменить учителей</>)}
+                {roleName === 'AUTHOR' ? (
+                    <>Изменить авторов</>
+                ) : roleName === 'TEACHER' ? (
+                    <>Изменить учителей</>
+                ) : roleName === 'STUDENT' && (
+                    <>Изменить студентов</>
+                )}
             </Heading>
             <Input
                 mx="auto"
@@ -210,7 +268,13 @@ const UserList = () => {
             <Flex justifyContent="center" alignItems="flex-start" gap={8} minWidth="800px">
                 <List spacing={4} textAlign="center" w="50%" borderWidth="1px" borderRadius="8">
                     <Heading size="sm" mb={2} mt={2}>
-                        {roleName === "AUTHOR" ? (<>Доступные авторы</>) : (<>Доступные учителя</>)}
+                        {roleName === 'AUTHOR' ? (
+                            <>Доступные авторы</>
+                        ) : roleName === 'TEACHER' ? (
+                            <>Доступные учителя</>
+                        ) : roleName === 'STUDENT' && (
+                            <>Доступные студенты</>
+                        )}
                     </Heading>
                     {isLoading ? (<Flex justifyContent="center" alignItems="center" height="30vh">
                         <Oval color="#295C48" secondaryColor="#2B415B"/>
@@ -281,7 +345,7 @@ const UserList = () => {
                 <Flex justifyContent="center" alignItems="center" flexDirection="column">
                     <Button
                         onClick={() => {
-                            roleName === "AUTHOR" ? handleAddAuthors(selectedLeftUsers) : handleAddTeachers(selectedLeftUsers);
+                            roleName === "AUTHOR" ? handleAddAuthors(selectedLeftUsers) : roleName === 'TEACHER' ? handleAddTeachers(selectedLeftUsers) : roleName === "STUDENT" && handleAddStudents(selectedLeftUsers);
                             moveUsersToRight();
                         }}
                         mt={4}
@@ -295,7 +359,7 @@ const UserList = () => {
                     </Button>
                     <Button
                         onClick={() => {
-                            roleName === "AUTHOR" ? handleRemoveAuthors(selectedRightUsers) : handleRemoveTeachers(selectedRightUsers);
+                            roleName === "AUTHOR" ? handleRemoveAuthors(selectedRightUsers) : roleName === "TEACHER" ? handleRemoveTeachers(selectedRightUsers) : roleName === 'STUDENT' && handleRemoveStudents(selectedRightUsers);
                             moveUsersToLeft();
                         }}
                         mt={2}
@@ -310,7 +374,13 @@ const UserList = () => {
                 </Flex>
                 <List spacing={4} textAlign="center" w="50%" borderWidth="1px" borderRadius="8">
                     <Heading size="sm" mb={2} mt={2}>
-                        {roleName === "AUTHOR" ? (<>Авторы курса</>) : (<>Учителя курса</>)}
+                        {roleName === 'AUTHOR' ? (
+                            <>Авторы курса</>
+                        ) : roleName === 'TEACHER' ? (
+                            <>Учителя курса</>
+                        ) : roleName === 'STUDENT' && (
+                            <>Студенты курса</>
+                        )}
                     </Heading>
                     {isLoading ? (<Flex justifyContent="center" alignItems="center" height="30vh">
                         <Oval color="#295C48" secondaryColor="#2B415B"/>
@@ -351,6 +421,34 @@ const UserList = () => {
                                 <Divider w="100%"></Divider>
                             </ListItem>
                         ))))}
+                    {roleName == "STUDENT" && (
+                        <Flex justifyContent="center" alignItems="center" ml={2} mr={2} mb={2} gap={5}>
+                            <Button
+                                onClick={() => {
+                                    handlePrevRight();
+                                }}
+                                isDisabled={isPrevDisabled}
+                                cursor={isPrevDisabled ? "not-allowed" : "pointer"}
+                            >
+                                <Icon
+                                    as={FiArrowLeftCircle}
+                                    color={isPrevDisabled ? "gray.300" : "black"}
+                                />
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    handleNextRight();
+                                }}
+                                isDisabled={isNextDisabled}
+                                cursor={isNextDisabled ? "not-allowed" : "pointer"}
+                            >
+                                <Icon
+                                    as={FiArrowRightCircle}
+                                    color={isNextDisabled ? "gray.300" : "black"}
+                                />
+                            </Button>
+                        </Flex>
+                    )}
                 </List>
             </Flex>
         </Flex>

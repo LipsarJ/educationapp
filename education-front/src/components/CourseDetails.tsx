@@ -90,9 +90,9 @@ const CourseDetails = () => {
                 } catch (error) {
                     console.error(error);
                 }
-            } else if (user.roles.includes('TEACHER')) {
+            } else if (user.roles.includes('STUDENT')) {
                 try {
-                    const response = await instanceAxios.get<Lesson[]>(`/student/lessons/${id}`);
+                    const response = await instanceAxios.get<Lesson[]>(`/student/course/${id}/lessons`);
                     setLessons(response.data);
                 } catch (error) {
                     console.error(error);
@@ -128,7 +128,7 @@ const CourseDetails = () => {
                 }
             } else if (user.roles.includes('STUDENT')) {
                 try {
-                    const response = await instanceAxios.get(`/student/courses/${id}`);
+                    const response = await instanceAxios.get(`/student/course/${id}`);
                     setCourse(response.data);
                 } catch (error) {
                     console.error(error);
@@ -319,9 +319,11 @@ const CourseDetails = () => {
                         <Text fontSize="lg" mb={2}>
                             Дата обновления: {course.updateDate}
                         </Text>
+                        {user && !user.roles.includes('STUDENT') &&(
                         <Text fontSize="lg" mb={2}>
                             Количество учеников: {course.countStd}
                         </Text>
+                        )}
                         {user && user.roles.includes('AUTHOR') && (
                             <Flex mt={4} flexDir="row" justifyContent="space-between" w="100%" gap={5}>
                                 <Button
@@ -351,6 +353,21 @@ const CourseDetails = () => {
                                         Запустить курс
                                     </Button>
                                 )}
+                            </Flex>
+                        )}
+                        {user && user.roles.includes('TEACHER') && user.roles.includes('STUDENT') && (
+                            <Flex justifyContent="center" w = "100%" mt={4} gap={5} borderRadius={8}>
+                                <Button
+                                    color="white"
+                                    bg="blue.500"
+                                    leftIcon={<FiUsers/>}
+                                    onClick={() => {
+                                        navigate(`/users/${id}/${'STUDENT'}`)
+                                    }}
+                                    width="50%"
+                                >
+                                    Изменить студентов
+                                </Button>
                             </Flex>
                         )}
                         {user && user.roles.includes('AUTHOR') && (

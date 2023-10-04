@@ -18,6 +18,10 @@ import LessonDetails from './components/LessonDetails'
 import CreateTask from './components/authors/CreateTask'
 import TaskDetails from './components/TaskDetails'
 import Users from './components/Users'
+import TasksDone from './components/teachers/TasksDone'
+import CreateTaskDone from './components/student/CreateTaskDone'
+import TaskDoneDetails from './components/teachers/TaskDoneDetails'
+import EditTaskDone from './components/student/EditTaskDone'
 
 function App() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -51,8 +55,12 @@ function App() {
                             <Route path="/lessons/create/:courseId" element={<CreateLesson/>}/>
                             <Route path="/lessons/:id/:lessonId" element={<LessonDetails/>}/>
                             <Route path="/tasks/create/:courseId/:lessonId" element={<CreateTask/>}/>
-                            <Route path="/tasks/:courseId/:lessonId/:id" element={<TaskDetails/>}/>
+                            <Route path="/tasks/:courseId/:lessonId/:homeworkTaskId" element={<TaskDetails/>}/>
                             <Route path="/users/:id/:roleName" element={<Users/>}/>
+                            <Route path="/tasks-done/:courseId/:lessonId/:homeworkTaskId" element={<TasksDone/>}/>
+                            <Route path="/tasks-done/:courseId/:lessonId/:homeworkTaskId/:homeworkDoneId" element={<TaskDoneDetails/>}/>
+                            <Route path="/task-done/edit-solution/:courseId/:lessonId/:homeworkTaskId/:homeworkDoneId" element={<EditTaskDone/>}/>
+                            <Route path="/task-done/add-solution/:courseId/:lessonId/:homeworkTaskId" element={<CreateTaskDone/>}/>
                         </Routes>
                     </Flex>
                 </BrowserRouter>

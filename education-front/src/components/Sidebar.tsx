@@ -31,7 +31,7 @@ export default function Sidebar({isSidebarOpen, isMobile}: { isSidebarOpen: bool
             zIndex="1000"
             backgroundColor="white"
             flexDir="column"
-            borderRight = {isMobile ? "none" : "5px solid #ccc"}
+            borderRight={isMobile ? "none" : "5px solid #ccc"}
         >
 
             <Heading as="h1" size="xl" textAlign="center" color="black" mt={4}>
@@ -51,9 +51,7 @@ export default function Sidebar({isSidebarOpen, isMobile}: { isSidebarOpen: bool
                     <NavItem title="Войти" icon={FiLogIn} description="Вход" url="/login"/>
                 ) : (
                     <>
-                        {user && (user.roles.includes("AUTHOR") || user.roles.includes("TEACHER" || user.roles.includes("STUDENT")))
-                            && (<NavItem title="Мои курсы" icon={FiBook} description="Список курсов" url="/courses"/>)
-                        }
+                        <NavItem title="Мои курсы" icon={FiBook} description="Список курсов" url="/courses"/>
                         <NavItem title="Поиск сотрудников" icon={IoPeople} description="Поиск сотрудников"
                                  url="/persons"/>
                         <div onClick={handleLogout} style={{cursor: 'pointer', width: "100%"}}>
