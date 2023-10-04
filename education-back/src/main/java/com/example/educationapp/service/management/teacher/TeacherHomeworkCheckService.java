@@ -32,10 +32,8 @@ public class TeacherHomeworkCheckService {
                                                                            Long homeworkTaskId, Pageable pageable, Boolean checked) {
         HomeworkTask homeworkTask = homeworkUtils.getHomeworkTaskForTeacherValidatedLesson(id, lessonId, homeworkTaskId);
         Page<HomeworkDone> homeworkDonePage;
-        if (checked == null) {
+        if (checked) {
             homeworkDonePage = homeworkDoneRepo.findAllByTask(homeworkTask, pageable);
-        } else if (checked) {
-            homeworkDonePage = homeworkDoneRepo.findAllByTaskAndGradeIsNotNull(homeworkTask, pageable);
         } else {
             homeworkDonePage = homeworkDoneRepo.findAllByTaskAndGradeIsNull(homeworkTask, pageable);
         }
