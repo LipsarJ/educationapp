@@ -30,7 +30,6 @@ public class AuthorCourseService {
     private final CourseMapper courseMapper;
     private final UserContext userContext;
     private final CourseUtils courseUtils;
-    private final AuthorLessonService authorLessonService;
 
     public List<ResponseCourseDto> getAllCoursesForAuthor() {
         ResponseUserDto responseUserDto = userContext.getUserDto();

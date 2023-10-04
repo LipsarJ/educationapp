@@ -31,10 +31,8 @@ public class AuthorCourseServiceTest {
     private final UserContext userContext = mock(UserContext.class);
     private final CourseUtils courseUtils = mock(CourseUtils.class);
 
-    private final AuthorLessonService authorLessonService = mock(AuthorLessonService.class);
-
     private final AuthorCourseService authorCourseService = new AuthorCourseService(
-            courseRepo, userRepo, courseMapper, userContext, courseUtils, authorLessonService
+            courseRepo, userRepo, courseMapper, userContext, courseUtils
     );
 
     @Test
