@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {instanceAxios} from '../../utils/axiosConfig';
 import {useAuth} from '../../contexts/AuthContext';
-import {Box, Button, Flex, Heading, Icon} from "@chakra-ui/react";
+import {Box, Button, Flex, Heading, Icon, Checkbox} from "@chakra-ui/react";
 import {FiArrowLeftCircle, FiArrowRightCircle} from "react-icons/fi";
 import {Oval} from "react-loader-spinner";
 import TaskDoneCard from './TaskDoneCard'
@@ -32,7 +32,7 @@ const TasksDone = () => {
     const [isDeleted, setIsDeleted] = useState(false);
     const [page, setPage] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(2);
-    const [checked, setCheked] = useState(null);
+    const [checked, setChecked] = useState(true);
     const [total, setTotal] = useState<number>(0);
     const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
     const navigate = useNavigate();
@@ -55,7 +55,7 @@ const TasksDone = () => {
 
     useEffect(() => {
         fetchData(0);
-    }, []);
+    }, [checked]);
 
     const handleNext = () => {
         const nextPage = page + 1;
@@ -71,6 +71,10 @@ const TasksDone = () => {
 
     const isPrevDisabled = page === 0;
     const isNextDisabled = total <= (page + 1) * pageSize;
+
+    const toggleChecked = () => {
+        setChecked(!checked);
+    };
 
     if (!tasksDone) {
         return (
@@ -108,6 +112,9 @@ const TasksDone = () => {
                         color={isPrevDisabled ? "gray.300" : "black"}
                     />
                 </Button>
+                <Checkbox isChecked={checked} onChange={toggleChecked}>
+                    Показывать проверенные
+                </Checkbox>
                 <Button
                     onClick={() => {
                         handleNext();
