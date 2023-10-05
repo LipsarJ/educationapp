@@ -19,6 +19,7 @@ import {
     ModalHeader,
     ModalOverlay,
     Text,
+    FormLabel
 } from "@chakra-ui/react";
 import {Field, Form, Formik} from "formik";
 import {FiArrowLeftCircle, FiCheckSquare, FiEdit2, FiPlus, FiX} from "react-icons/fi";
@@ -225,6 +226,7 @@ const LessonDetails = () => {
                                                 field.onChange(field.name);
                                             }}
                                         >
+                                            <FormLabel>Название урока</FormLabel>
                                             <Input {...field} placeholder="Имя урока"/>
                                             <FormErrorMessage mt={0} mb={2}>{error}</FormErrorMessage>
                                         </FormControl>
@@ -233,6 +235,7 @@ const LessonDetails = () => {
                                 <Field name="content">
                                     {({field, form}: { field: any; form: any }) => (
                                         <FormControl width="100%" mt={0} mb={2}>
+                                            <FormLabel>Содержимое урока</FormLabel>
                                             <Input {...field} placeholder="Содержимое урока"/>
                                         </FormControl>
                                     )}
@@ -370,7 +373,7 @@ const LessonDetails = () => {
                     </Flex>
                 </Box>
             )}
-            {user && !user.roles.includes('AUTHOR') && (
+            {user && (user.roles.includes('TEACHER') || user.roles.includes('STUDENT')) && (
                 <Flex gap={4} flexWrap="wrap" justifyContent="center" mt={3}>
                     {tasks && tasks.map((task: Task) => (
                         <TaskCard task={task} key={task.id} onDelete={handleDeleteTask}/>

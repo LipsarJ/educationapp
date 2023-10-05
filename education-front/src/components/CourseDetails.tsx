@@ -1,22 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {instanceAxios} from '../utils/axiosConfig';
-import {
-    Box,
-    Button,
-    Flex,
-    FormControl,
-    FormErrorMessage,
-    Heading,
-    Input,
-    Text,
-    Table,
-    Thead,
-    Tbody,
-    Tr,
-    Th,
-    Td
-} from "@chakra-ui/react";
+import {Box, Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Text} from "@chakra-ui/react";
 import {Field, Form, Formik} from "formik";
 import {FiArrowLeftCircle, FiCheckSquare, FiEdit2, FiPlus, FiUsers} from "react-icons/fi";
 import {ErrorCodes} from "./auth/ErrorCodes";
@@ -355,7 +340,7 @@ const CourseDetails = () => {
                                 )}
                             </Flex>
                         )}
-                        {user && user.roles.includes('TEACHER') && user.roles.includes('STUDENT') && (
+                        {user && user.roles.includes('TEACHER') && (
                             <Flex justifyContent="center" w = "100%" mt={4} gap={5} borderRadius={8}>
                                 <Button
                                     color="white"
@@ -364,7 +349,7 @@ const CourseDetails = () => {
                                     onClick={() => {
                                         navigate(`/users/${id}/${'STUDENT'}`)
                                     }}
-                                    width="50%"
+                                    width="100%"
                                 >
                                     Изменить студентов
                                 </Button>
@@ -474,7 +459,7 @@ const CourseDetails = () => {
 
                 </>
             )}
-            {user && !user.roles.includes('AUTHOR') && (
+            {user && (user.roles.includes('TEACHER') || user.roles.includes('STUDENT')) && (
                 <Flex
                     gap={3}
                     mt={3}

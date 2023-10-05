@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Field, Form, Formik } from 'formik';
-import { Button, Container, FormControl, FormErrorMessage, Heading, Input } from '@chakra-ui/react';
+import { Field, Form, Formik} from 'formik';
+import { Button, Container, FormControl, FormErrorMessage, Heading, Input, FormLabel  } from '@chakra-ui/react';
 import { useNavigate } from 'react-router-dom';
 import { ErrorCodes } from './ErrorCodes';
 import axios from 'axios';
@@ -133,6 +133,7 @@ const Register: React.FC = () => {
                     <Form style={{ minWidth: '100%' }}>
                         <Field name="username" validate={validateUsername}>
                             {({ field, form }: { field: any; form: any }) => (
+
                                 <FormControl
                                     isInvalid={errorUsername && form.touched.username}
                                     width="100%"
@@ -143,6 +144,7 @@ const Register: React.FC = () => {
                                         field.onChange(field.name);
                                     }}
                                 >
+                                    <FormLabel>Имя пользователя</FormLabel>
                                     <Input
                                         {...field}
                                         mb={2}
@@ -168,6 +170,7 @@ const Register: React.FC = () => {
                                         field.onChange(field.name);
                                     }}
                                 >
+                                    <FormLabel>E-mail</FormLabel>
                                     <Input
                                         {...field}
                                         mb={2}
@@ -192,6 +195,7 @@ const Register: React.FC = () => {
                                         field.onChange(field.name);
                                     }}
                                 >
+                                    <FormLabel>Пароль</FormLabel>
                                     <Input
                                         {...field}
                                         mb={2}
@@ -217,6 +221,7 @@ const Register: React.FC = () => {
                                         field.onChange(field.name);
                                     }}
                                 >
+                                    <FormLabel>Имя</FormLabel>
                                     <Input
                                         {...field}
                                         mb={2}
@@ -241,6 +246,7 @@ const Register: React.FC = () => {
                                         field.onChange(field.name);
                                     }}
                                 >
+                                    <FormLabel>Фамилия</FormLabel>
                                     <Input
                                         {...field}
                                         mb={2}
@@ -265,6 +271,7 @@ const Register: React.FC = () => {
                                         field.onChange(field.name);
                                     }}
                                 >
+                                    <FormLabel>Отчество</FormLabel>
                                     <Input
                                         {...field}
                                         mb={2}

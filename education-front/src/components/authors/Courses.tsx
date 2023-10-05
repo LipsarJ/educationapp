@@ -42,28 +42,45 @@ const Courses: React.FC = () => {
     };
     const fetchData = async () => {
         if (user) {
+            const allCourses: Course[] = [];
+
             if (user.roles.includes('AUTHOR')) {
                 try {
                     const response = await instanceAxios.get<Course[]>('/author/courses');
-                    setCourses(response.data);
-                } catch (error) {
-                    console.error(error);
-                }
-            } else if (user.roles.includes('TEACHER')) {
-                try {
-                    const response = await instanceAxios.get<Course[]>('/teacher/courses');
-                    setCourses(response.data);
-                } catch (error) {
-                    console.error(error);
-                }
-            } else if (user.roles.includes('STUDENT')) {
-                try {
-                    const response = await instanceAxios.get<Course[]>('/student/course');
-                    setCourses(response.data);
+                    allCourses.push(...response.data);
                 } catch (error) {
                     console.error(error);
                 }
             }
+
+            if (user.roles.includes('TEACHER')) {
+                try {
+                    const response = await instanceAxios.get<Course[]>('/teacher/courses');
+                    allCourses.push(...response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            if (user.roles.includes('STUDENT')) {
+                try {
+                    const response = await instanceAxios.get<Course[]>('/student/course');
+                    allCourses.push(...response.data);
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+
+            // Удаление дубликатов по id с использованием Map
+            const uniqueCoursesMap = new Map<number, Course>();
+            allCourses.forEach(course => {
+                uniqueCoursesMap.set(course.id, course);
+            });
+
+            // Преобразование Map обратно в массив уникальных курсов
+            const uniqueCourses = Array.from(uniqueCoursesMap.values());
+
+            setCourses(uniqueCourses);
         }
     };
 

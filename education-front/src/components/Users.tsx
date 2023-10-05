@@ -32,19 +32,7 @@ const UserList = () => {
 
     const loadUsers = async (page: number) => {
         setIsLoading(true);
-        let url = "";
-        if (roleName === "AUTHOR") {
-            url = `/author/courses/${id}/authors`;
-        } else if (roleName === "TEACHER") {
-            url = `/author/courses/${id}/teachers`;
-            try {
-                const response = await instanceAxios.get(url);
-                setIsLoading(false);
-                setUsersRight(response.data);
-            } catch (error) {
-                console.error("Ошибка при загрузке пользователей:", error);
-            }
-        } else if (roleName === "STUDENT") {
+        if (roleName === "STUDENT") {
             try {
                 const response = await instanceAxios.get(`/teacher/course/${id}/students`, {
                     params: {
@@ -56,6 +44,21 @@ const UserList = () => {
                 setIsLoading(false);
                 setUsersRight(response.data.userInfo);
                 setTotalRight(response.data.totalCount);
+            } catch (error) {
+                console.error("Ошибка при загрузке пользователей:", error);
+            }
+        } else {
+            let url = "";
+            if (roleName === "AUTHOR") {
+                url = `/author/courses/${id}/authors`;
+            } else if (roleName === "TEACHER") {
+                url = `/author/courses/${id}/teachers`;
+            }
+            try {
+                const response = await instanceAxios.get(url);
+                setIsLoading(false);
+                setUsersRight(response.data);
+                console.log(response.data.userInfo);
             } catch (error) {
                 console.error("Ошибка при загрузке пользователей:", error);
             }

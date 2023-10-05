@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Field, Form, Formik} from 'formik';
-import {Button, Container, FormControl, FormErrorMessage, Heading, Input} from '@chakra-ui/react';
+import {Button, Container, FormControl, FormErrorMessage, Heading, Input, FormLabel} from '@chakra-ui/react';
 import {instanceAxios} from '../../utils/axiosConfig';
 import {useNavigate} from 'react-router-dom';
 import {ThreeDots} from 'react-loader-spinner';
@@ -87,6 +87,7 @@ const CreateCourse: React.FC = () => {
                                         field.onChange(field.name);
                                     }}
                                 >
+                                    <FormLabel>Название курса</FormLabel>
                                     <Input
                                         {...field}
                                         mb={2}
@@ -111,6 +112,7 @@ const CreateCourse: React.FC = () => {
                                         field.onChange(field.name);
                                     }}
                                 >
+                                    <FormLabel>Статус курса</FormLabel>
                                     <Input
                                         {...field}
                                         mb={2}

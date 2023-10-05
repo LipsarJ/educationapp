@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Field, Form, Formik} from 'formik';
-import {Button, Container, FormControl, FormErrorMessage, Heading, Input} from '@chakra-ui/react';
+import {Button, Container, FormControl, FormErrorMessage, Heading, Input, FormLabel} from '@chakra-ui/react';
 import {instanceAxios} from '../../utils/axiosConfig';
 import {useNavigate, useParams} from 'react-router-dom';
 import {ThreeDots} from 'react-loader-spinner';
@@ -121,6 +121,7 @@ const CreateTask: React.FC = () => {
                                         field.onChange(field.name);
                                     }}
                                 >
+                                    <FormLabel>Заголовок задания</FormLabel>
                                     <Input
                                         {...field}
                                         mb={2}
@@ -146,6 +147,7 @@ const CreateTask: React.FC = () => {
                                         field.onChange(field.name);
                                     }}
                                 >
+                                    <FormLabel>Описание задания</FormLabel>
                                     <Input {...field} placeholder="Описание задания"/>
                                     <FormErrorMessage mt={0} mb={2}>
                                         {errorDesc}
@@ -165,6 +167,7 @@ const CreateTask: React.FC = () => {
                                         field.onChange(field.name);
                                     }}
                                 >
+                                    <FormLabel>Дата сдачи</FormLabel>
                                     <Input
                                         {...field}
                                         mb={2}

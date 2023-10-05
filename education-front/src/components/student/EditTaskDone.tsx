@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Field, Form, Formik} from 'formik';
-import {Button, Container, Flex, FormControl, FormErrorMessage, Heading, Input} from '@chakra-ui/react';
+import {Button, Container, Flex, FormControl, FormErrorMessage, Heading, Input, FormLabel} from '@chakra-ui/react';
 import {instanceAxios} from '../../utils/axiosConfig';
 import {useNavigate, useParams} from 'react-router-dom';
 import {Oval, ThreeDots} from 'react-loader-spinner';
@@ -78,7 +78,7 @@ const EditHomeworkDone: React.FC = () => {
                     onSubmit={(values) => handleEditTaskDone(values)}
                 >
                     {() => (
-                        <Form style={{minWidth: '100%', minHeight:"30%"}}>
+                        <Form style={{minWidth: '100%', minHeight: "30%"}}>
                             <Field name="studentDescription" validate={validateDescription}>
                                 {({field, form}: { field: any; form: any }) => (
                                     <FormControl
@@ -93,6 +93,7 @@ const EditHomeworkDone: React.FC = () => {
                                             field.onChange(field.name);
                                         }}
                                     >
+                                        <FormLabel>Решение</FormLabel>
                                         <Input
                                             {...field}
                                             mb={2}
@@ -108,7 +109,7 @@ const EditHomeworkDone: React.FC = () => {
                             <Button
                                 mt={5}
                                 color="white"
-                                colorScheme = "green"
+                                colorScheme="green"
                                 size="lg"
                                 type="submit"
                                 mx="auto"

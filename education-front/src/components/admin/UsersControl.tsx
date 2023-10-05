@@ -20,9 +20,9 @@ import {
     FormLabel,
     FormErrorMessage,
     Input as ChakraInput,
-    Icon, Select, Flex
+    Icon, Select, Flex, Checkbox
 } from '@chakra-ui/react';
-import { Formik, Field, Form, ErrorMessage } from 'formik';
+import {Formik, Field, Form, ErrorMessage} from 'formik';
 import {instanceAxios} from '../../utils/axiosConfig';
 import {FiArrowRightCircle, FiArrowLeftCircle, FiEdit2} from 'react-icons/fi'
 import {Oval, ThreeDots} from 'react-loader-spinner';
@@ -37,6 +37,7 @@ interface UpdateUserDto {
     lastname?: string;
     userStatus: string; // Здесь можно указать тип, который соответствует вашей модели UserStatus.
 }
+
 interface User {
     id: number;
     username: string;
@@ -61,6 +62,7 @@ const UsersControl: React.FC = () => {
     const [total, setTotal] = useState<number>(0);
     const borderColor = useColorModeValue('gray.200', 'gray.900');
     const [isEditing, setIsEditing] = useState<boolean>(false);
+    const rolesOptions = ["ADMIN", "AUTHOR", "TEACHER", "STUDENT", "MODERATOR"];
     const [selectedUser, setSelectedUser] = useState<User | null>({
         id: 0,
         username: '',
@@ -71,8 +73,8 @@ const UsersControl: React.FC = () => {
         roles: [],
         userStatus: '',
     });
-    const [enteredRoles, setEnteredRoles] = useState<string>(
-        selectedUser?.roles.map(role => role.roleName).join(', ') || ''
+    const [enteredRoles, setEnteredRoles] = useState<string[]>(
+        selectedUser?.roles.map(role => role.roleName) || []
     );
 
     useEffect(() => {
@@ -117,8 +119,8 @@ const UsersControl: React.FC = () => {
 
     const handleEditUser = (user: User) => {
         setSelectedUser(user);
-        console.log(user.roles);
-        setEnteredRoles(user.roles.map(role => role.roleName).join(', ')); // Установите начальное значение
+        const rolesArray = user.roles.map(role => role.roleName);
+        setEnteredRoles(rolesArray);
         setIsEditing(true);
     };
 
@@ -129,9 +131,18 @@ const UsersControl: React.FC = () => {
 
     const handleSaveEditUser = async (values: any) => {
         if (selectedUser) {
-            const rolesArray: RoleDto[] = values.roles.split(',').map((roleName: string) => ({
-                roleName: roleName.trim(),
-            }));
+            let rolesArray: RoleDto[] = [];
+
+            if (typeof values.roles === 'string') {
+                rolesArray = values.roles.split(',').map((roleName: string) => ({
+                    roleName: roleName.trim(),
+                }));
+            } else if (Array.isArray(values.roles)) {
+                rolesArray = values.roles.map((roleName: string) => ({
+                    roleName: roleName.trim(),
+                }));
+            }
+
             const updateUserDto: UpdateUserDto = {
                 username: values.username,
                 roles: rolesArray,
@@ -234,7 +245,7 @@ const UsersControl: React.FC = () => {
             </HStack>
             {selectedUser && (
                 <Modal isOpen={isEditing} onClose={handleCloseEditUser}>
-                    <ModalOverlay />
+                    <ModalOverlay/>
                     <Formik
                         initialValues={{
                             username: selectedUser.username || '',
@@ -246,7 +257,7 @@ const UsersControl: React.FC = () => {
                             userStatus: selectedUser.userStatus || ''
                         }}
                         enableReinitialize
-                        onSubmit={async (values, { setSubmitting }) => {
+                        onSubmit={async (values, {setSubmitting}) => {
                             handleSaveEditUser(values);
                             setSubmitting(false);
                         }}
@@ -254,66 +265,89 @@ const UsersControl: React.FC = () => {
                         <Form>
                             <ModalContent>
                                 <ModalHeader>Редактировать пользователя</ModalHeader>
-                                <ModalCloseButton />
+                                <ModalCloseButton/>
                                 <ModalBody>
                                     <Field name="username">
-                                        {({ field, form }: { field: any; form: any }) => (
+                                        {({field, form}: { field: any; form: any }) => (
                                             <FormControl mb={4}>
                                                 <FormLabel>Username</FormLabel>
                                                 <ChakraInput {...field} />
-                                                <ErrorMessage name="username" component={FormErrorMessage} />
+                                                <ErrorMessage name="username" component={FormErrorMessage}/>
                                             </FormControl>
                                         )}
                                     </Field>
                                     <Field name="firstname">
-                                        {({ field, form }: { field: any; form: any }) => (
+                                        {({field, form}: { field: any; form: any }) => (
                                             <FormControl mb={4}>
                                                 <FormLabel>First Name</FormLabel>
                                                 <ChakraInput {...field} />
-                                                <ErrorMessage name="firstname" component={FormErrorMessage} />
+                                                <ErrorMessage name="firstname" component={FormErrorMessage}/>
                                             </FormControl>
                                         )}
                                     </Field>
                                     <Field name="middlename">
-                                        {({ field, form }: { field: any; form: any }) => (
+                                        {({field, form}: { field: any; form: any }) => (
                                             <FormControl mb={4}>
                                                 <FormLabel>Middle Name</FormLabel>
                                                 <ChakraInput {...field} />
-                                                <ErrorMessage name="middlename" component={FormErrorMessage} />
+                                                <ErrorMessage name="middlename" component={FormErrorMessage}/>
                                             </FormControl>
                                         )}
                                     </Field>
                                     <Field name="lastname">
-                                        {({ field, form }: { field: any; form: any }) => (
+                                        {({field, form}: { field: any; form: any }) => (
                                             <FormControl mb={4}>
                                                 <FormLabel>Last Name</FormLabel>
                                                 <ChakraInput {...field} />
-                                                <ErrorMessage name="lastname" component={FormErrorMessage} />
+                                                <ErrorMessage name="lastname" component={FormErrorMessage}/>
                                             </FormControl>
                                         )}
                                     </Field>
                                     <Field name="email">
-                                        {({ field, form }: { field: any; form: any }) => (
+                                        {({field, form}: { field: any; form: any }) => (
                                             <FormControl mb={4}>
                                                 <FormLabel>Email</FormLabel>
                                                 <ChakraInput {...field} />
-                                                <ErrorMessage name="email" component={FormErrorMessage} />
+                                                <ErrorMessage name="email" component={FormErrorMessage}/>
                                             </FormControl>
                                         )}
                                     </Field>
                                     <Field name="roles">
-                                        {({ field, form }: { field: any; form: any }) => (
+                                        {({field, form}: { field: any; form: any }) => (
+
                                             <FormControl mb={4}>
-                                                <FormLabel>Roles</FormLabel>
-                                                <Input
-                                                    {...field}
-                                                    placeholder="Введите роли через запятую (например, ADMIN, AUTHOR)"
-                                                />
+                                                <HStack alignItems="flex-start" flexDir = "column">
+                                                    <FormLabel>Roles</FormLabel>
+                                                    {rolesOptions.map((role) => (
+                                                        <Checkbox
+                                                            ml={8}
+                                                            key={role}
+                                                            name={field.name}
+                                                            value={role}
+                                                            isChecked={field.value.includes(role)}
+                                                            onChange={() => {
+                                                                const roles = [...field.value]; // Создаем копию текущего значения
+                                                                if (roles.includes(role)) {
+                                                                    // Если роль уже выбрана, убираем её
+                                                                    roles.splice(roles.indexOf(role), 1);
+                                                                } else {
+                                                                    // Иначе добавляем роль
+                                                                    roles.push(role);
+                                                                }
+                                                                form.setFieldValue(field.name, roles);
+                                                                setEnteredRoles(roles); // Обновляем enteredRoles
+                                                            }}
+                                                        >
+                                                            {role}
+                                                        </Checkbox>
+                                                    ))}
+                                                    <ErrorMessage name="roles" component={FormErrorMessage}/>
+                                                </HStack>
                                             </FormControl>
                                         )}
                                     </Field>
                                     <Field name="userStatus">
-                                        {({ field, form }: { field: any; form: any }) => (
+                                        {({field, form}: { field: any; form: any }) => (
                                             <FormControl mb={4}>
                                                 <FormLabel>UserStatus</FormLabel>
                                                 <Input
@@ -329,7 +363,8 @@ const UsersControl: React.FC = () => {
                                         Отмена
                                     </Button>
                                     <Button colorScheme="green" type="submit">
-                                        {isLoading ? <ThreeDots height={'10px'} color="white" /> : <>Сохранить изменения</>}
+                                        {isLoading ? <ThreeDots height={'10px'} color="white"/> : <>Сохранить
+                                            изменения</>}
                                     </Button>
                                 </ModalFooter>
                             </ModalContent>

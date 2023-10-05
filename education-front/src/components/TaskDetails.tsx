@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {instanceAxios} from '../utils/axiosConfig';
-import {Box, Button, Flex, FormControl, FormErrorMessage, Heading, Input, Text,} from "@chakra-ui/react";
+import {Box, Button, Flex, FormControl, FormErrorMessage, Heading, Input, Text, FormLabel} from "@chakra-ui/react";
 import {Field, Form, Formik} from "formik";
 import {FiArrowLeftCircle, FiCheckSquare, FiClipboard, FiEdit2, FiPlus} from "react-icons/fi";
 import {ErrorCodes} from "./auth/ErrorCodes";
@@ -215,6 +215,7 @@ const TaskDetails = () => {
                                                 field.onChange(field.name);
                                             }}
                                         >
+                                            <FormLabel>Заголовок задания</FormLabel>
                                             <Input {...field} placeholder="Заголовок задания"/>
                                             <FormErrorMessage mt={0} mb={2}>
                                                 {errorTitle}
@@ -235,6 +236,7 @@ const TaskDetails = () => {
                                                 field.onChange(field.name);
                                             }}
                                         >
+                                            <FormLabel>Описание задания</FormLabel>
                                             <Input {...field} placeholder="Описание задания"/>
                                             <FormErrorMessage mt={0} mb={2}>
                                                 {errorDesc}
@@ -254,6 +256,7 @@ const TaskDetails = () => {
                                                 field.onChange(field.name);
                                             }}
                                         >
+                                            <FormLabel>Дата сдачи</FormLabel>
                                             <Input
                                                 {...field}
                                                 mb={2}
@@ -353,7 +356,7 @@ const TaskDetails = () => {
                                 onClick={() => {
                                     navigate(`/tasks-done/${courseId}/${lessonId}/${homeworkTaskId}`);
                                 }}
-                                width="70%"
+                                width="100%"
                             >
                                 Список готовых заданий
                             </Button>
@@ -372,13 +375,15 @@ const TaskDetails = () => {
                             <TaskDoneCard taskDone={myHomework} key={myHomework.id}/>
                         </Flex>
                     ) : (
-                        <Button leftIcon={<FiPlus/>} w="30%" colorScheme="blue"
-                                onClick={() => {
-                                    navigate(`/task-done/add-solution/${courseId}/${lessonId}/${homeworkTaskId}`);
-                                }}
-                        >
-                            Добавить решение
-                        </Button>
+                        <Flex mx="auto" mt={3} w="500px" justifyContent="center">
+                            <Button leftIcon={<FiPlus/>} w = "100%" colorScheme="blue"
+                                    onClick={() => {
+                                        navigate(`/task-done/add-solution/${courseId}/${lessonId}/${homeworkTaskId}`);
+                                    }}
+                            >
+                                Добавить решение
+                            </Button>
+                        </Flex>
                     )}
                 </Box>
             )}

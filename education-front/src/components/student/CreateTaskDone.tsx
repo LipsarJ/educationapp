@@ -7,6 +7,7 @@ import {
     FormErrorMessage,
     Heading,
     Input,
+    FormLabel
 } from '@chakra-ui/react';
 import { instanceAxios } from '../../utils/axiosConfig';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -80,6 +81,7 @@ const CreateTaskDone: React.FC = () => {
                                         field.onChange(field.name);
                                     }}
                                 >
+                                    <FormLabel>Решение</FormLabel>
                                     <Input
                                         {...field}
                                         mb={2}
@@ -104,7 +106,7 @@ const CreateTaskDone: React.FC = () => {
                             {isLoading ? (
                                 <ThreeDots height={'10px'} color="white" />
                             ) : (
-                                <>Создать задание</>
+                                <>Создать решение</>
                             )}
                         </Button>
                     </Form>
