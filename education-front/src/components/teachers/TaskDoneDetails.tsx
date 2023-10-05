@@ -251,7 +251,7 @@ const TaskDoneDetails = () => {
                                 </Field>
                             </ModalBody>
                             <ModalFooter>
-                                <Button colorScheme = "green" type="submit" colorScheme="green" mr={3} leftIcon = {<FiCheckSquare/>}>
+                                <Button colorScheme = "green" type="submit" mr={3} leftIcon = {<FiCheckSquare/>}>
                                     Сохранить
                                 </Button>
                                 <Button onClick={closeRatingModal}>Отмена</Button>
