@@ -1,6 +1,6 @@
 package com.example.educationapp.dto.request;
 
-import com.example.educationapp.entity.ERole;
+import com.example.educationapp.dto.response.ResponseRoleDto;
 import com.example.educationapp.entity.UserStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
@@ -24,7 +24,7 @@ public class UpdateUserDto {
     private String username;
 
     @Schema(description = "Список ролей пользователя", example = "[\"ROLE_ADMIN\"]")
-    private Set<ERole> roleSet;
+    private Set<ResponseRoleDto> roles;
 
     @Email
     @Size(max = 50)

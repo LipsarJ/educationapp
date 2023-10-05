@@ -7,4 +7,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", uses = BaseLocalDateTimeOffsetDateTimeMapper.class)
 public interface RoleMapper {
     ResponseRoleDto toDto(Role role);
+    Role toEntity(ResponseRoleDto roleDto);
 }

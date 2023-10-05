@@ -26,7 +26,7 @@ export default function NavItem({
                     as={NavLink} to={url}
                 >
                     <MenuButton w="100%">
-                        <Flex flexDir = "row">
+                        <Flex flexDir = "row" textAlign = "left">
                             <Icon as={icon} fontSize="xl"/>
                             <Text ml={5} display="flex">{title}</Text>
                         </Flex>

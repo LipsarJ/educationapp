@@ -22,6 +22,7 @@ import TasksDone from './components/teachers/TasksDone'
 import CreateTaskDone from './components/student/CreateTaskDone'
 import TaskDoneDetails from './components/teachers/TaskDoneDetails'
 import EditTaskDone from './components/student/EditTaskDone'
+import UsersControl from './components/admin/UsersControl'
 
 function App() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -61,6 +62,7 @@ function App() {
                             <Route path="/tasks-done/:courseId/:lessonId/:homeworkTaskId/:homeworkDoneId" element={<TaskDoneDetails/>}/>
                             <Route path="/task-done/edit-solution/:courseId/:lessonId/:homeworkTaskId/:homeworkDoneId" element={<EditTaskDone/>}/>
                             <Route path="/task-done/add-solution/:courseId/:lessonId/:homeworkTaskId" element={<CreateTaskDone/>}/>
+                            <Route path="/admin/users" element={<UsersControl/>}/>
                         </Routes>
                     </Flex>
                 </BrowserRouter>
