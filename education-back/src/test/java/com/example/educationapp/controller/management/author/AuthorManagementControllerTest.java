@@ -2,7 +2,7 @@ package com.example.educationapp.controller.management.author;
 
 import com.example.educationapp.dto.request.management.author.AddOrRemoveAuthorsDto;
 import com.example.educationapp.dto.request.management.author.AddOrRemoveTeachersDto;
-import com.example.educationapp.dto.response.ResponseUserDto;
+import com.example.educationapp.dto.response.UserInfoDto; // Заменен импорт
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.User;
 import com.example.educationapp.mapper.UserMapper;
@@ -46,7 +46,7 @@ public class AuthorManagementControllerTest {
     @MockBean
     UserMapper userMapper;
     @MockBean
-    ResponseUserDto responseUserDto;
+    UserInfoDto userInfoDto; // Заменен ResponseUserDto
     @MockBean
     CourseUtils courseUtils;
     @MockBean
@@ -65,9 +65,9 @@ public class AuthorManagementControllerTest {
         course.setId(1L);
         course.getAuthors().add(user1);
         course.getAuthors().add(user2);
-        List<ResponseUserDto> authors = new ArrayList<>();
-        authors.add(userMapper.toResponseUserDto(user1));
-        authors.add(userMapper.toResponseUserDto(user2));
+        List<UserInfoDto> authors = new ArrayList<>(); // Заменен ResponseUserDto
+        authors.add(userMapper.toUserInfoDto(user1)); // Заменен toResponseUserDto
+        authors.add(userMapper.toUserInfoDto(user2)); // Заменен toResponseUserDto
         when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.getAllAuthorsForCourse(1L)).thenReturn(authors);
         mockMvc.perform(get("/api/v1/author/courses/1/authors")
@@ -90,10 +90,10 @@ public class AuthorManagementControllerTest {
         course.getAuthors().add(user1);
         course.getAuthors().add(user2);
         course.getAuthors().add(user3);
-        List<ResponseUserDto> authors = new ArrayList<>();
-        authors.add(userMapper.toResponseUserDto(user1));
-        authors.add(userMapper.toResponseUserDto(user2));
-        authors.add(userMapper.toResponseUserDto(user3));
+        List<UserInfoDto> authors = new ArrayList<>(); // Заменен ResponseUserDto
+        authors.add(userMapper.toUserInfoDto(user1)); // Заменен toResponseUserDto
+        authors.add(userMapper.toUserInfoDto(user2)); // Заменен toResponseUserDto
+        authors.add(userMapper.toUserInfoDto(user3)); // Заменен toResponseUserDto
         when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.getAllAuthorsForCourse(1L)).thenReturn(authors);
         mockMvc.perform(get("/api/v1/author/courses/1/authors")
@@ -116,9 +116,9 @@ public class AuthorManagementControllerTest {
         AddOrRemoveAuthorsDto addOrRemoveAuthorsDto = new AddOrRemoveAuthorsDto(Arrays.asList(1L, 2L));
         Course course = new Course();
         course.setId(1L);
-        List<ResponseUserDto> authors = new ArrayList<>();
-        authors.add(userMapper.toResponseUserDto(user1));
-        authors.add(userMapper.toResponseUserDto(user2));
+        List<UserInfoDto> authors = new ArrayList<>(); // Заменен ResponseUserDto
+        authors.add(userMapper.toUserInfoDto(user1)); // Заменен toResponseUserDto
+        authors.add(userMapper.toUserInfoDto(user2)); // Заменен toResponseUserDto
         when(userRepo.findByIdIn(addOrRemoveAuthorsDto.getIds())).thenReturn(authorsSet);
         when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.addAuthorsForCourse(1L, addOrRemoveAuthorsDto)).thenReturn(authors);
@@ -144,9 +144,9 @@ public class AuthorManagementControllerTest {
         AddOrRemoveAuthorsDto addOrRemoveAuthorsDto = new AddOrRemoveAuthorsDto(Arrays.asList(1L, 2L));
         Course course = new Course();
         course.setId(1L);
-        List<ResponseUserDto> authors = new ArrayList<>();
-        authors.add(userMapper.toResponseUserDto(user1));
-        authors.add(userMapper.toResponseUserDto(user2));
+        List<UserInfoDto> authors = new ArrayList<>(); // Заменен ResponseUserDto
+        authors.add(userMapper.toUserInfoDto(user1)); // Заменен toResponseUserDto
+        authors.add(userMapper.toUserInfoDto(user2)); // Заменен toResponseUserDto
         when(userRepo.findByIdIn(addOrRemoveAuthorsDto.getIds())).thenReturn(authorsSet);
         when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.addAuthorsForCourse(1L, addOrRemoveAuthorsDto)).thenReturn(authors);
@@ -169,9 +169,9 @@ public class AuthorManagementControllerTest {
         course.setId(1L);
         course.getTeachers().add(user1);
         course.getTeachers().add(user2);
-        List<ResponseUserDto> teachers = new ArrayList<>();
-        teachers.add(userMapper.toResponseUserDto(user1));
-        teachers.add(userMapper.toResponseUserDto(user2));
+        List<UserInfoDto> teachers = new ArrayList<>(); // Заменен ResponseUserDto
+        teachers.add(userMapper.toUserInfoDto(user1)); // Заменен toResponseUserDto
+        teachers.add(userMapper.toUserInfoDto(user2)); // Заменен toResponseUserDto
         when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.getAllTeachersForCourse(1L)).thenReturn(teachers);
         mockMvc.perform(get("/api/v1/author/courses/1/teachers")
@@ -187,17 +187,17 @@ public class AuthorManagementControllerTest {
         User user2 = new User();
         user2.setUsername("teacher2");
         User user3 = new User();
-        user1.setUsername("teacher3");
+        user3.setUsername("teacher3"); // Исправлена ошибка в имени пользователя
 
         Course course = new Course();
         course.setId(1L);
         course.getTeachers().add(user1);
         course.getTeachers().add(user2);
         course.getTeachers().add(user3);
-        List<ResponseUserDto> teachers = new ArrayList<>();
-        teachers.add(userMapper.toResponseUserDto(user1));
-        teachers.add(userMapper.toResponseUserDto(user2));
-        teachers.add(userMapper.toResponseUserDto(user3));
+        List<UserInfoDto> teachers = new ArrayList<>(); // Заменен ResponseUserDto
+        teachers.add(userMapper.toUserInfoDto(user1)); // Заменен toResponseUserDto
+        teachers.add(userMapper.toUserInfoDto(user2)); // Заменен toResponseUserDto
+        teachers.add(userMapper.toUserInfoDto(user3)); // Заменен toResponseUserDto
         when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.getAllTeachersForCourse(1L)).thenReturn(teachers);
         mockMvc.perform(get("/api/v1/author/courses/1/teachers")
@@ -220,9 +220,9 @@ public class AuthorManagementControllerTest {
         AddOrRemoveTeachersDto addOrRemoveTeachersDto = new AddOrRemoveTeachersDto(Arrays.asList(1L, 2L));
         Course course = new Course();
         course.setId(1L);
-        List<ResponseUserDto> teachers = new ArrayList<>();
-        teachers.add(userMapper.toResponseUserDto(user1));
-        teachers.add(userMapper.toResponseUserDto(user2));
+        List<UserInfoDto> teachers = new ArrayList<>(); // Заменен ResponseUserDto
+        teachers.add(userMapper.toUserInfoDto(user1)); // Заменен toResponseUserDto
+        teachers.add(userMapper.toUserInfoDto(user2)); // Заменен toResponseUserDto
         when(userRepo.findByIdIn(addOrRemoveTeachersDto.getIds())).thenReturn(teachersSet);
         when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.addTeachersForCourse(1L, addOrRemoveTeachersDto)).thenReturn(teachers);
@@ -248,9 +248,9 @@ public class AuthorManagementControllerTest {
         AddOrRemoveTeachersDto addOrRemoveTeachersDto = new AddOrRemoveTeachersDto(Arrays.asList(1L, 2L));
         Course course = new Course();
         course.setId(1L);
-        List<ResponseUserDto> teachers = new ArrayList<>();
-        teachers.add(userMapper.toResponseUserDto(user1));
-        teachers.add(userMapper.toResponseUserDto(user2));
+        List<UserInfoDto> teachers = new ArrayList<>(); // Заменен ResponseUserDto
+        teachers.add(userMapper.toUserInfoDto(user1)); // Заменен toResponseUserDto
+        teachers.add(userMapper.toUserInfoDto(user2)); // Заменен toResponseUserDto
         when(userRepo.findByIdIn(addOrRemoveTeachersDto.getIds())).thenReturn(teachersSet);
         when(courseUtils.validateAndGetCourseForAuthor(1L)).thenReturn(course);
         when(authorManagementService.removeTeachersForCourse(1L, addOrRemoveTeachersDto)).thenReturn(teachers);

@@ -1,10 +1,11 @@
 package com.example.educationapp.controller.author;
 
+import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.RequestHomeworkTaskDto;
 import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
-import com.example.educationapp.exception.HomeworkTaskNameException;
-import com.example.educationapp.exception.LessonNotFoundException;
-import com.example.educationapp.service.AuthorHomeworkTaskService;
+import com.example.educationapp.exception.extend.HomeworkTaskNameException;
+import com.example.educationapp.exception.extend.LessonNotFoundException;
+import com.example.educationapp.service.author.AuthorHomeworkTaskService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -141,7 +142,7 @@ public class AuthorHomeworkTaskControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         when(authorHomeworkTaskService.createTask(anyLong(), anyLong(), eq(requestDto)))
-                .thenThrow(new HomeworkTaskNameException("Homework Task with this name is already exists."));
+                .thenThrow(new HomeworkTaskNameException("Homework Task with this name is already exists.", Errors.HW_ALREADY_EXISTS));
 
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/author/homework-tasks/{courseId}/{lessonId}", 1L, 2L).with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)

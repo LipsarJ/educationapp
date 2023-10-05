@@ -10,6 +10,8 @@ import com.example.educationapp.mapper.CourseMapper;
 import com.example.educationapp.repo.CourseRepo;
 import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.security.service.UserContext;
+import com.example.educationapp.service.author.AuthorCourseService;
+import com.example.educationapp.service.author.AuthorLessonService;
 import com.example.educationapp.utils.CourseUtils;
 import org.junit.jupiter.api.Test;
 
@@ -29,10 +31,8 @@ public class AuthorCourseServiceTest {
     private final UserContext userContext = mock(UserContext.class);
     private final CourseUtils courseUtils = mock(CourseUtils.class);
 
-    private final AuthorLessonService  authorLessonService = mock(AuthorLessonService.class);
-
     private final AuthorCourseService authorCourseService = new AuthorCourseService(
-            courseRepo, userRepo, courseMapper, userContext, courseUtils, authorLessonService
+            courseRepo, userRepo, courseMapper, userContext, courseUtils
     );
 
     @Test
@@ -99,7 +99,7 @@ public class AuthorCourseServiceTest {
         when(userRepo.findById(user.getId())).thenReturn(Optional.of(user));
         when(courseMapper.toEntity(requestCourseDto)).thenReturn(course);
         when(courseRepo.save(course)).thenReturn(course);
-        when(courseMapper.toResponseDto(course)).thenReturn(new ResponseCourseDto(course.getId(), course.getCourseName(), course.getCourseStatus(), OffsetDateTime.now(), OffsetDateTime.now()));
+        when(courseMapper.toResponseDto(course)).thenReturn(new ResponseCourseDto(course.getId(), course.getCourseName(), course.getCourseStatus(), OffsetDateTime.now(), OffsetDateTime.now(), 0));
 
         ResponseCourseDto response = authorCourseService.createCourse(requestCourseDto);
 

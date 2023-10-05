@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Container, Heading, Input, Flex } from '@chakra-ui/react';
+import { Button, Container, Heading, Input, Flex} from '@chakra-ui/react';
 import axios from 'axios';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
@@ -19,23 +19,18 @@ const Login: React.FC = () => {
     const [isLoadingLogin, setLoadingLogin] = useState(false);
     const [isLoadingRegister, setLoadingRegister] = useState(false);
 
-    const fetchDataLogin = () => {
-        setLoadingLogin(true);
-    }
-
     const fetchDataRegister = () => {
-        setLoadingLogin(true);
+        setLoadingRegister(true);
     }
 
     const handleLogin = async () => {
-        fetchDataLogin();
+        setLoadingLogin(true);
         try {
             const response = await axios.post(process.env.REACT_APP_API_URL+'/auth/signin', loginData, {
                 withCredentials: true
             });
             setAuthenticated(true);
             setUser(response.data);
-            console.log(response.data);
             navigate('/');
         } catch (error: any) {
             const errorCode = error.response.data.errorCode;

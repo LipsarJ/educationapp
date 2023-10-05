@@ -27,4 +27,7 @@ public class ResponseCourseDto {
 
     @Schema(description = "Дата создания", example = "2023-08-20T10:00:00Z")
     private OffsetDateTime createDate;
+
+    @Schema(description = "Кол-во учеников курса", example = "22")
+    private Integer countStd;
 }

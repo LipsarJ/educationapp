@@ -3,7 +3,7 @@ package com.example.educationapp.dto.request;
 import com.example.educationapp.entity.LessonStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "ДТО для урока, которое получаем при запросе от пользователя")
 public class RequestLessonDto {
     @NotBlank
+    @Size(min = 3, max = 20)
     @Schema(description = "Имя урока, которое получаем от пользователя", example = "Переменные и типы данных")
     private String lessonName;
 
@@ -21,7 +22,7 @@ public class RequestLessonDto {
     @Schema(description = "Содержание урока, которое получаем от пользователя", example = "В этом уроке мы узнаем о различных типах переменных.")
     private String content;
 
-    @NotNull
+    @NotBlank
     @Schema(description = "Статус урока, которое получаем от пользователя", example = "ACTIVE")
     private LessonStatus lessonStatus;
 }

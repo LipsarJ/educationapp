@@ -1,7 +1,6 @@
 package com.example.educationapp.dto.response.student;
 
 import com.example.educationapp.dto.response.UserInfoDto;
-import com.example.educationapp.entity.MediaHomeworkDone;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -29,5 +27,7 @@ public class ResponseHomeworkDoneStudentDto {
     private String teacherFeedback;
     @Schema(description = "Данные учителя, проверившего задание")
     private UserInfoDto teacherInfoDto;
+    @Schema(description = "Данные студента, загрузившего задание")
+    private UserInfoDto studentInfoDto;
     //private List<MediaHomeworkDone> mediaHomeworkDones;
 }

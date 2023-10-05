@@ -1,12 +1,13 @@
 package com.example.educationapp.controller.author;
 
+import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.RequestCourseDto;
 import com.example.educationapp.dto.response.ResponseCourseDto;
 import com.example.educationapp.entity.CourseStatus;
-import com.example.educationapp.exception.CourseNameException;
-import com.example.educationapp.exception.InvalidStatusException;
-import com.example.educationapp.exception.UserNotFoundException;
-import com.example.educationapp.service.AuthorCourseService;
+import com.example.educationapp.exception.extend.CourseNameException;
+import com.example.educationapp.exception.extend.InvalidStatusException;
+import com.example.educationapp.exception.extend.UserNotFoundException;
+import com.example.educationapp.service.author.AuthorCourseService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -127,7 +128,7 @@ public class AuthorCourseControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         when(authorCourseService.createCourse(requestCourseDto))
-                .thenThrow(new CourseNameException("Course name is already exists"));
+                .thenThrow(new CourseNameException("Course name is already exists", Errors.COURSE_NAME_TAKEN));
 
         mockMvc.perform(post("/api/v1/author/courses").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -145,7 +146,7 @@ public class AuthorCourseControllerTest {
         ObjectMapper objectMapper = new ObjectMapper();
 
         when(authorCourseService.createCourse(requestCourseDto))
-                .thenThrow(new InvalidStatusException("Course can only be created with Template status."));
+                .thenThrow(new InvalidStatusException("Course can only be created with Template status.", Errors.STATUS_IS_INVALID));
 
         mockMvc.perform(post("/api/v1/author/courses").with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)

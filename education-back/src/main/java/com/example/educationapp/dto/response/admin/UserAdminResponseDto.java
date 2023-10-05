@@ -1,6 +1,6 @@
 package com.example.educationapp.dto.response.admin;
 
-import com.example.educationapp.entity.Role;
+import com.example.educationapp.dto.response.ResponseRoleDto;
 import com.example.educationapp.entity.UserStatus;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -23,7 +23,7 @@ public class UserAdminResponseDto {
     private String firstname;
     private String middlename;
     private String lastname;
-    private Set<Role> roleSet;
+    private Set<ResponseRoleDto> roles;
     private UserStatus userStatus;
     private OffsetDateTime updateDate;
     private OffsetDateTime createDate;

@@ -1,10 +1,10 @@
 package com.example.educationapp.mapper.student;
 
 import com.example.educationapp.dto.request.student.RequestHomeworkDoneStudentDto;
-import com.example.educationapp.dto.response.student.ResponseCourseStudentDto;
+import com.example.educationapp.dto.response.ResponseCourseDto;
+import com.example.educationapp.dto.response.ResponseHomeworkTaskDto;
+import com.example.educationapp.dto.response.ResponseLessonDto;
 import com.example.educationapp.dto.response.student.ResponseHomeworkDoneStudentDto;
-import com.example.educationapp.dto.response.student.ResponseHomeworkTaskStudentDto;
-import com.example.educationapp.dto.response.student.ResponseLessonStudentDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.HomeworkDone;
 import com.example.educationapp.entity.HomeworkTask;
@@ -19,18 +19,17 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses = {BaseLocalDateTimeOffsetDateTimeMapper.class, LessonMapper.class, HomeworkTaskMapper.class, UserMapper.class})
 public interface StudentCourseMapper {
 
-    @Mapping(target = "lessons", source = "course.lessonList")
-    ResponseCourseStudentDto toResponseCourseDto(Course course);
+    ResponseCourseDto toResponseCourseDto(Course course);
 
-    @Mapping(target = "homeworkTasks", source = "lesson.homeworkTaskList")
-        //@Mapping(target = "mediaLessons", source = "lesson.mediaLessonList")
-    ResponseLessonStudentDto toResponseLessonDto(Lesson lesson);
+    //@Mapping(target = "mediaLessons", source = "lesson.mediaLessonList")
+    ResponseLessonDto toResponseLessonDto(Lesson lesson);
 
     //@Mapping(target = "mediaHomeworkTasks", source = "homeworkTask.mediaHomeworkTaskList")
-    ResponseHomeworkTaskStudentDto toResponseHomeworkTaskDto(HomeworkTask homeworkTask);
+    ResponseHomeworkTaskDto toResponseHomeworkTaskDto(HomeworkTask homeworkTask);
 
     @Mapping(target = "teacherInfoDto", source = "homeworkDone.teacher")
-    //@Mapping(target = "mediaHomeworkDones", source = "homeworkDone.mediaHomeworkDoneList")
+    @Mapping(target = "studentInfoDto", source = "homeworkDone.student")
+        //@Mapping(target = "mediaHomeworkDones", source = "homeworkDone.mediaHomeworkDoneList")
     ResponseHomeworkDoneStudentDto toResponseHomeworkDoneDto(HomeworkDone homeworkDone);
 
     //@Mapping(target = "mediaHomeworkDoneList", source = "requestHomeworkDoneStudentDto.mediaHomeworkDones")

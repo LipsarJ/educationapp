@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(BadDataException.class)
     public ResponseEntity<SimpleResponse> handleBadDataException(BadDataException ex) {
-        SimpleResponse simpleResponse = new SimpleResponse(ex.getMessage(), null);
+        SimpleResponse simpleResponse = new SimpleResponse(ex.getMessage(), ex.getErrorCode());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(simpleResponse);
     }
 }

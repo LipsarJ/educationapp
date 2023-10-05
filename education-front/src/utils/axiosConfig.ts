@@ -24,6 +24,7 @@ instanceAxios.interceptors.response.use(
             originalRequest._retry = true;
             try {
                 const response = await axios.post(process.env.REACT_APP_API_URL+'/auth/refreshtoken', {}, {withCredentials: true});
+                console.log(response);
                 return instanceAxios(originalRequest);
             } catch (error) {
                 logout();

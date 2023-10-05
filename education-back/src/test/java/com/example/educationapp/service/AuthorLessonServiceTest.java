@@ -8,6 +8,7 @@ import com.example.educationapp.repo.CourseRepo;
 import com.example.educationapp.repo.HomeworkTaskRepo;
 import com.example.educationapp.repo.LessonRepo;
 import com.example.educationapp.repo.MediaLessonRepo;
+import com.example.educationapp.service.author.AuthorLessonService;
 import com.example.educationapp.utils.CourseUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,22 +1,21 @@
 package com.example.educationapp.service.management.teacher;
 
+import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.management.teacher.AddOrRemoveStudentsDto;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.dto.response.UserInfoDto;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.User;
 import com.example.educationapp.exception.BadDataException;
+import com.example.educationapp.exception.ForbiddenException;
 import com.example.educationapp.mapper.UserMapper;
 import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -39,13 +38,12 @@ public class TeacherManagementService {
     public List<ResponseUserDto> addStudentsForCourse(Long id, AddOrRemoveStudentsDto addOrRemoveStudentsDto) {
         Course course = courseUtils.validateAndGetCourseForTeacher(id);
         Set<User> students = userRepo.findByIdIn(addOrRemoveStudentsDto.getIds());
-        for(User student : students) {
-            if(!student.getStudentCourseSet().contains(course)) {
+        for (User student : students) {
+            if (!student.getStudentCourseSet().contains(course)) {
                 student.getStudentCourseSet().add(course);
                 userRepo.save(student);
-            }
-            else {
-                throw new BadDataException(String.format("User with id: %s is already student of this course", student.getId()));
+            } else {
+                throw new BadDataException(String.format("User with id: %s is already student of this course", student.getId()), Errors.STUDENT_ALREADY_EXISTS);
             }
         }
         return students.stream()
@@ -56,13 +54,12 @@ public class TeacherManagementService {
     public List<ResponseUserDto> removeStudentsForCourse(Long id, AddOrRemoveStudentsDto addOrRemoveStudentsDto) {
         Course course = courseUtils.validateAndGetCourseForTeacher(id);
         Set<User> students = userRepo.findByIdIn(addOrRemoveStudentsDto.getIds());
-        for(User student : students) {
-            if(student.getStudentCourseSet().contains(course)) {
+        for (User student : students) {
+            if (student.getStudentCourseSet().contains(course)) {
                 student.getStudentCourseSet().remove(course);
                 userRepo.save(student);
-            }
-            else {
-                throw new BadDataException(String.format("User with id: %s is not student of this course", student.getId()));
+            } else {
+                throw new ForbiddenException(String.format("User with id: %s is not student of this course", student.getId()));
             }
         }
         return students.stream()

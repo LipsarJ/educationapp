@@ -9,6 +9,7 @@ import com.example.educationapp.mapper.HomeworkTaskMapper;
 import com.example.educationapp.repo.HomeworkTaskRepo;
 import com.example.educationapp.repo.LessonRepo;
 import com.example.educationapp.repo.MediaHomeworkTaskRepo;
+import com.example.educationapp.service.author.AuthorHomeworkTaskService;
 import com.example.educationapp.utils.CourseUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

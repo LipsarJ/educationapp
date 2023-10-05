@@ -1,5 +1,6 @@
 package com.example.educationapp.controller;
 
+import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.LoginDto;
 import com.example.educationapp.dto.request.SignupDto;
 import com.example.educationapp.entity.RefreshToken;
@@ -155,7 +156,7 @@ public class AuthControllerTest {
         try {
             return new ObjectMapper().writeValueAsString(obj);
         } catch (Exception e) {
-            throw new BadDataException(e.getMessage());
+            throw new BadDataException(e.getMessage(), Errors.BAD_CREDITIANS);
         }
     }
 }
