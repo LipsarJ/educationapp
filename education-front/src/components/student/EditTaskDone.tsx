@@ -4,6 +4,7 @@ import {Button, Container, Flex, FormControl, FormErrorMessage, Heading, Input} 
 import {instanceAxios} from '../../utils/axiosConfig';
 import {useNavigate, useParams} from 'react-router-dom';
 import {Oval, ThreeDots} from 'react-loader-spinner';
+import {FiCheckSquare} from 'react-icons/fi'
 
 const EditHomeworkDone: React.FC = () => {
     const [isLoading, setLoading] = useState(false);
@@ -107,11 +108,12 @@ const EditHomeworkDone: React.FC = () => {
                             <Button
                                 mt={5}
                                 color="white"
-                                bg="facebook.400"
+                                colorScheme = "green"
                                 size="lg"
                                 type="submit"
                                 mx="auto"
                                 display="block"
+                                leftIcon={<FiCheckSquare/>}
                             >
                                 {isLoading ? (
                                     <ThreeDots height={'10px'} color="white"/>

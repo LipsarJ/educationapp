@@ -6,6 +6,7 @@ import {useNavigate, useParams} from 'react-router-dom';
 import {ThreeDots} from 'react-loader-spinner';
 import {ErrorCodes} from '../auth/ErrorCodes'
 import {format} from "date-fns-tz";
+import {FiCheckSquare} from 'react-icons/fi'
 
 interface TaskData {
     title: string;
@@ -179,11 +180,12 @@ const CreateTask: React.FC = () => {
                         <Button
                             mt={5}
                             color="white"
-                            bg="facebook.400"
+                            colorScheme = "green"
                             size="lg"
                             type="submit"
                             mx="auto"
                             display="block"
+                            leftIcon = {<FiCheckSquare/>}
                         >
                             {isLoading ? (
                                 <ThreeDots height={'10px'} color="white"/>

@@ -16,7 +16,7 @@ import {
     ModalOverlay,
     Text,
 } from "@chakra-ui/react";
-import {FiClipboard, FiEdit2} from "react-icons/fi";
+import {FiClipboard, FiEdit2, FiCheckSquare} from "react-icons/fi";
 import {Oval} from "react-loader-spinner";
 import {useAuth} from "../../contexts/AuthContext";
 import {Field, Form, Formik} from "formik";
@@ -183,7 +183,7 @@ const TaskDoneDetails = () => {
                         </Button>
                     )}
                     {user && user.roles.includes("TEACHER") && (
-                        <Button mt={4} mb={3} colorScheme="blue" onClick={openRatingModal} width="70%">
+                        <Button mt={4} mb={3} colorScheme="blue" onClick={openRatingModal} width="70%" leftIcon={<FiEdit2/>}>
                             {taskDone.grade !== null ? "Изменить оценку" : "Поставить оценку"}
                         </Button>
                     )}
@@ -251,7 +251,7 @@ const TaskDoneDetails = () => {
                                 </Field>
                             </ModalBody>
                             <ModalFooter>
-                                <Button type="submit" colorScheme="green" mr={3}>
+                                <Button colorScheme = "green" type="submit" colorScheme="green" mr={3} leftIcon = {<FiCheckSquare/>}>
                                     Сохранить
                                 </Button>
                                 <Button onClick={closeRatingModal}>Отмена</Button>
