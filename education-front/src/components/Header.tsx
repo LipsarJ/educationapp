@@ -1,7 +1,7 @@
 import React from 'react';
 import {Flex, IconButton, Text} from '@chakra-ui/react';
-import {FiMenu} from 'react-icons/fi';
-import {useLocation} from 'react-router-dom';
+import {FiMenu, FiArrowLeft} from 'react-icons/fi';
+import {useLocation, useNavigate} from 'react-router-dom';
 
 interface HeaderProps {
     onToggleSidebar: () => void;
@@ -11,6 +11,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({onToggleSidebar, isSidebarOpen, isMobile}) => {
     const location = useLocation();
+    const navigate = useNavigate();
     let currentPage = '';
 
     switch (location.pathname) {
@@ -50,7 +51,14 @@ const Header: React.FC<HeaderProps> = ({onToggleSidebar, isSidebarOpen, isMobile
             <Text fontWeight="bold" fontSize="lg" color="white" textAlign="center" mr={10}>
                 {currentPage}
             </Text>
-            <Flex></Flex>
+            <IconButton
+                aria-label="Back"
+                background="none"
+                color="white"
+                zIndex="1001"
+                icon={<FiArrowLeft/>}
+                onClick={() => navigate(-1)}
+            />
         </Flex>
     );
 };

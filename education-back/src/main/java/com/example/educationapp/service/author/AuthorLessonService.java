@@ -72,6 +72,7 @@ public class AuthorLessonService {
 
     @Transactional
     public ResponseLessonDto updateLesson(Long courseId, Long id, RequestLessonDto requestLessonDto) {
+        courseUtils.validateAndGetCourseForAuthor(courseId);
         Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found"));
         LessonStatus newStatus;
         if (requestLessonDto.getLessonStatus() != null) {
