@@ -9,6 +9,7 @@ import {Oval} from "react-loader-spinner";
 import LessonCard from './authors/LessonCard';
 import Statuses from './authors/Statuses';
 import {useAuth} from '../contexts/AuthContext';
+import {DragDropContext, Draggable, Droppable, DropResult} from "react-beautiful-dnd";
 
 interface Course {
     id: number;
@@ -17,6 +18,11 @@ interface Course {
     createDate: string;
     updateDate: string;
     countStd: number;
+}
+
+interface UpdateLessonNum {
+    id: number;
+    num: number;
 }
 
 interface UserData {
@@ -57,6 +63,7 @@ const CourseDetails = () => {
     const [isDeleted, setIsDeleted] = useState(false);
     const [authors, setAuthors] = useState<UserData[]>([]);
     const [teachers, setTeachers] = useState<UserData[]>([]);
+    const [isDragged, setIsDragged] = useState(false);
     const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
     const navigate = useNavigate();
 
@@ -65,21 +72,24 @@ const CourseDetails = () => {
             if (user.roles.includes('AUTHOR')) {
                 try {
                     const response = await instanceAxios.get<Lesson[]>(`/author/lessons/${id}`);
-                    setLessons(response.data);
+                    const sortedLessons = [...response.data].sort((a, b) => a.num - b.num);
+                    setLessons(sortedLessons);
                 } catch (error) {
                     console.error(error);
                 }
             } else if (user.roles.includes('TEACHER')) {
                 try {
                     const response = await instanceAxios.get<Lesson[]>(`/teacher/lessons/${id}`);
-                    setLessons(response.data);
+                    const sortedLessons = [...response.data].sort((a, b) => a.num - b.num);
+                    setLessons(sortedLessons);
                 } catch (error) {
                     console.error(error);
                 }
             } else if (user.roles.includes('STUDENT')) {
                 try {
                     const response = await instanceAxios.get<Lesson[]>(`/student/course/${id}/lessons`);
-                    setLessons(response.data);
+                    const sortedLessons = [...response.data].sort((a, b) => a.num - b.num);
+                    setLessons(sortedLessons);
                 } catch (error) {
                     console.error(error);
                 }
@@ -159,33 +169,47 @@ const CourseDetails = () => {
     };
 
     const handleSaveClick = async (values: CourseDto) => {
-        if (!error) {
-            try {
-                const response = await instanceAxios.put(`/author/courses/${id}`, values);
-                setCourse(response.data);
-                setChanged(false);
-                fetchCourse();
-            } catch (error: any) {
-                console.error(error);
-                if (
-                    error &&
-                    error.response &&
-                    error.response.data &&
-                    error.response.data.errorCode
-                ) {
-                    if (error.response.data.errorCode == ErrorCodes.CourseNameTaken) {
-                        setError("Имя курса уже существует.");
-                    } else if (
-                        error.response.data.errorCode == ErrorCodes.StatusIsInvalid
-                    ) {
-                        setError("Урок может быть создан только в статусе TEMPLATE");
+            if (!error) {
+                if (isDragged) {
+                    try {
+                        const updatedLessonOrder = lessons.map((lesson: Lesson, index: number) => ({
+                            id: lesson.id,
+                            num: index + 1,
+                        }))
+                        await instanceAxios.put(`/author/lessons/${id}/update-nums`, updatedLessonOrder);
+                        setIsDragged(false);
+                    } catch (error) {
+                        console.error(error);
                     }
-                } else {
-                    setGlobalError("Что-то пошло не так, попробуйте позже.");
+                } else if (isChanged) {
+                    try {
+                        const response = await instanceAxios.put(`/author/courses/${id}`, values);
+                        setCourse(response.data);
+                        setChanged(false);
+                        fetchCourse();
+                    } catch (error: any) {
+                        console.error(error);
+                        if (
+                            error &&
+                            error.response &&
+                            error.response.data &&
+                            error.response.data.errorCode
+                        ) {
+                            if (error.response.data.errorCode == ErrorCodes.CourseNameTaken) {
+                                setError("Имя курса уже существует.");
+                            } else if (
+                                error.response.data.errorCode == ErrorCodes.StatusIsInvalid
+                            ) {
+                                setError("Урок может быть создан только в статусе TEMPLATE");
+                            }
+                        } else {
+                            setGlobalError("Что-то пошло не так, попробуйте позже.");
+                        }
+                    }
                 }
             }
         }
-    };
+    ;
 
     const handleStatusChange = async (values: CourseStatusDto) => {
         try {
@@ -197,7 +221,21 @@ const CourseDetails = () => {
         } catch (error: any) {
             console.error(error);
         }
-    }
+    };
+
+    const handleDragEnd = (result: DropResult) => {
+        if (!result.destination) return;
+        const reorderedLessons = [...lessons];
+        const [movedLesson] = reorderedLessons.splice(result.source.index, 1);
+        reorderedLessons.splice(result.destination.index, 0, movedLesson);
+
+        const updatedLessons = reorderedLessons.map((lesson, index) => ({
+            ...lesson,
+            order: index + 1,
+        }));
+        setIsDragged(true);
+        setLessons(updatedLessons);
+    };
 
     if (!course) {
         return (
@@ -262,17 +300,17 @@ const CourseDetails = () => {
                                                 style={{
                                                     backgroundColor: "transparent",
                                                     border: "none",
-                                                    cursor: isChanged && !error ? "pointer" : "not-allowed",
+                                                    cursor: isChanged || isDragged && !error ? "pointer" : "not-allowed",
                                                 }}
-                                                isDisabled={!isChanged || !!error}
+                                                isDisabled={(!isChanged && !isDragged) || !!error}
                                                 onClick={() => {
-                                                    if (isChanged) {
+                                                    if (isChanged || isDragged) {
                                                         handleSubmit();
                                                     }
                                                 }}
                                             >
                                                 <FiCheckSquare
-                                                    color={isChanged && !error ? "green" : "gray"}
+                                                    color={isChanged || isDragged && !error ? "green" : "gray"}
                                                     size="40px"
                                                 />
                                             </Button>
@@ -305,10 +343,10 @@ const CourseDetails = () => {
                         <Text fontSize="lg" mb={2}>
                             Дата обновления: {course.updateDate}
                         </Text>
-                        {user && !user.roles.includes('STUDENT') &&(
-                        <Text fontSize="lg" mb={2}>
-                            Количество учеников: {course.countStd}
-                        </Text>
+                        {user && !user.roles.includes('STUDENT') && (
+                            <Text fontSize="lg" mb={2}>
+                                Количество учеников: {course.countStd}
+                            </Text>
                         )}
                         {user && user.roles.includes('AUTHOR') && (
                             <Flex mt={4} flexDir="row" justifyContent="space-between" w="100%" gap={5}>
@@ -342,7 +380,7 @@ const CourseDetails = () => {
                             </Flex>
                         )}
                         {user && user.roles.includes('TEACHER') && (
-                            <Flex justifyContent="center" w = "100%" mt={4} gap={5} borderRadius={8}>
+                            <Flex justifyContent="center" w="100%" mt={4} gap={5} borderRadius={8}>
                                 <Button
                                     color="white"
                                     bg="blue.500"
@@ -428,40 +466,59 @@ const CourseDetails = () => {
                     <Heading size="lg" textAlign="center" padding="20px">
                         Уроки курса
                     </Heading>
-                    <Flex
-                        gap={3}
-                        flexWrap="wrap"
-                        flexDir="row"
-                        justifyContent="center"
-                    >
-                        {lessons && lessons
-                            .slice() // Создаем копию массива уроков для избежания изменения оригинального массива
-                            .sort((a, b) => a.num - b.num) // Сортируем по полю num
-                            .map((lesson: Lesson) => (
-                                <LessonCard lesson={lesson} key={lesson.id} onDelete={handleDeleteLesson} />
-                            ))
-                        }
-                        <Flex
-                            key="create-course"
-                            padding="16px"
-                            borderRadius="8"
-                            flexBasis="400px"
-                            h="300px"
-                            gap={3}
-                            alignItems="center"
-                            justifyContent="center"
-                            cursor="pointer"
-                            color="gray"
-                            boxShadow="md"
-                            onClick={() => navigate(`/lessons/create/${course.id}`)}
-                            _hover={{
-                                bg: "#F9F9F9"
-                            }}
-                        >
-                            <FiPlus size={32}/>
-                        </Flex>
-                    </Flex>
-
+                    <DragDropContext onDragEnd={handleDragEnd}>
+                        <Droppable droppableId="lessonList" direction="horizontal">
+                            {(provided, snapshot) => (
+                                <Flex
+                                    gap={3}
+                                    flexWrap="wrap"
+                                    flexDir="row"
+                                    justifyContent="center"
+                                    ref={provided.innerRef}
+                                    {...provided.droppableProps}
+                                >
+                                    {lessons && lessons
+                                        .map((lesson: Lesson, index: number) => ({
+                                            ...lesson,
+                                            order: index + 1,
+                                        }))
+                                        .map((lesson: Lesson, index: number) => (
+                                            <Draggable
+                                                key={lesson.id}
+                                                draggableId={lesson.id.toString()}
+                                                index={index}
+                                            >
+                                                {(provided, snapshot, rubric) => (
+                                                    <LessonCard lesson={lesson} provided={provided}
+                                                                onDelete={handleDeleteLesson}/>
+                                                )}
+                                            </Draggable>
+                                        ))
+                                    }
+                                    {provided.placeholder}
+                                    <Flex
+                                        key="create-course"
+                                        padding="16px"
+                                        borderRadius="8"
+                                        flexBasis="400px"
+                                        h="300px"
+                                        gap={3}
+                                        alignItems="center"
+                                        justifyContent="center"
+                                        cursor="pointer"
+                                        color="gray"
+                                        boxShadow="md"
+                                        onClick={() => navigate(`/lessons/create/${course.id}`)}
+                                        _hover={{
+                                            bg: "#F9F9F9"
+                                        }}
+                                    >
+                                        <FiPlus size={32}/>
+                                    </Flex>
+                                </Flex>
+                            )}
+                        </Droppable>
+                    </DragDropContext>
                 </>
             )}
             {user && (user.roles.includes('TEACHER') || user.roles.includes('STUDENT')) && (
@@ -473,10 +530,13 @@ const CourseDetails = () => {
                     justifyContent="center"
                 >
                     {lessons && lessons
-                        .slice() // Создаем копию массива уроков для избежания изменения оригинального массива
-                        .sort((a, b) => a.num - b.num) // Сортируем по полю num
+                        .map((lesson: Lesson, index: number) => ({
+                            ...lesson,
+                            order: index + 1,
+                        }))
                         .map((lesson: Lesson) => (
-                            <LessonCard lesson={lesson} key={lesson.id} onDelete={handleDeleteLesson} />
+                            <LessonCard lesson={lesson} key={lesson.id} onDelete={handleDeleteLesson}
+                                        provided={null}/>
                         ))
                     }
                 </Flex>

@@ -254,25 +254,6 @@ const LessonDetails = () => {
                                         </FormControl>
                                     )}
                                 </Field>
-                                <Field name="num" validate={validateLessonNum}>
-                                    {({field, form}: { field: any; form: any }) => (
-                                        <FormControl width="100%" mt={0} mb={2}
-                                                     isInvalid={errorNum && form.touched.num}
-                                                     onChange={() => {
-                                                         if (errorNum) {
-                                                             setErrorNum('');
-                                                         }
-                                                         field.onChange(field.name);
-                                                     }}
-                                        >
-                                            <FormLabel>Порядковый номер урока</FormLabel>
-                                            <Input {...field} placeholder="Порядковый номер урока"/>
-                                            <FormErrorMessage mt={0} mb={2}>
-                                                {errorNum}
-                                            </FormErrorMessage>
-                                        </FormControl>
-                                    )}
-                                </Field>
                                 <Flex flexDir="row" justifyContent="space-between" gap={4}>
                                     <Button mt={4} w="100%" color="white"
                                             size="lg"

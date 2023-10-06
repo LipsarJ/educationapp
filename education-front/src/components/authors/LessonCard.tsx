@@ -21,11 +21,12 @@ import {ErrorCodes} from "../auth/ErrorCodes";
 import {ThreeDots} from "react-loader-spinner";
 import {useAuth} from '../../contexts/AuthContext';
 
-const LessonCard: React.FC<{ lesson: any, onDelete: () => void }> = ({lesson, onDelete}) => {
+const LessonCard: React.FC<{ lesson: any, onDelete: () => void, provided: any }> = ({lesson, onDelete, provided}) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [isLoading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
+    const [isHover, setHover] = useState(false);
     const {id} = useParams();
 
     const toggleDeleteConfirmation = () => {
@@ -67,13 +68,17 @@ const LessonCard: React.FC<{ lesson: any, onDelete: () => void }> = ({lesson, on
             alignItems="center"
             gap={3}
             boxShadow="sm"
-            w="10%"
             border="1px solid #ccc"
             _hover={{
-                bg: "#F9F9F9"
+                bg: "#F9F9F9",
             }}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
+            ref={provided ? provided.innerRef : undefined}
+            {...(provided ? provided.draggableProps : {})}
+            {...(provided ? provided.dragHandleProps : {})}
         >
-            <Heading mt={1} size="md" textAlign="center" cursor="pointer">
+            <Heading mt={1} size="md" textAlign="center" cursor="pointer" textDecoration={isHover ?"underline" : "none"}>
                 <Text as={NavLink} to={`/lessons/${id}/${lesson.id}`}>{lesson.lessonName}</Text>
             </Heading>
             {user && user.roles.includes('AUTHOR') && (
@@ -90,9 +95,15 @@ const LessonCard: React.FC<{ lesson: any, onDelete: () => void }> = ({lesson, on
                     </Box>
                 </Box>
             )}
+            <Box position="absolute" left="2" top="2">
+                {lesson.order}
+            </Box>
 
             <Divider w="100%"></Divider>
-            <Box>
+            <Box _hover={{
+                textDecoration: "none"
+            }}
+            >
                 <Heading size="md" textAlign="center">Статус: </Heading>
                 <Text textAlign="center">
                     {lesson.lessonStatus === 'ACTIVE'

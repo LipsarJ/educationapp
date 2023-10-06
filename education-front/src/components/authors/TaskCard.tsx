@@ -27,6 +27,7 @@ const TaskCard: React.FC<{ task: any, onDelete: () => void }> = ({task, onDelete
     const [error, setError] = useState('');
     const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
     const {id, lessonId} = useParams();
+    const [isHover, setHover] = useState(false);
 
     const toggleDeleteConfirmation = () => {
         setIsDeleting(!isDeleting);
@@ -71,8 +72,10 @@ const TaskCard: React.FC<{ task: any, onDelete: () => void }> = ({task, onDelete
             _hover={{
                 bg: "#F9F9F9"
             }}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
         >
-            <Heading mt={1} size="md" textAlign="center" cursor="pointer">
+            <Heading mt={1} size="md" textAlign="center" cursor="pointer" textDecoration={isHover ?"underline" : "none"}>
                 <Text as={NavLink} to={`/tasks/${id}/${lessonId}/${task.id}`}>{task.title}</Text>
             </Heading>
             {user && user.roles.includes('AUTHOR') && (

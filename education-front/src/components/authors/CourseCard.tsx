@@ -26,6 +26,7 @@ const CourseCard: React.FC<{ course: any, onDelete: () => void }> = ({course, on
     const [isLodaing, setLoading] = useState(false);
     const [error, setError] = useState('');
     const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
+    const [isHover, setHover] = useState(false);
 
     const toggleDeleteConfirmation = () => {
         setIsDeleting(!isDeleting);
@@ -70,8 +71,10 @@ const CourseCard: React.FC<{ course: any, onDelete: () => void }> = ({course, on
             _hover={{
                 bg: "#F9F9F9"
             }}
+            onMouseEnter={() => setHover(true)}
+            onMouseLeave={() => setHover(false)}
         >
-            <Heading mt={1} size="md" textAlign="center" cursor="pointer">
+            <Heading mt={1} size="md" textAlign="center" cursor="pointer" textDecoration={isHover ?"underline" : "none"}>
                 <Text as={NavLink} to={`/courses/${course.id}`}>{course.courseName}</Text>
             </Heading>
 
