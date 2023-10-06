@@ -31,6 +31,7 @@ interface Lesson {
     id: number;
     lessonName: string;
     content: string;
+    num: number;
     lessonStatus: string;
     createDate: string;
     updateDate: string;
@@ -433,9 +434,13 @@ const CourseDetails = () => {
                         flexDir="row"
                         justifyContent="center"
                     >
-                        {lessons && lessons.map((lesson: Lesson) => (
-                            <LessonCard lesson={lesson} key={lesson.id} onDelete={handleDeleteLesson}/>
-                        ))}
+                        {lessons && lessons
+                            .slice() // Создаем копию массива уроков для избежания изменения оригинального массива
+                            .sort((a, b) => a.num - b.num) // Сортируем по полю num
+                            .map((lesson: Lesson) => (
+                                <LessonCard lesson={lesson} key={lesson.id} onDelete={handleDeleteLesson} />
+                            ))
+                        }
                         <Flex
                             key="create-course"
                             padding="16px"
@@ -467,9 +472,12 @@ const CourseDetails = () => {
                     flexDir="row"
                     justifyContent="center"
                 >
-                    {lessons && lessons.map((lesson: Lesson) => (
-                        <LessonCard lesson={lesson} key={lesson.id} onDelete={handleDeleteLesson}/>
-                    ))
+                    {lessons && lessons
+                        .slice() // Создаем копию массива уроков для избежания изменения оригинального массива
+                        .sort((a, b) => a.num - b.num) // Сортируем по полю num
+                        .map((lesson: Lesson) => (
+                            <LessonCard lesson={lesson} key={lesson.id} onDelete={handleDeleteLesson} />
+                        ))
                     }
                 </Flex>
             )}

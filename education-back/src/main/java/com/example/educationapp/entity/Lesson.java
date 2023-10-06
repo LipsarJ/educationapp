@@ -39,6 +39,9 @@ public class Lesson {
     @Column(nullable = false)
     private LocalDateTime updateDate;
 
+    @Column(nullable = false)
+    private Integer num;
+
     @ManyToOne
     @JoinColumn(name = "course_id", nullable = false)
     @JsonIgnore

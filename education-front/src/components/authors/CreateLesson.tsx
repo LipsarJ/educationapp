@@ -10,6 +10,7 @@ interface LessonData {
     lessonName: string;
     lessonStatus: string;
     content: string;
+    num: number;
 }
 
 const CreateCourse: React.FC = () => {
@@ -17,6 +18,7 @@ const CreateCourse: React.FC = () => {
     const [globalError, setGlobalError] = useState('');
     const [errorLessonName, setErrorLessonName] = useState('');
     const [errorLessonStatus, setErrorLessonStatus] = useState('');
+    const [errorLessonNum, setErrorLessonNum] = useState('');
     const {courseId} = useParams();
     const navigate = useNavigate();
 
@@ -36,8 +38,17 @@ const CreateCourse: React.FC = () => {
         return errorLessonStatus;
     };
 
+    const validateLessonNum = (value: number) => {
+        if (!value) {
+            setErrorLessonStatus("Номер урока обязателен");
+        } else if (value <= 0) {
+            setErrorLessonNum('Номер урока должен быть от 1')
+        }
+        return errorLessonNum;
+    };
+
     const handleCreateLesson = async (values: LessonData) => {
-        if (!errorLessonName && !errorLessonStatus) {
+        if (!errorLessonName && !errorLessonStatus && !errorLessonNum) {
             let error;
             setGlobalError('');
             setLoading(true);
@@ -52,6 +63,8 @@ const CreateCourse: React.FC = () => {
                         setErrorLessonName("Имя урока уже существует.")
                     } else if (error.response.data.errorCode == ErrorCodes.StatusIsInvalid) {
                         setErrorLessonStatus("Урок может быть создан только в статусе ACTIVE")
+                    } else if (error.response.data.errorCode == ErrorCodes.LessonNumIsTaken) {
+                        setErrorLessonNum("Урок с таким номером уже существует")
                     }
                 } else {
                     setGlobalError('Что-то пошло не так, попробуйте позже.');
@@ -71,7 +84,8 @@ const CreateCourse: React.FC = () => {
                 initialValues={{
                     lessonName: '',
                     lessonStatus: 'NOT_ACTIVE',
-                    content: ''
+                    content: '',
+                    num: 0
                 }}
                 validateOnChange={false}
                 validateOnBlur={false}
@@ -141,6 +155,14 @@ const CreateCourse: React.FC = () => {
                                         width="100%"
                                         placeholder="Содержимое урока"
                                     />
+                                </FormControl>
+                            )}
+                        </Field>
+                        <Field name="num">
+                            {({field, form}: { field: any; form: any }) => (
+                                <FormControl width="100%" mt={0} mb={2}>
+                                    <FormLabel>Порядковый номер урока</FormLabel>
+                                    <Input {...field} placeholder="Порядковый номер урока"/>
                                 </FormControl>
                             )}
                         </Field>

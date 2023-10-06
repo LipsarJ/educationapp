@@ -41,6 +41,7 @@ interface Lesson {
     id: number;
     lessonName: string;
     content: string;
+    num: number;
     lessonStatus: string;
     createDate: string;
     updateDate: string;
@@ -49,6 +50,7 @@ interface Lesson {
 interface LessonDto {
     lessonName: string;
     content: string;
+    num: number;
 }
 
 interface LessonStatusDto {
@@ -207,7 +209,7 @@ const LessonDetails = () => {
                 <Flex justifyContent="center" alignItems="center" flexDir="column">
                     {globalError && <div style={{color: 'red'}}>{globalError}</div>}
                     <Formik
-                        initialValues={{lessonName: lesson.lessonName, content: lesson.content}}
+                        initialValues={{lessonName: lesson.lessonName, content: lesson.content, num: lesson.num}}
                         onSubmit={handleSaveClick}
                         validateOnChange={false}
                         validateOnBlur={false}
@@ -237,6 +239,14 @@ const LessonDetails = () => {
                                         <FormControl width="100%" mt={0} mb={2}>
                                             <FormLabel>Содержимое урока</FormLabel>
                                             <Input {...field} placeholder="Содержимое урока"/>
+                                        </FormControl>
+                                    )}
+                                </Field>
+                                <Field name="num">
+                                    {({field, form}: { field: any; form: any }) => (
+                                        <FormControl width="100%" mt={0} mb={2}>
+                                            <FormLabel>Порядковый номер урока</FormLabel>
+                                            <Input {...field} placeholder="Порядковый номер урока"/>
                                         </FormControl>
                                     )}
                                 </Field>

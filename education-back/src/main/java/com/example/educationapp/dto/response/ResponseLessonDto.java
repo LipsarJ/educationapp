@@ -22,6 +22,9 @@ public class ResponseLessonDto {
     @Schema(description = "Содержание занятия", example = "Основные понятия и операции в алгебре")
     private String content;
 
+    @Schema(description = "Порядковый номер урока", example = "1")
+    private Integer num;
+
     @Schema(description = "Статус занятия", example = "ACTIVE")
     private LessonStatus lessonStatus;
 

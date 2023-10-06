@@ -4,6 +4,7 @@ import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.RequestLessonDto;
 import com.example.educationapp.dto.response.ResponseLessonDto;
 import com.example.educationapp.entity.*;
+import com.example.educationapp.exception.BadDataException;
 import com.example.educationapp.exception.extend.InvalidStatusException;
 import com.example.educationapp.exception.extend.LessonNameException;
 import com.example.educationapp.exception.extend.LessonNotFoundException;
@@ -50,6 +51,9 @@ public class AuthorLessonService {
         if (lessonRepo.existsByLessonName(requestLessonDto.getLessonName())) {
             throw new LessonNameException("Lesson with this name is already exists.", Errors.LESSON_NAME_TAKEN);
         }
+        if(lessonRepo.existsByNumAndCourse(requestLessonDto.getNum(), course)) {
+            throw new BadDataException("Lesson with this num already in this course", Errors.LESSON_NUM_IS_TAKEN);
+        }
         Lesson lesson = lessonMapper.toEntity(requestLessonDto);
         lesson.setLessonsCourse(course);
         lessonRepo.save(lesson);
@@ -66,7 +70,7 @@ public class AuthorLessonService {
 
     @Transactional
     public ResponseLessonDto updateLesson(Long courseId, Long id, RequestLessonDto requestLessonDto) {
-        courseUtils.validateAndGetCourseForAuthor(courseId);
+        Course course = courseUtils.validateAndGetCourseForAuthor(courseId);
         Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new LessonNotFoundException("Lesson is not found"));
         LessonStatus newStatus;
         if (requestLessonDto.getLessonStatus() != null) {
@@ -76,6 +80,10 @@ public class AuthorLessonService {
         }
         if (lessonRepo.existsByLessonNameAndIdNot(requestLessonDto.getLessonName(), id)) {
             throw new LessonNameException("Lesson with this name is already exists.", Errors.LESSON_NAME_TAKEN);
+        }
+
+        if(lessonRepo.existsByNumAndCourseAndIdNot(requestLessonDto.getNum(), course, id)) {
+            throw new BadDataException("Lesson with this num already in this course", Errors.LESSON_NUM_IS_TAKEN);
         }
 
         if (!isStatusChangeValid(newStatus)) {
