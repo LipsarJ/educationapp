@@ -17,9 +17,7 @@ public interface LessonRepo extends JpaRepository<Lesson, Long> {
 
     boolean existsByLessonNameAndIdNot(String lessonName, Long lessonId);
 
-    @Query("select l from Lesson l where l.num = :num and l.lessonsCourse = :course")
-    boolean existsByNumAndCourse(Integer num, Course course);
+    boolean existsByNumAndLessonsCourse(Integer num, Course course);
 
-    @Query("select l from Lesson l where l.num = :num and l.lessonsCourse = :course and l.id <> :lessonId")
-    boolean existsByNumAndCourseAndIdNot(Integer num, Course course, Long lessonId);
+    boolean existsByNumAndLessonsCourseAndIdNot(Integer num, Course course, Long lessonId);
 }

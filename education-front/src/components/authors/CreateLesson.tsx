@@ -39,10 +39,10 @@ const CreateCourse: React.FC = () => {
     };
 
     const validateLessonNum = (value: number) => {
-        if (!value) {
-            setErrorLessonStatus("Номер урока обязателен");
+        if (value === null || value === undefined) {
+            setErrorLessonNum("Номер урока обязателен");
         } else if (value <= 0) {
-            setErrorLessonNum('Номер урока должен быть от 1')
+            setErrorLessonNum('Урок нумеруется с 1')
         }
         return errorLessonNum;
     };
@@ -158,11 +158,22 @@ const CreateCourse: React.FC = () => {
                                 </FormControl>
                             )}
                         </Field>
-                        <Field name="num">
+                        <Field name="num" validate = {validateLessonNum}>
                             {({field, form}: { field: any; form: any }) => (
-                                <FormControl width="100%" mt={0} mb={2}>
+                                <FormControl width="100%" mt={0} mb={2}
+                                             isInvalid={errorLessonNum && form.touched.num}
+                                             onChange={() => {
+                                                 if (errorLessonNum) {
+                                                     setErrorLessonNum('');
+                                                 }
+                                                 field.onChange(field.name);
+                                             }}
+                                >
                                     <FormLabel>Порядковый номер урока</FormLabel>
                                     <Input {...field} placeholder="Порядковый номер урока"/>
+                                    <FormErrorMessage mt={0} mb={2}>
+                                        {errorLessonNum}
+                                    </FormErrorMessage>
                                 </FormControl>
                             )}
                         </Field>

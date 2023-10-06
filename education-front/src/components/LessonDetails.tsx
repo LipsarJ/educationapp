@@ -65,6 +65,7 @@ const LessonDetails = () => {
     const [isLoading, setLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState("");
+    const [errorNum, setErrorNum] = useState("");
     const [globalError, setGlobalError] = useState('');
     const [isChanged, setChanged] = useState(false);
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -151,6 +152,15 @@ const LessonDetails = () => {
         return error;
     };
 
+    const validateLessonNum = (value: number) => {
+        if (value === null || value === undefined) {
+            setErrorNum("Номер урока обязателен");
+        } else if (value <= 0) {
+            setErrorNum('Урок нумеруется с 1')
+        }
+        return errorNum;
+    };
+
     const handleSaveClick = async (values: LessonDto) => {
         if (!error) {
             let error;
@@ -172,6 +182,8 @@ const LessonDetails = () => {
                 ) {
                     if (error.response.data.errorCode == ErrorCodes.LessonNameTaken) {
                         setError("Имя урока уже существует.");
+                    } else if (error.response.data.errorCode == ErrorCodes.LessonNumIsTaken) {
+                        setErrorNum("Урок с таким номером уже существует")
                     }
                 } else {
                     setGlobalError("Что-то пошло не так, попробуйте позже.");
@@ -242,11 +254,22 @@ const LessonDetails = () => {
                                         </FormControl>
                                     )}
                                 </Field>
-                                <Field name="num">
+                                <Field name="num" validate={validateLessonNum}>
                                     {({field, form}: { field: any; form: any }) => (
-                                        <FormControl width="100%" mt={0} mb={2}>
+                                        <FormControl width="100%" mt={0} mb={2}
+                                                     isInvalid={errorNum && form.touched.num}
+                                                     onChange={() => {
+                                                         if (errorNum) {
+                                                             setErrorNum('');
+                                                         }
+                                                         field.onChange(field.name);
+                                                     }}
+                                        >
                                             <FormLabel>Порядковый номер урока</FormLabel>
                                             <Input {...field} placeholder="Порядковый номер урока"/>
+                                            <FormErrorMessage mt={0} mb={2}>
+                                                {errorNum}
+                                            </FormErrorMessage>
                                         </FormControl>
                                     )}
                                 </Field>

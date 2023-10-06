@@ -51,7 +51,7 @@ public class AuthorLessonService {
         if (lessonRepo.existsByLessonName(requestLessonDto.getLessonName())) {
             throw new LessonNameException("Lesson with this name is already exists.", Errors.LESSON_NAME_TAKEN);
         }
-        if(lessonRepo.existsByNumAndCourse(requestLessonDto.getNum(), course)) {
+        if(lessonRepo.existsByNumAndLessonsCourse(requestLessonDto.getNum(), course)) {
             throw new BadDataException("Lesson with this num already in this course", Errors.LESSON_NUM_IS_TAKEN);
         }
         Lesson lesson = lessonMapper.toEntity(requestLessonDto);
@@ -82,7 +82,7 @@ public class AuthorLessonService {
             throw new LessonNameException("Lesson with this name is already exists.", Errors.LESSON_NAME_TAKEN);
         }
 
-        if(lessonRepo.existsByNumAndCourseAndIdNot(requestLessonDto.getNum(), course, id)) {
+        if(lessonRepo.existsByNumAndLessonsCourseAndIdNot(requestLessonDto.getNum(), course, id)) {
             throw new BadDataException("Lesson with this num already in this course", Errors.LESSON_NUM_IS_TAKEN);
         }
 
@@ -93,6 +93,7 @@ public class AuthorLessonService {
         lesson.setLessonName(requestLessonDto.getLessonName());
         lesson.setLessonStatus(newStatus);
         lesson.setContent(requestLessonDto.getContent());
+        lesson.setNum(requestLessonDto.getNum());
         lessonRepo.save(lesson);
         return lessonMapper.toResponseDto(lesson);
     }
