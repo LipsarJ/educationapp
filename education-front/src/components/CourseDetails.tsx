@@ -521,7 +521,7 @@ const CourseDetails = () => {
                     </DragDropContext>
                 </>
             )}
-            {user && (user.roles.includes('TEACHER') || user.roles.includes('STUDENT')) && (
+            {user && !isEditing && (user.roles.includes('TEACHER') || user.roles.includes('STUDENT')) && (
                 <Flex
                     gap={3}
                     mt={3}
