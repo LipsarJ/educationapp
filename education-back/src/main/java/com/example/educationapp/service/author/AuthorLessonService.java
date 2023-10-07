@@ -53,11 +53,10 @@ public class AuthorLessonService {
         if (lessonRepo.existsByLessonName(requestLessonDto.getLessonName())) {
             throw new LessonNameException("Lesson with this name is already exists.", Errors.LESSON_NAME_TAKEN);
         }
-        if (lessonRepo.existsByNumAndLessonsCourse(requestLessonDto.getNum(), course)) {
-            throw new BadDataException("Lesson with this num already in this course", Errors.LESSON_NUM_IS_TAKEN);
-        }
+        requestLessonDto.setNum(course.getLessonList().size() + 1);
         Lesson lesson = lessonMapper.toEntity(requestLessonDto);
         lesson.setLessonsCourse(course);
+        lesson.setNum(requestLessonDto.getNum());
         lessonRepo.save(lesson);
         return lessonMapper.toResponseDto(lesson);
     }

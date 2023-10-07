@@ -10,7 +10,6 @@ interface LessonData {
     lessonName: string;
     lessonStatus: string;
     content: string;
-    num: number;
 }
 
 const CreateCourse: React.FC = () => {
@@ -83,9 +82,8 @@ const CreateCourse: React.FC = () => {
             <Formik
                 initialValues={{
                     lessonName: '',
-                    lessonStatus: 'NOT_ACTIVE',
-                    content: '',
-                    num: 0
+                    lessonStatus: 'ACTIVE',
+                    content: ''
                 }}
                 validateOnChange={false}
                 validateOnBlur={false}
@@ -155,25 +153,6 @@ const CreateCourse: React.FC = () => {
                                         width="100%"
                                         placeholder="Содержимое урока"
                                     />
-                                </FormControl>
-                            )}
-                        </Field>
-                        <Field name="num" validate = {validateLessonNum}>
-                            {({field, form}: { field: any; form: any }) => (
-                                <FormControl width="100%" mt={0} mb={2}
-                                             isInvalid={errorLessonNum && form.touched.num}
-                                             onChange={() => {
-                                                 if (errorLessonNum) {
-                                                     setErrorLessonNum('');
-                                                 }
-                                                 field.onChange(field.name);
-                                             }}
-                                >
-                                    <FormLabel>Порядковый номер урока</FormLabel>
-                                    <Input {...field} placeholder="Порядковый номер урока"/>
-                                    <FormErrorMessage mt={0} mb={2}>
-                                        {errorLessonNum}
-                                    </FormErrorMessage>
                                 </FormControl>
                             )}
                         </Field>

@@ -15,6 +15,4 @@ public interface LessonRepo extends JpaRepository<Lesson, Long> {
     Lesson findByLessonName(String lessonName);
 
     boolean existsByLessonNameAndIdNot(String lessonName, Long lessonId);
-
-    boolean existsByNumAndLessonsCourse(Integer num, Course course);
 }
