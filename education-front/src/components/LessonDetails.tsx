@@ -41,6 +41,7 @@ interface Lesson {
     id: number;
     lessonName: string;
     content: string;
+    num: number;
     lessonStatus: string;
     createDate: string;
     updateDate: string;
@@ -49,6 +50,7 @@ interface Lesson {
 interface LessonDto {
     lessonName: string;
     content: string;
+    num: number;
 }
 
 interface LessonStatusDto {
@@ -63,6 +65,7 @@ const LessonDetails = () => {
     const [isLoading, setLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState("");
+    const [errorNum, setErrorNum] = useState("");
     const [globalError, setGlobalError] = useState('');
     const [isChanged, setChanged] = useState(false);
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -149,6 +152,15 @@ const LessonDetails = () => {
         return error;
     };
 
+    const validateLessonNum = (value: number) => {
+        if (value === null || value === undefined) {
+            setErrorNum("Номер урока обязателен");
+        } else if (value <= 0) {
+            setErrorNum('Урок нумеруется с 1')
+        }
+        return errorNum;
+    };
+
     const handleSaveClick = async (values: LessonDto) => {
         if (!error) {
             let error;
@@ -170,6 +182,8 @@ const LessonDetails = () => {
                 ) {
                     if (error.response.data.errorCode == ErrorCodes.LessonNameTaken) {
                         setError("Имя урока уже существует.");
+                    } else if (error.response.data.errorCode == ErrorCodes.LessonNumIsTaken) {
+                        setErrorNum("Урок с таким номером уже существует")
                     }
                 } else {
                     setGlobalError("Что-то пошло не так, попробуйте позже.");
@@ -207,7 +221,7 @@ const LessonDetails = () => {
                 <Flex justifyContent="center" alignItems="center" flexDir="column">
                     {globalError && <div style={{color: 'red'}}>{globalError}</div>}
                     <Formik
-                        initialValues={{lessonName: lesson.lessonName, content: lesson.content}}
+                        initialValues={{lessonName: lesson.lessonName, content: lesson.content, num: lesson.num}}
                         onSubmit={handleSaveClick}
                         validateOnChange={false}
                         validateOnBlur={false}

@@ -19,6 +19,10 @@ public class RequestLessonDto {
     private String lessonName;
 
     @NotBlank
+    @Schema(description = "Номер урока к прохождению", example = "1")
+    private Integer num;
+
+    @NotBlank
     @Schema(description = "Содержание урока, которое получаем от пользователя", example = "В этом уроке мы узнаем о различных типах переменных.")
     private String content;
 

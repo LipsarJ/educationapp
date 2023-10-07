@@ -57,8 +57,8 @@ public class AuthorLessonControllerTest {
     @Test
     public void testGetAllLessons() throws Exception {
         List<ResponseLessonDto> lessons = new ArrayList<>();
-        ResponseLessonDto responseLessonDto1 = new ResponseLessonDto(1L, "Lesson 1", "Content 1", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
-        ResponseLessonDto responseLessonDto2 = new ResponseLessonDto(2L, "Lesson 2", "Content 2", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
+        ResponseLessonDto responseLessonDto1 = new ResponseLessonDto(1L, "Lesson 1", "Content 1", 1, LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
+        ResponseLessonDto responseLessonDto2 = new ResponseLessonDto(2L, "Lesson 2", "Content 2", 1, LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
 
         lessons.add(responseLessonDto1);
         lessons.add(responseLessonDto2);
@@ -82,7 +82,7 @@ public class AuthorLessonControllerTest {
 
     @Test
     public void testCreateLesson() throws Exception {
-        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L, "New Lesson", "New Content", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
+        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L, "New Lesson", "New Content", 1, LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
 
         when(authorLessonService.createLesson(anyLong(), any(RequestLessonDto.class))).thenReturn(responseLessonDto);
 
@@ -99,7 +99,7 @@ public class AuthorLessonControllerTest {
 
     @Test
     public void testGetLesson() throws Exception {
-        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L, "Lesson 1", "Content 1", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
+        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L, "Lesson 1", "Content 1", 1, LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
 
         when(authorLessonService.getLesson(anyLong(), anyLong())).thenReturn(responseLessonDto);
 
@@ -114,7 +114,7 @@ public class AuthorLessonControllerTest {
 
     @Test
     public void testUpdateLesson() throws Exception {
-        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L, "Updated Lesson", "Updated Content", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
+        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L, "Updated Lesson", "Updated Content", 1, LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
 
         when(authorLessonService.updateLesson(anyLong(), anyLong(), any(RequestLessonDto.class))).thenReturn(responseLessonDto);
 
@@ -169,7 +169,7 @@ public class AuthorLessonControllerTest {
     @Test
     @WithMockUser(username = "studentTest", authorities = "STUDENT")
     public void testGetLessonAuthoritiesCheckStudent() throws Exception {
-        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L, "Lesson 1", "Content 1", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
+        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L, "Lesson 1", "Content 1", 1, LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
 
         when(authorLessonService.getLesson(anyLong(), anyLong())).thenReturn(responseLessonDto);
 
@@ -181,7 +181,7 @@ public class AuthorLessonControllerTest {
     @Test
     @WithMockUser(username = "teacherTest", authorities = "TEACHER")
     public void testGetLessonAuthoritiesCheckTeacher() throws Exception {
-        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L, "Lesson 1", "Content 1", LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
+        ResponseLessonDto responseLessonDto = new ResponseLessonDto(1L, "Lesson 1", "Content 1", 1, LessonStatus.ACTIVE, OffsetDateTime.now(ZoneOffset.UTC), OffsetDateTime.now(ZoneOffset.UTC));
 
         when(authorLessonService.getLesson(anyLong(), anyLong())).thenReturn(responseLessonDto);
 

@@ -4,6 +4,7 @@ import {Button, Divider, Flex, Heading, Icon, Input, List, ListItem} from "@chak
 import {instanceAxios} from '../utils/axiosConfig';
 import {FiArrowLeft, FiArrowLeftCircle, FiArrowRight, FiArrowRightCircle} from 'react-icons/fi';
 import {Oval} from "react-loader-spinner";
+import {useAuth} from '../contexts/AuthContext';
 
 interface UserData {
     id: number;
@@ -28,6 +29,7 @@ const UserList = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [searchResultsLeft, setSearchResultsLeft] = useState<UserData[]>([]);
     const [searchResultsRight, setSearchResultsRight] = useState<UserData[]>([]);
+    const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
     const [total, setTotal] = useState<number>(0);
 
     const loadUsers = async (page: number) => {
@@ -131,23 +133,39 @@ const UserList = () => {
             setSelectedRightUsers((prevSelected) =>
                 prevSelected.filter((id) => id !== userId)
             );
-        } else {
+        } else if(user && user.id !== userId){
             setSelectedRightUsers((prevSelected) => [...prevSelected, userId]);
         }
     };
 
     const moveUsersToLeft = () => {
         const usersToMove = usersRight.filter((user) => selectedRightUsers.includes(user.id));
-        setUsersLeft((prevUsers) => [...prevUsers, ...usersToMove]);
-        setUsersRight((prevUsers) => prevUsers.filter((user) => !selectedRightUsers.includes(user.id)));
-        setSelectedRightUsers([]);
+        if(!searchText) {
+            setUsersLeft((prevUsers) => [...prevUsers, ...usersToMove]);
+            setUsersRight((prevUsers) => prevUsers.filter((user) => !selectedRightUsers.includes(user.id)));
+            setSelectedRightUsers([]);
+        } else {
+            setUsersLeft((prevUsers) => [...prevUsers, ...usersToMove]);
+            setUsersRight((prevUsers) => prevUsers.filter((user) => !selectedRightUsers.includes(user.id)));
+            setSearchResultsLeft((prevUsers) => [...prevUsers, ...usersToMove]);
+            setSearchResultsRight((prevUsers) => prevUsers.filter((user) => !selectedRightUsers.includes(user.id)));
+            setSelectedRightUsers([]);
+        }
     };
 
     const moveUsersToRight = () => {
         const usersToMove = usersLeft.filter((user) => selectedLeftUsers.includes(user.id));
-        setUsersRight((prevUsers) => [...prevUsers, ...usersToMove]);
-        setUsersLeft((prevUsers) => prevUsers.filter((user) => !selectedLeftUsers.includes(user.id)));
-        setSelectedLeftUsers([]);
+        if(!searchText) {
+            setUsersRight((prevUsers) => [...prevUsers, ...usersToMove]);
+            setUsersLeft((prevUsers) => prevUsers.filter((user) => !selectedLeftUsers.includes(user.id)));
+            setSelectedLeftUsers([]);
+        } else {
+            setUsersRight((prevUsers) => [...prevUsers, ...usersToMove]);
+            setUsersLeft((prevUsers) => prevUsers.filter((user) => !selectedLeftUsers.includes(user.id)));
+            setSearchResultsRight((prevUsers) => [...prevUsers, ...usersToMove]);
+            setSearchResultsLeft((prevUsers) => prevUsers.filter((user) => !selectedLeftUsers.includes(user.id)));
+            setSelectedLeftUsers([]);
+        }
     };
 
     const handleAddAuthors = async (userIds: number[]) => {

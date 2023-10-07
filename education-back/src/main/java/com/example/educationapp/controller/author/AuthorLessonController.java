@@ -2,6 +2,7 @@ package com.example.educationapp.controller.author;
 
 import com.example.educationapp.controlleradvice.SimpleResponse;
 import com.example.educationapp.dto.request.RequestLessonDto;
+import com.example.educationapp.dto.request.author.UpdateLessonNumDto;
 import com.example.educationapp.dto.response.ResponseLessonDto;
 import com.example.educationapp.service.author.AuthorLessonService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -70,6 +71,21 @@ public class AuthorLessonController {
     public ResponseEntity<ResponseLessonDto> updateLesson(@PathVariable Long courseId, @PathVariable Long id, @RequestBody RequestLessonDto requestLessonDto) {
         ResponseLessonDto updatedLessonDto = authorLessonService.updateLesson(courseId, id, requestLessonDto);
         return ResponseEntity.ok(updatedLessonDto);
+    }
+
+    @PutMapping("/{courseId}/update-nums")
+    @Operation(summary = "Обновить номера уроков")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Возвращает информацию об обновленном уроке",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ResponseLessonDto.class))),
+            @ApiResponse(responseCode = "404", description = "Если урок не найден",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = SimpleResponse.class)))
+    })
+    public List<ResponseLessonDto> updateLessonsNums(@PathVariable Long courseId, @RequestBody List<UpdateLessonNumDto> updateLessonNumDto) {
+        List<ResponseLessonDto> updatedLessonDto = authorLessonService.updateLessonsNums(courseId, updateLessonNumDto);
+        return updatedLessonDto;
     }
 
     @DeleteMapping("/{courseId}/{id}")

@@ -5,5 +5,6 @@ export enum ErrorCodes {
     CourseNameTaken = 'COURSE_NAME_TAKEN',
     StatusIsInvalid = 'STATUS_IS_INVALID',
     LessonNameTaken = 'LESSON_NAME_TAKEN',
-    TaskNameTaken = 'HW_ALREADY_EXISTS'
+    TaskNameTaken = 'HW_ALREADY_EXISTS',
+    LessonNumIsTaken = 'LESSON_NUM_IS_TAKEN'
 }

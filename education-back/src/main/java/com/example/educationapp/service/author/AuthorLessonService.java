@@ -2,20 +2,25 @@ package com.example.educationapp.service.author;
 
 import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.RequestLessonDto;
+import com.example.educationapp.dto.request.author.UpdateLessonNumDto;
 import com.example.educationapp.dto.response.ResponseLessonDto;
-import com.example.educationapp.entity.*;
+import com.example.educationapp.entity.Course;
+import com.example.educationapp.entity.Lesson;
+import com.example.educationapp.entity.LessonStatus;
+import com.example.educationapp.exception.BadDataException;
+import com.example.educationapp.exception.NotFoundException;
 import com.example.educationapp.exception.extend.InvalidStatusException;
 import com.example.educationapp.exception.extend.LessonNameException;
 import com.example.educationapp.exception.extend.LessonNotFoundException;
 import com.example.educationapp.mapper.LessonMapper;
 import com.example.educationapp.repo.CourseRepo;
 import com.example.educationapp.repo.LessonRepo;
-import com.example.educationapp.repo.MediaLessonRepo;
 import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,8 +31,6 @@ public class AuthorLessonService {
     private final CourseUtils courseUtils;
     private final LessonMapper lessonMapper;
     private final CourseRepo courseRepo;
-    private final MediaLessonRepo mediaLessonRepo;
-    private final AuthorHomeworkTaskService authorHomeworkTaskService;
 
     public List<ResponseLessonDto> getAllLessons(Long courseId) {
         Course course = courseUtils.validateAndGetCourseForAuthor(courseId);
@@ -44,14 +47,16 @@ public class AuthorLessonService {
         Course course = courseUtils.validateAndGetCourseForAuthor(courseId);
         if (requestLessonDto.getLessonStatus() == null) {
             requestLessonDto.setLessonStatus(LessonStatus.ACTIVE);
-        } else if (requestLessonDto.getLessonStatus() != LessonStatus.ACTIVE){
+        } else if (requestLessonDto.getLessonStatus() != LessonStatus.ACTIVE) {
             throw new InvalidStatusException("Lesson can be only created with Active status.", Errors.STATUS_IS_INVALID);
         }
         if (lessonRepo.existsByLessonName(requestLessonDto.getLessonName())) {
             throw new LessonNameException("Lesson with this name is already exists.", Errors.LESSON_NAME_TAKEN);
         }
+        requestLessonDto.setNum(course.getLessonList().size() + 1);
         Lesson lesson = lessonMapper.toEntity(requestLessonDto);
         lesson.setLessonsCourse(course);
+        lesson.setNum(requestLessonDto.getNum());
         lessonRepo.save(lesson);
         return lessonMapper.toResponseDto(lesson);
     }
@@ -85,8 +90,22 @@ public class AuthorLessonService {
         lesson.setLessonName(requestLessonDto.getLessonName());
         lesson.setLessonStatus(newStatus);
         lesson.setContent(requestLessonDto.getContent());
+        lesson.setNum(requestLessonDto.getNum());
         lessonRepo.save(lesson);
         return lessonMapper.toResponseDto(lesson);
+    }
+
+    @Transactional
+    public List<ResponseLessonDto> updateLessonsNums(Long courseId, List<UpdateLessonNumDto> updateLessonNumDto) {
+        courseUtils.validateAndGetCourseForAuthor(courseId);
+        List<ResponseLessonDto> responseLessonDto = new ArrayList<>();
+        for (UpdateLessonNumDto lessonNumDto : updateLessonNumDto) {
+            Lesson lesson = lessonRepo.findById(lessonNumDto.getId()).orElseThrow(() -> new NotFoundException(String.format("Lesson with id: %s is not found", lessonNumDto.getId())));
+            lesson.setNum(lessonNumDto.getNum());
+            lessonRepo.save(lesson);
+            responseLessonDto.add(lessonMapper.toResponseDto(lesson));
+        }
+        return responseLessonDto;
     }
 
     @Transactional

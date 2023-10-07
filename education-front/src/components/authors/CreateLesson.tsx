@@ -17,6 +17,7 @@ const CreateCourse: React.FC = () => {
     const [globalError, setGlobalError] = useState('');
     const [errorLessonName, setErrorLessonName] = useState('');
     const [errorLessonStatus, setErrorLessonStatus] = useState('');
+    const [errorLessonNum, setErrorLessonNum] = useState('');
     const {courseId} = useParams();
     const navigate = useNavigate();
 
@@ -36,8 +37,17 @@ const CreateCourse: React.FC = () => {
         return errorLessonStatus;
     };
 
+    const validateLessonNum = (value: number) => {
+        if (value === null || value === undefined) {
+            setErrorLessonNum("Номер урока обязателен");
+        } else if (value <= 0) {
+            setErrorLessonNum('Урок нумеруется с 1')
+        }
+        return errorLessonNum;
+    };
+
     const handleCreateLesson = async (values: LessonData) => {
-        if (!errorLessonName && !errorLessonStatus) {
+        if (!errorLessonName && !errorLessonStatus && !errorLessonNum) {
             let error;
             setGlobalError('');
             setLoading(true);
@@ -52,6 +62,8 @@ const CreateCourse: React.FC = () => {
                         setErrorLessonName("Имя урока уже существует.")
                     } else if (error.response.data.errorCode == ErrorCodes.StatusIsInvalid) {
                         setErrorLessonStatus("Урок может быть создан только в статусе ACTIVE")
+                    } else if (error.response.data.errorCode == ErrorCodes.LessonNumIsTaken) {
+                        setErrorLessonNum("Урок с таким номером уже существует")
                     }
                 } else {
                     setGlobalError('Что-то пошло не так, попробуйте позже.');
@@ -70,7 +82,7 @@ const CreateCourse: React.FC = () => {
             <Formik
                 initialValues={{
                     lessonName: '',
-                    lessonStatus: 'NOT_ACTIVE',
+                    lessonStatus: 'ACTIVE',
                     content: ''
                 }}
                 validateOnChange={false}
