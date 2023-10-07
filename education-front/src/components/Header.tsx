@@ -60,7 +60,7 @@ const Header: React.FC<HeaderProps> = ({onToggleSidebar, isSidebarOpen, isMobile
                     onClick={() => navigate(-1)}
                 />
             </Flex>
-            <Text fontWeight="bold" fontSize="lg" color="white" textAlign="center" mr={10}>
+            <Text fontWeight="bold" fontSize="lg" color="white" textAlign="center">
                 {currentPage}
             </Text>
         </Flex>
