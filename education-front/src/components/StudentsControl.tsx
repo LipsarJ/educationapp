@@ -142,7 +142,7 @@ const StudentsControl = () => {
                 />
             </Flex>
             <Container maxW="container.lg" p={4} style={{overflowX: 'auto'}}>
-                <Table variant="striped" colorScheme="teal">
+                <Table variant="striped" colorScheme="gray">
                     <TableCaption>Ученики и процент выполненных домашних работ</TableCaption>
                     <Thead>
                         <Tr>
