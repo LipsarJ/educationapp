@@ -23,7 +23,7 @@ import CreateTaskDone from './components/student/CreateTaskDone'
 import TaskDoneDetails from './components/teachers/TaskDoneDetails'
 import EditTaskDone from './components/student/EditTaskDone'
 import UsersControl from './components/admin/UsersControl'
-import StudentsControle from './components/StudentsControle'
+import StudentsControle from './components/StudentsControl'
 
 function App() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
