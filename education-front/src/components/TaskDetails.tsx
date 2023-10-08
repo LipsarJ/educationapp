@@ -347,20 +347,6 @@ const TaskDetails = () => {
                                 Редактировать
                             </Button>
                         )}
-                        {user && user.roles.includes('TEACHER') && (
-                            <Button
-                                leftIcon={<FiClipboard/>}
-                                mt={4}
-                                color="white"
-                                colorScheme="green"
-                                onClick={() => {
-                                    navigate(`/tasks-done/${courseId}/${lessonId}/${homeworkTaskId}`);
-                                }}
-                                width="100%"
-                            >
-                                Список готовых заданий
-                            </Button>
-                        )}
                     </Flex>
                 </Flex>
             )}

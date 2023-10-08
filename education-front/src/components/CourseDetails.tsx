@@ -3,7 +3,7 @@ import {useNavigate, useParams} from "react-router-dom";
 import {instanceAxios} from '../utils/axiosConfig';
 import {Box, Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Text} from "@chakra-ui/react";
 import {Field, Form, Formik} from "formik";
-import {FiArrowLeftCircle, FiCheckSquare, FiEdit2, FiPlus, FiUsers} from "react-icons/fi";
+import {FiArrowLeftCircle, FiCheckSquare, FiEdit2, FiPlus, FiUsers, FiBookOpen} from "react-icons/fi";
 import {ErrorCodes} from "./auth/ErrorCodes";
 import {Oval} from "react-loader-spinner";
 import LessonCard from './authors/LessonCard';
@@ -53,7 +53,7 @@ interface CourseStatusDto {
 }
 
 const CourseDetails = () => {
-    const {id} = useParams();
+    const {courseId} = useParams();
     const [course, setCourse] = useState<Course | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [error, setError] = useState("");
@@ -71,7 +71,7 @@ const CourseDetails = () => {
         if (user) {
             if (user.roles.includes('AUTHOR')) {
                 try {
-                    const response = await instanceAxios.get<Lesson[]>(`/author/lessons/${id}`);
+                    const response = await instanceAxios.get<Lesson[]>(`/author/lessons/${courseId}`);
                     const sortedLessons = [...response.data].sort((a, b) => a.num - b.num);
                     setLessons(sortedLessons);
                 } catch (error) {
@@ -79,7 +79,7 @@ const CourseDetails = () => {
                 }
             } else if (user.roles.includes('TEACHER')) {
                 try {
-                    const response = await instanceAxios.get<Lesson[]>(`/teacher/lessons/${id}`);
+                    const response = await instanceAxios.get<Lesson[]>(`/teacher/lessons/${courseId}`);
                     const sortedLessons = [...response.data].sort((a, b) => a.num - b.num);
                     setLessons(sortedLessons);
                 } catch (error) {
@@ -87,7 +87,7 @@ const CourseDetails = () => {
                 }
             } else if (user.roles.includes('STUDENT')) {
                 try {
-                    const response = await instanceAxios.get<Lesson[]>(`/student/course/${id}/lessons`);
+                    const response = await instanceAxios.get<Lesson[]>(`/student/course/${courseId}/lessons`);
                     const sortedLessons = [...response.data].sort((a, b) => a.num - b.num);
                     setLessons(sortedLessons);
                 } catch (error) {
@@ -110,21 +110,21 @@ const CourseDetails = () => {
         if (user) {
             if (user.roles.includes('AUTHOR')) {
                 try {
-                    const response = await instanceAxios.get(`/author/courses/${id}`);
+                    const response = await instanceAxios.get(`/author/courses/${courseId}`);
                     setCourse(response.data);
                 } catch (error) {
                     console.error(error);
                 }
             } else if (user.roles.includes('TEACHER')) {
                 try {
-                    const response = await instanceAxios.get(`/teacher/courses/${id}`);
+                    const response = await instanceAxios.get(`/teacher/courses/${courseId}`);
                     setCourse(response.data);
                 } catch (error) {
                     console.error(error);
                 }
             } else if (user.roles.includes('STUDENT')) {
                 try {
-                    const response = await instanceAxios.get(`/student/course/${id}`);
+                    const response = await instanceAxios.get(`/student/course/${courseId}`);
                     setCourse(response.data);
                 } catch (error) {
                     console.error(error);
@@ -140,10 +140,10 @@ const CourseDetails = () => {
     useEffect(() => {
         const fetchAuthorsAndTeachers = async () => {
             try {
-                const authorsResponse = await instanceAxios.get<UserData[]>(`/author/courses/${id}/authors`);
+                const authorsResponse = await instanceAxios.get<UserData[]>(`/author/courses/${courseId}/authors`);
                 setAuthors(authorsResponse.data);
 
-                const teachersResponse = await instanceAxios.get<UserData[]>(`/author/courses/${id}/teachers`);
+                const teachersResponse = await instanceAxios.get<UserData[]>(`/author/courses/${courseId}/teachers`);
                 setTeachers(teachersResponse.data);
             } catch (error) {
                 console.error(error);
@@ -153,7 +153,7 @@ const CourseDetails = () => {
         if (course) {
             fetchAuthorsAndTeachers();
         }
-    }, [id, course]);
+    }, [courseId, course]);
 
     const handleEditClick = () => {
         setIsEditing(true);
@@ -176,14 +176,14 @@ const CourseDetails = () => {
                             id: lesson.id,
                             num: index + 1,
                         }))
-                        await instanceAxios.put(`/author/lessons/${id}/update-nums`, updatedLessonOrder);
+                        await instanceAxios.put(`/author/lessons/${courseId}/update-nums`, updatedLessonOrder);
                         setIsDragged(false);
                     } catch (error) {
                         console.error(error);
                     }
                 } else if (isChanged) {
                     try {
-                        const response = await instanceAxios.put(`/author/courses/${id}`, values);
+                        const response = await instanceAxios.put(`/author/courses/${courseId}`, values);
                         setCourse(response.data);
                         setChanged(false);
                         fetchCourse();
@@ -214,7 +214,7 @@ const CourseDetails = () => {
     const handleStatusChange = async (values: CourseStatusDto) => {
         try {
             const response = await instanceAxios.put(
-                `/author/courses/${id}`, values);
+                `/author/courses/${courseId}`, values);
             setCourse(response.data);
             setChanged(false);
             fetchCourse();
@@ -386,11 +386,22 @@ const CourseDetails = () => {
                                     bg="blue.500"
                                     leftIcon={<FiUsers/>}
                                     onClick={() => {
-                                        navigate(`/users/${id}/${'STUDENT'}`)
+                                        navigate(`/users/${courseId}/${'STUDENT'}`)
                                     }}
                                     width="100%"
                                 >
                                     Изменить студентов
+                                </Button>
+                                <Button
+                                    color="white"
+                                    bg="blue.500"
+                                    leftIcon={<FiBookOpen/>}
+                                    onClick={() => {
+                                        navigate(`/courses/${courseId}/journal`)
+                                    }}
+                                    width="100%"
+                                >
+                                    Журнал
                                 </Button>
                             </Flex>
                         )}
@@ -401,7 +412,7 @@ const CourseDetails = () => {
                                     bg="blue.500"
                                     leftIcon={<FiUsers/>}
                                     onClick={() => {
-                                        navigate(`/users/${id}/${'AUTHOR'}`)
+                                        navigate(`/users/${courseId}/${'AUTHOR'}`)
                                     }}
                                     width="50%"
                                 >
@@ -412,7 +423,7 @@ const CourseDetails = () => {
                                     leftIcon={<FiUsers/>}
                                     bg="blue.500"
                                     onClick={() => {
-                                        navigate(`/users/${id}/${'TEACHER'}`)
+                                        navigate(`/users/${courseId}/${'TEACHER'}`)
                                     }}
                                     width="50%"
                                 >

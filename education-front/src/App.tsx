@@ -23,6 +23,7 @@ import CreateTaskDone from './components/student/CreateTaskDone'
 import TaskDoneDetails from './components/teachers/TaskDoneDetails'
 import EditTaskDone from './components/student/EditTaskDone'
 import UsersControl from './components/admin/UsersControl'
+import StudentsControle from './components/StudentsControle'
 
 function App() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -52,13 +53,14 @@ function App() {
                             <Route path="/register" element={<Register/>}/>
                             <Route path="/courses" element={<Courses/>}/>
                             <Route path="/courses/create" element={<CreateCourse/>}/>
-                            <Route path="/courses/:id" element={<CourseDetails/>}/>
+                            <Route path="/courses/:courseId" element={<CourseDetails/>}/>
+                            <Route path="/courses/:courseId/journal" element={<StudentsControle/>}/>
                             <Route path="/lessons/create/:courseId" element={<CreateLesson/>}/>
-                            <Route path="/lessons/:id/:lessonId" element={<LessonDetails/>}/>
+                            <Route path="/lessons/:courseId/:lessonId" element={<LessonDetails/>}/>
                             <Route path="/tasks/create/:courseId/:lessonId" element={<CreateTask/>}/>
                             <Route path="/tasks/:courseId/:lessonId/:homeworkTaskId" element={<TaskDetails/>}/>
                             <Route path="/users/:id/:roleName" element={<Users/>}/>
-                            <Route path="/tasks-done/:courseId/:lessonId/:homeworkTaskId" element={<TasksDone/>}/>
+                            <Route path="/courses/:courseId/:lessonId/:studentId/tasks" element={<TasksDone/>}/>
                             <Route path="/tasks-done/:courseId/:lessonId/:homeworkTaskId/:homeworkDoneId" element={<TaskDoneDetails/>}/>
                             <Route path="/task-done/edit-solution/:courseId/:lessonId/:homeworkTaskId/:homeworkDoneId" element={<EditTaskDone/>}/>
                             <Route path="/task-done/add-solution/:courseId/:lessonId/:homeworkTaskId" element={<CreateTaskDone/>}/>

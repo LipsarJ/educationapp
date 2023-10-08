@@ -83,4 +83,21 @@ public class TeacherManagement {
     public List<ResponseUserDto> removeStudentsForCourse(@PathVariable Long id, @RequestBody AddOrRemoveStudentsDto addOrRemoveStudentsDto) {
         return teacherManagementService.removeStudentsForCourse(id, addOrRemoveStudentsDto);
     }
+
+    @GetMapping("/{id}/{lessonId}/hw-done-percentage")
+    @Operation(summary = "Получить процент выполненных дз к уроку от учеников")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешное получение информации",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = ResponseUserDto.class))),
+            @ApiResponse(responseCode = "404", description = "Курс или студент не найдены",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = SimpleResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Введены невенрные данные",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = SimpleResponse.class)))
+    })
+    public List<Double> getHomeworkDonePercentage(@PathVariable Long id, @PathVariable Long lessonId, Pageable pageable) {
+        return teacherManagementService.getHomeworkDonePercentage(id, lessonId, pageable);
+    }
 }

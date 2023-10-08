@@ -39,4 +39,12 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 
     @Query("select c from Course c join c.teachers t where t = :teacher")
     List<Course> findCoursesByTeacher(User teacher);
+
+    @Query("SELECT (COUNT(hd) * 100.0 / :totalTasks) " +
+            "FROM HomeworkDone hd " +
+            "LEFT JOIN hd.task t " +
+            "LEFT JOIN t.lesson l " +
+            "WHERE hd.student.id = :studentId AND l.id = :lessonId")
+    Double getHomeworkPercentageForLesson(Long studentId, Long lessonId, Integer totalTasks);
+
 }

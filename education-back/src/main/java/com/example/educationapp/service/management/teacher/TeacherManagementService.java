@@ -5,10 +5,13 @@ import com.example.educationapp.dto.request.management.teacher.AddOrRemoveStuden
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.dto.response.UserInfoDto;
 import com.example.educationapp.entity.Course;
+import com.example.educationapp.entity.Lesson;
 import com.example.educationapp.entity.User;
 import com.example.educationapp.exception.BadDataException;
 import com.example.educationapp.exception.ForbiddenException;
+import com.example.educationapp.exception.NotFoundException;
 import com.example.educationapp.mapper.UserMapper;
+import com.example.educationapp.repo.LessonRepo;
 import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -26,6 +30,7 @@ public class TeacherManagementService {
     private final CourseUtils courseUtils;
     private final UserRepo userRepo;
     private final UserMapper userMapper;
+    private final LessonRepo lessonRepo;
 
     public Page<UserInfoDto> getAllStudentsForCourse(Long id, Pageable pageable) {
         Course course = courseUtils.validateAndGetCourseForTeacher(id);
@@ -65,5 +70,22 @@ public class TeacherManagementService {
         return students.stream()
                 .map(userMapper::toResponseUserDto)
                 .collect(Collectors.toList());
+    }
+
+    public List<Double> getHomeworkDonePercentage(Long id, Long lessonId, Pageable pageable) {
+        Course course = courseUtils.validateAndGetCourseForTeacher(id);
+        Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new NotFoundException("Lesson is not found"));
+        Page<User> students = userRepo.findByCourse(course, pageable);
+        Integer countTasksInLesson = lesson.getHomeworkTaskList().size();
+
+        List<Double> percents = new ArrayList<>();
+        for(User user : students) {
+            if(countTasksInLesson != 0) {
+                percents.add(userRepo.getHomeworkPercentageForLesson(user.getId(), lessonId, countTasksInLesson));
+            } else {
+                percents.add(100.0);
+            }
+        }
+        return percents;
     }
 }

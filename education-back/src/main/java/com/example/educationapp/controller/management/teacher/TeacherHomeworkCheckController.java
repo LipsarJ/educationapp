@@ -51,6 +51,25 @@ public class TeacherHomeworkCheckController {
         );
     }
 
+    @GetMapping("/{id}/lessons/{lessonId}/homeworks/{homeworkTaskId}/student/{studentId}")
+    @Operation(summary = "Получить информацию о сделанной ДЗ для задачи от студента")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешное получение информации о сделанных ДЗ",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = HomeworkDoneInfoPage.class))),
+            @ApiResponse(responseCode = "404", description = "Урок, задача или ДЗ не найдены",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = SimpleResponse.class))),
+            @ApiResponse(responseCode = "400", description = "Введены неверные данные",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = SimpleResponse.class)))
+    })
+    public ResponseHomeworkDoneStudentDto getHomeworkDoneForTaskFromStudent(@PathVariable Long id, @PathVariable Long lessonId,
+                                                           @PathVariable Long homeworkTaskId, @PathVariable Long studentId
+    ) {
+        return teacherHomeworkCheckService.getHomeworkDoneForTaskFromStudent(id, lessonId, homeworkTaskId, studentId);
+    }
+
     @GetMapping("/{id}/lessons/{lessonId}/homeworks/{homeworkTaskId}/{homeworkDoneId}")
     @Operation(summary = "Получить информацию о сделанном ДЗ по Id")
     @ApiResponses(value = {
@@ -64,7 +83,7 @@ public class TeacherHomeworkCheckController {
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = SimpleResponse.class)))
     })
-    public ResponseHomeworkDoneStudentDto getAllHomeworksDoneForTask(@PathVariable Long id, @PathVariable Long lessonId,
+    public ResponseHomeworkDoneStudentDto getHomeworkDoneForTask(@PathVariable Long id, @PathVariable Long lessonId,
                                                                      @PathVariable Long homeworkTaskId, @PathVariable Long homeworkDoneId
     ) {
         ResponseHomeworkDoneStudentDto homeworkDone =

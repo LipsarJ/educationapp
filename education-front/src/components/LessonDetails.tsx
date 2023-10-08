@@ -60,7 +60,7 @@ interface LessonStatusDto {
 }
 
 const LessonDetails = () => {
-    const {id, lessonId} = useParams();
+    const {courseId, lessonId} = useParams();
     const [lesson, setLesson] = useState<Lesson | null>(null);
     const [isLoading, setLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -78,21 +78,21 @@ const LessonDetails = () => {
             if (user) {
                 if (user.roles.includes('AUTHOR')) {
                     try {
-                        const response = await instanceAxios.get<Task[]>(`/author/homework-tasks/${id}/${lessonId}`);
+                        const response = await instanceAxios.get<Task[]>(`/author/homework-tasks/${courseId}/${lessonId}`);
                         setTasks(response.data);
                     } catch (error) {
                         console.error(error);
                     }
                 } else if (user.roles.includes('TEACHER')) {
                     try {
-                        const response = await instanceAxios.get<Task[]>(`/teacher/homework-tasks/${id}/${lessonId}`);
+                        const response = await instanceAxios.get<Task[]>(`/teacher/homework-tasks/${courseId}/${lessonId}`);
                         setTasks(response.data);
                     } catch (error) {
                         console.error(error);
                     }
                 } else if (user.roles.includes('STUDENT')) {
                     try {
-                        const response = await instanceAxios.get<Task[]>(`/student/course/${id}/lessons/${lessonId}/homeworks`);
+                        const response = await instanceAxios.get<Task[]>(`/student/course/${courseId}/lessons/${lessonId}/homeworks`);
                         setTasks(response.data);
                     } catch (error) {
                         console.error(error);
@@ -112,21 +112,21 @@ const LessonDetails = () => {
         if (user) {
             if (user.roles.includes('AUTHOR')) {
                 try {
-                    const response = await instanceAxios.get(`/author/lessons/${id}/${lessonId}`);
+                    const response = await instanceAxios.get(`/author/lessons/${courseId}/${lessonId}`);
                     setLesson(response.data);
                 } catch (error) {
                     console.error(error);
                 }
             } else if (user.roles.includes('TEACHER')) {
                 try {
-                    const response = await instanceAxios.get(`/teacher/lessons/${id}/${lessonId}`);
+                    const response = await instanceAxios.get(`/teacher/lessons/${courseId}/${lessonId}`);
                     setLesson(response.data);
                 } catch (error) {
                     console.error(error);
                 }
             } else if (user.roles.includes('STUDENT')) {
                 try {
-                    const response = await instanceAxios.get(`/student/course/${id}/lessons/${lessonId}`);
+                    const response = await instanceAxios.get(`/student/course/${courseId}/lessons/${lessonId}`);
                     setLesson(response.data);
                 } catch (error) {
                     console.error(error);
@@ -168,7 +168,7 @@ const LessonDetails = () => {
             setLoading(true);
             try {
                 const response = await instanceAxios.put(
-                    `/author/lessons/${id}/${lessonId}`, values);
+                    `/author/lessons/${courseId}/${lessonId}`, values);
                 setLesson(response.data);
                 setChanged(false);
                 fetchLesson();
@@ -195,7 +195,7 @@ const LessonDetails = () => {
 
     const handleStatusChange = async (values: LessonStatusDto) => {
         try {
-            const response = await instanceAxios.put(`/author/lessons/${id}/${lessonId}`, values);
+            const response = await instanceAxios.put(`/author/lessons/${courseId}/${lessonId}`, values);
             setLesson(response.data);
             setChanged(false);
             fetchLesson();
@@ -377,7 +377,7 @@ const LessonDetails = () => {
                             cursor="pointer"
                             color="gray"
                             boxShadow="md"
-                            onClick={() => navigate(`/tasks/create/${id}/${lessonId}`)}
+                            onClick={() => navigate(`/tasks/create/${courseId}/${lessonId}`)}
                             _hover={{
                                 bg: "#F9F9F9",
                             }}
@@ -387,7 +387,7 @@ const LessonDetails = () => {
                     </Flex>
                 </Box>
             )}
-            {user && (user.roles.includes('TEACHER') || user.roles.includes('STUDENT')) && (
+            {user && !isEditing && (user.roles.includes('TEACHER') || user.roles.includes('STUDENT')) && (
                 <Flex gap={4} flexWrap="wrap" justifyContent="center" mt={3}>
                     {tasks && tasks.map((task: Task) => (
                         <TaskCard task={task} key={task.id} onDelete={handleDeleteTask}/>

@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from "react";
-import {useNavigate, useParams} from "react-router-dom";
-import {instanceAxios} from '../../utils/axiosConfig';
-import {useAuth} from '../../contexts/AuthContext';
-import {Box, Button, Flex, Heading, Icon, Checkbox} from "@chakra-ui/react";
-import {FiArrowLeftCircle, FiArrowRightCircle} from "react-icons/fi";
-import {Oval} from "react-loader-spinner";
-import TaskDoneCard from './TaskDoneCard'
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { instanceAxios } from "../../utils/axiosConfig";
+import { useAuth } from "../../contexts/AuthContext";
+import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import TaskCard from "../authors/TaskCard";
+import TaskDoneCardWithProps from "./TaskDoneCardWithProps";
+import { Oval } from "react-loader-spinner";
 
 interface TaskDone {
     id: number;
@@ -25,61 +25,53 @@ interface UserData {
     lastname: string;
 }
 
-const TasksDone = () => {
-    const {courseId, lessonId, homeworkTaskId} = useParams();
-    const [isLoading, setLoading] = useState(false);
-    const [tasksDone, setTasksDone] = useState<TaskDone[]>([]);
-    const [isDeleted, setIsDeleted] = useState(false);
-    const [page, setPage] = useState<number>(0);
-    const [pageSize, setPageSize] = useState<number>(2);
-    const [checked, setChecked] = useState(true);
-    const [total, setTotal] = useState<number>(0);
-    const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
-    const navigate = useNavigate();
+interface Task {
+    id: number;
+    title: string;
+    description: string;
+    deadlineDate: string;
+    createDate: string;
+    updateDate: string;
+}
 
-    const fetchData = async (currentPage: number) => {
+const TasksDone = () => {
+    const { courseId, lessonId, studentId } = useParams();
+    const [isLoading, setLoading] = useState(false);
+    const [tasks, setTasks] = useState<Task[]>([]);
+    const [tasksDone, setTasksDone] = useState<TaskDone[]>([]);
+    const { isAuthenticated, setAuthenticated, setUser, user } = useAuth();
+
+    const fetchTasksAndTasksDone = async () => {
         try {
-            const response = await instanceAxios.get(`/teacher/course/${courseId}/lessons/${lessonId}/homeworks/${homeworkTaskId}`, {
-                params: {
-                    checked: checked,
-                    page: currentPage,
-                    size: pageSize,
-                }
-            },);
-            setTasksDone(response.data.homeworkDoneInfo);
-            setTotal(response.data.totalCount);
+            const tasksResponse = await instanceAxios.get<Task[]>(
+                `/teacher/homework-tasks/${courseId}/${lessonId}`
+            );
+
+            const tasksDoneResponse = await Promise.all(
+                tasksResponse.data.map(async (task) => {
+                    const response = await instanceAxios.get<TaskDone>(
+                        `/teacher/course/${courseId}/lessons/${lessonId}/homeworks/${task.id}/student/${studentId}`
+                    );
+                    return response.data;
+                })
+            );
+
+            setTasks(tasksResponse.data);
+            setTasksDone(tasksDoneResponse);
         } catch (error) {
             console.error(error);
         }
     };
 
+
     useEffect(() => {
-        fetchData(0);
-    }, [checked]);
+        fetchTasksAndTasksDone();
+    }, []);
 
-    const handleNext = () => {
-        const nextPage = page + 1;
-        setPage(nextPage);
-        fetchData(nextPage);
-    };
-
-    const handlePrev = () => {
-        const prevPage = Math.max(page - 1, 0);
-        setPage(prevPage);
-        fetchData(prevPage);
-    };
-
-    const isPrevDisabled = page === 0;
-    const isNextDisabled = total <= (page + 1) * pageSize;
-
-    const toggleChecked = () => {
-        setChecked(!checked);
-    };
-
-    if (!tasksDone) {
+    if (!tasks || !tasksDone) {
         return (
             <Flex justifyContent="center" alignItems="center" height="100vh">
-                <Oval color="#295C48" secondaryColor="#2B415B"/>
+                <Oval color="#295C48" secondaryColor="#2B415B" />
             </Flex>
         );
     }
@@ -87,46 +79,24 @@ const TasksDone = () => {
     return (
         <Box>
             <Heading mt={4} mb={4} size="lg" textAlign="center">
-                Решения к домашнему заданию
+                Решения ученика
             </Heading>
             <Flex
+                ml={10}
+                mr={10}
                 gap={3}
-                flexWrap="wrap"
-                flexDir="row"
-                justifyContent="center"
+                flexDir="column"
             >
-                {tasksDone && tasksDone.map((taskDone: TaskDone) => (
-                    <TaskDoneCard taskDone={taskDone} key={taskDone.id}/>
+                {tasks.map((task: Task, index) => (
+                    <Flex key={task.id} alignItems = "center" justifyContent = "center" gap={50} >
+                        <TaskCard task={task} onDelete={() => {}}/>
+                        {tasksDone[index] ? (
+                            <TaskDoneCardWithProps homeworkTaskId={task.id} taskDone={tasksDone[index]}/>
+                        ) : (
+                            <Heading w = "300px" size="md" textAlign="center">Нет данных</Heading>
+                        )}
+                    </Flex>
                 ))}
-            </Flex>
-            <Flex justifyContent="center" alignItems="center" ml={2} mr={2} mb={2} gap={5}>
-                <Button
-                    onClick={() => {
-                        handlePrev();
-                    }}
-                    isDisabled={isPrevDisabled}
-                    cursor={isPrevDisabled ? "not-allowed" : "pointer"}
-                >
-                    <Icon
-                        as={FiArrowLeftCircle}
-                        color={isPrevDisabled ? "gray.300" : "black"}
-                    />
-                </Button>
-                <Checkbox isChecked={checked} onChange={toggleChecked}>
-                    Показывать проверенные
-                </Checkbox>
-                <Button
-                    onClick={() => {
-                        handleNext();
-                    }}
-                    isDisabled={isNextDisabled}
-                    cursor={isNextDisabled ? "not-allowed" : "pointer"}
-                >
-                    <Icon
-                        as={FiArrowRightCircle}
-                        color={isNextDisabled ? "gray.300" : "black"}
-                    />
-                </Button>
             </Flex>
         </Box>
     );
