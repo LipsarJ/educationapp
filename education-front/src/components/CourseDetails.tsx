@@ -392,17 +392,19 @@ const CourseDetails = () => {
                                 >
                                     Изменить студентов
                                 </Button>
-                                <Button
-                                    color="white"
-                                    bg="blue.500"
-                                    leftIcon={<FiBookOpen/>}
-                                    onClick={() => {
-                                        navigate(`/courses/${courseId}/journal`)
-                                    }}
-                                    width="100%"
-                                >
-                                    Журнал
-                                </Button>
+                                {course.courseStatus === Statuses.CourseStatusOngoing && (
+                                    <Button
+                                        color="white"
+                                        bg="blue.500"
+                                        leftIcon={<FiBookOpen/>}
+                                        onClick={() => {
+                                            navigate(`/courses/${courseId}/journal`)
+                                        }}
+                                        width="100%"
+                                    >
+                                        Журнал
+                                    </Button>
+                                )}
                             </Flex>
                         )}
                         {user && user.roles.includes('AUTHOR') && (
