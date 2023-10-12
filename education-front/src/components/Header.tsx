@@ -55,7 +55,6 @@ const Header: React.FC<HeaderProps> = ({onToggleSidebar, isSidebarOpen, isMobile
                     background="none"
                     color="white"
                     zIndex="1001"
-                    ml={5}
                     icon={<FiArrowLeft/>}
                     onClick={() => navigate(-1)}
                 />
