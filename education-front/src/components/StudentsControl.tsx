@@ -32,11 +32,21 @@ interface User {
     lastname: string;
 }
 
+interface RequestDto {
+    studentId: number;
+}
+
+interface JournalDto {
+    lessonId: number;
+    studentId: number;
+    percentage: number;
+}
+
 const StudentsControl = () => {
     const [students, setStudents] = useState<User[]>([]);
     const {courseId} = useParams();
     const [lessons, setLessons] = useState<Lesson[]>([]);
-    const [homeworkPercentages, setHomeworkPercentages] = useState<number[]>([]);
+    const [homeworkPercentages, setHomeworkPercentages] = useState<JournalDto[]>([]);
     const [page, setPage] = useState<number>(0);
     const [pageSize, setPageSize] = useState<number>(10);
     const [searchText, setSearchText] = useState<string>('');
@@ -75,15 +85,8 @@ const StudentsControl = () => {
         const fetchHomeworkPercentages = async () => {
             if (lessons) {
                 try {
-                    const percentages = await Promise.all(
-                        lessons.map(async (lesson) => {
-                            const response = await instanceAxios.get(
-                                `/teacher/course/${courseId}/${lesson.id}/hw-done-percentage`
-                            );
-                            return response.data;
-                        })
-                    );
-                    setHomeworkPercentages(percentages);
+                    const response = await instanceAxios.get(`/teacher/course/${courseId}/hw-done-percentage`);
+                    setHomeworkPercentages(response.data);
                 } catch (error) {
                     console.error('Ошибка при получении процентов выполненных домашних работ:', error);
                 }
@@ -106,7 +109,7 @@ const StudentsControl = () => {
     };
 
     const filterUsers = (text: string) => {
-        if(!text) fetchStudents(0);     
+        if (!text) fetchStudents(0);
 
         const filteredStudents = students.filter((student) => {
             const fullName = `${student.firstname} ${student.middlename} ${student.lastname}`;
@@ -155,30 +158,37 @@ const StudentsControl = () => {
                     </Thead>
                     <Tbody>
                         {students &&
-                            students.map((student, index) => (
+                            students.map((student) => (
                                 <Tr key={student.id}>
                                     <Td>{student.firstname} {student.middlename} {student.lastname}</Td>
                                     {lessons &&
-                                        lessons.map((lesson, lessonIndex) => (
-                                            <Td key={lesson.id}>
-                                                <Flex justifyContent="center">
-                                                    <Button
-                                                        w="60px"
-                                                        backgroundColor="blue.500"
-                                                        color="white"
-                                                        borderRadius="5px"
-                                                        padding="5px 10px"
-                                                        cursor="pointer"
-                                                        onClick={() => {
-                                                            navigate(`/courses/${courseId}/${lesson.id}/${student.id}/tasks`);
-                                                        }}
-                                                    >
-                                                        <Text
-                                                            textAlign="center">{homeworkPercentages[index * lessons.length + lessonIndex]}%</Text>
-                                                    </Button>
-                                                </Flex>
-                                            </Td>
-                                        ))}
+                                        lessons.map((lesson) => {
+                                            // Найдем соответствующий элемент в journalDto
+                                            const journalEntry = homeworkPercentages.find(entry => entry.lessonId === lesson.id && entry.studentId === student.id);
+
+                                            // Если элемент не найден, установим процент в 0
+                                            const percentage = journalEntry ? journalEntry.percentage : 0;
+
+                                            return (
+                                                <Td key={lesson.id}>
+                                                    <Flex justifyContent="center">
+                                                        <Button
+                                                            w="60px"
+                                                            backgroundColor="blue.500"
+                                                            color="white"
+                                                            borderRadius="5px"
+                                                            padding="5px 10px"
+                                                            cursor="pointer"
+                                                            onClick={() => {
+                                                                navigate(`/courses/${courseId}/${lesson.id}/${student.id}/tasks`);
+                                                            }}
+                                                        >
+                                                            <Text textAlign="center">{percentage}%</Text>
+                                                        </Button>
+                                                    </Flex>
+                                                </Td>
+                                            );
+                                        })}
                                 </Tr>
                             ))}
                     </Tbody>

@@ -1,28 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {NavLink, useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {instanceAxios} from '../utils/axiosConfig';
 import {useAuth} from '../contexts/AuthContext';
-import {
-    Box,
-    Button,
-    Divider,
-    Flex,
-    FormControl,
-    FormErrorMessage,
-    Heading,
-    Input,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    Text,
-    FormLabel
-} from "@chakra-ui/react";
+import {Box, Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Text} from "@chakra-ui/react";
 import {Field, Form, Formik} from "formik";
-import {FiArrowLeftCircle, FiCheckSquare, FiEdit2, FiPlus, FiX} from "react-icons/fi";
+import {FiArrowLeftCircle, FiCheckSquare, FiEdit2, FiPlus} from "react-icons/fi";
 import {ErrorCodes} from "./auth/ErrorCodes";
 import {Oval, ThreeDots} from "react-loader-spinner";
 import TaskCard from './authors/TaskCard'
@@ -69,6 +51,7 @@ const LessonDetails = () => {
     const [globalError, setGlobalError] = useState('');
     const [isChanged, setChanged] = useState(false);
     const [tasks, setTasks] = useState<Task[]>([]);
+    const [isAuthor, setIsAuthor] = useState(false);
     const [isDeleted, setIsDeleted] = useState(false);
     const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
     const navigate = useNavigate();
@@ -77,11 +60,21 @@ const LessonDetails = () => {
         const fetchData = async () => {
             if (user) {
                 if (user.roles.includes('AUTHOR')) {
-                    try {
-                        const response = await instanceAxios.get<Task[]>(`/author/homework-tasks/${courseId}/${lessonId}`);
-                        setTasks(response.data);
-                    } catch (error) {
-                        console.error(error);
+                    if (user.roles.includes('TEACHER')) {
+                        try {
+                            const response = await instanceAxios.get<Task[]>(`/teacher/homework-tasks/${courseId}/${lessonId}`);
+                            setTasks(response.data);
+                        } catch (error) {
+                            console.error(error);
+                        }
+                    } else {
+                        try {
+                            const response = await instanceAxios.get<Task[]>(`/author/homework-tasks/${courseId}/${lessonId}`);
+                            setTasks(response.data);
+                            setIsAuthor(true);
+                        } catch (error) {
+                            console.error(error);
+                        }
                     }
                 } else if (user.roles.includes('TEACHER')) {
                     try {
@@ -111,11 +104,21 @@ const LessonDetails = () => {
     const fetchLesson = async () => {
         if (user) {
             if (user.roles.includes('AUTHOR')) {
-                try {
-                    const response = await instanceAxios.get(`/author/lessons/${courseId}/${lessonId}`);
-                    setLesson(response.data);
-                } catch (error) {
-                    console.error(error);
+                if (user.roles.includes('TEACHER')) {
+                    try {
+                        const response = await instanceAxios.get(`/teacher/lessons/${courseId}/${lessonId}`);
+                        setLesson(response.data);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                } else {
+                    try {
+                        const response = await instanceAxios.get(`/author/lessons/${courseId}/${lessonId}`);
+                        setLesson(response.data);
+                        setIsAuthor(true);
+                    } catch (error) {
+                        console.error(error);
+                    }
                 }
             } else if (user.roles.includes('TEACHER')) {
                 try {
@@ -315,7 +318,7 @@ const LessonDetails = () => {
                         <Text fontSize="lg" mb={2}>
                             Дата обновления: {lesson.updateDate}
                         </Text>
-                        {user && user.roles.includes('AUTHOR') && (
+                        {user && user.roles.includes('AUTHOR') && isAuthor && (
                             <Flex mt={4} mb={4} flexDir="row" justifyContent="space-between" w="100%" gap={5}>
                                 <Button
                                     leftIcon={<FiEdit2/>}

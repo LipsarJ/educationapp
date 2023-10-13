@@ -53,6 +53,7 @@ const TaskDetails = () => {
     const [errorDate, setErrorDate] = useState("");
     const [globalError, setGlobalError] = useState("");
     const [isChanged, setChanged] = useState(false);
+    const [isAuthor, setIsAuthor] = useState(false);
     const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
     const navigate = useNavigate();
 
@@ -69,11 +70,21 @@ const TaskDetails = () => {
     const fetchTask = async () => {
         if (user) {
             if (user.roles.includes('AUTHOR')) {
-                try {
-                    const response = await instanceAxios.get<Task>(`/author/homework-tasks/${courseId}/${lessonId}/${homeworkTaskId}`);
-                    setTask(response.data);
-                } catch (error) {
-                    console.error(error);
+                if (user.roles.includes('TEACHER')) {
+                    try {
+                        const response = await instanceAxios.get<Task>(`/teacher/homework-tasks/${courseId}/${lessonId}/${homeworkTaskId}`);
+                        setTask(response.data);
+                    } catch (error) {
+                        console.error(error);
+                    }
+                } else {
+                    try {
+                        const response = await instanceAxios.get<Task>(`/author/homework-tasks/${courseId}/${lessonId}/${homeworkTaskId}`);
+                        setTask(response.data);
+                        setIsAuthor(true);
+                    } catch (error) {
+                        console.error(error);
+                    }
                 }
             } else if (user.roles.includes('TEACHER')) {
                 try {
@@ -333,7 +344,7 @@ const TaskDetails = () => {
                             Дата обновления: {task.updateDate}
                         </Text>
                         <Text fontSize="lg">Дата сдачи: {task.deadlineDate}</Text>
-                        {user && user.roles.includes('AUTHOR') && (
+                        {user && user.roles.includes('AUTHOR') && isAuthor && (
                             <Button
                                 leftIcon={<FiEdit2/>}
                                 mt={4}
@@ -362,7 +373,7 @@ const TaskDetails = () => {
                         </Flex>
                     ) : (
                         <Flex mx="auto" mt={3} w="500px" justifyContent="center">
-                            <Button leftIcon={<FiPlus/>} w = "100%" colorScheme="blue"
+                            <Button leftIcon={<FiPlus/>} w="100%" colorScheme="blue"
                                     onClick={() => {
                                         navigate(`/task-done/add-solution/${courseId}/${lessonId}/${homeworkTaskId}`);
                                     }}

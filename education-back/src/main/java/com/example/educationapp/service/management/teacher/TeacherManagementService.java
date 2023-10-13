@@ -2,16 +2,14 @@ package com.example.educationapp.service.management.teacher;
 
 import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.management.teacher.AddOrRemoveStudentsDto;
+import com.example.educationapp.dto.response.JournalResponseDto;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.dto.response.UserInfoDto;
 import com.example.educationapp.entity.Course;
-import com.example.educationapp.entity.Lesson;
 import com.example.educationapp.entity.User;
 import com.example.educationapp.exception.BadDataException;
 import com.example.educationapp.exception.ForbiddenException;
-import com.example.educationapp.exception.NotFoundException;
 import com.example.educationapp.mapper.UserMapper;
-import com.example.educationapp.repo.LessonRepo;
 import com.example.educationapp.repo.UserRepo;
 import com.example.educationapp.utils.CourseUtils;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +28,6 @@ public class TeacherManagementService {
     private final CourseUtils courseUtils;
     private final UserRepo userRepo;
     private final UserMapper userMapper;
-    private final LessonRepo lessonRepo;
 
     public Page<UserInfoDto> getAllStudentsForCourse(Long id, Pageable pageable) {
         Course course = courseUtils.validateAndGetCourseForTeacher(id);
@@ -72,20 +69,22 @@ public class TeacherManagementService {
                 .collect(Collectors.toList());
     }
 
-    public List<Double> getHomeworkDonePercentage(Long id, Long lessonId, Pageable pageable) {
+    public List<JournalResponseDto> getHomeworkDonePercentage(Long id, Pageable pageable) {
         Course course = courseUtils.validateAndGetCourseForTeacher(id);
-        Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new NotFoundException("Lesson is not found"));
         Page<User> students = userRepo.findByCourse(course, pageable);
-        Integer countTasksInLesson = lesson.getHomeworkTaskList().size();
+        List<User> studentsList = students.toList();
+        List<Object[]> results = userRepo.getHomeworkPercentageForCourse(course, studentsList);
 
-        List<Double> percents = new ArrayList<>();
-        for(User user : students) {
-            if(countTasksInLesson != 0) {
-                percents.add(userRepo.getHomeworkPercentageForLesson(user.getId(), lessonId, countTasksInLesson));
-            } else {
-                percents.add(100.0);
-            }
+        List<JournalResponseDto> dtos = new ArrayList<>();
+
+        for (Object[] result : results) {
+            JournalResponseDto dto = new JournalResponseDto();
+            dto.setLessonId((Long) result[0]);
+            dto.setStudentId((Long) result[1]);
+            dto.setPercentage((Float) result[2]);
+            dtos.add(dto);
         }
-        return percents;
+
+        return dtos;
     }
 }
