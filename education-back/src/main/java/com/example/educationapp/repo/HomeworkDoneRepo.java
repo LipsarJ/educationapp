@@ -14,7 +14,7 @@ public interface HomeworkDoneRepo extends JpaRepository<HomeworkDone, Long> {
 
     Page<HomeworkDone> findAllByTaskAndGradeIsNull(HomeworkTask homeworkTask, Pageable pageable);
 
-    Page<HomeworkDone> findAllByTaskAndGradeIsNotNull(HomeworkTask homeworkTask, Pageable pageable);
-
     Page<HomeworkDone> findAllByTask(HomeworkTask homeworkTask, Pageable pageable);
+
+    Integer countByStudent(User student);
 }

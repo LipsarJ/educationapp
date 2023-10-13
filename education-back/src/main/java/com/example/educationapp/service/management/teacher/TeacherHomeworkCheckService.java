@@ -6,6 +6,7 @@ import com.example.educationapp.dto.response.student.ResponseHomeworkDoneStudent
 import com.example.educationapp.entity.HomeworkDone;
 import com.example.educationapp.entity.HomeworkTask;
 import com.example.educationapp.entity.User;
+import com.example.educationapp.exception.NotFoundException;
 import com.example.educationapp.exception.extend.UserNotFoundException;
 import com.example.educationapp.mapper.UserMapper;
 import com.example.educationapp.mapper.student.StudentCourseMapper;
@@ -41,6 +42,11 @@ public class TeacherHomeworkCheckService {
         return homeworkDonePage.map(homeworkDone -> new ResponseHomeworkDoneStudentDto(homeworkDone.getId(), homeworkDone.getSubmissionDate(),
                 homeworkDone.getGrade(), homeworkDone.getStudentDescription(),
                 homeworkDone.getTeacherFeedback(), userMapper.toUserInfoDto(homeworkDone.getTeacher()), userMapper.toUserInfoDto(homeworkDone.getStudent())));
+    }
+
+    public ResponseHomeworkDoneStudentDto getHomeworkDoneForTaskFromStudent(Long id, Long lessonId, Long homeworkTaskId, Long studentId) {
+        HomeworkDone homeworkDone = homeworkUtils.getHomeworkDoneForTeacherFromStudentForTask(id, lessonId, homeworkTaskId, studentId);
+        return studentCourseMapper.toResponseHomeworkDoneDto(homeworkDone);
     }
 
     public ResponseHomeworkDoneStudentDto getHomeworkDoneForTask(Long id, Long lessonId,

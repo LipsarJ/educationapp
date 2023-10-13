@@ -26,7 +26,7 @@ const TaskCard: React.FC<{ task: any, onDelete: () => void }> = ({task, onDelete
     const [isLodaing, setLoading] = useState(false);
     const [error, setError] = useState('');
     const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
-    const {id, lessonId} = useParams();
+    const {courseId, lessonId} = useParams();
     const [isHover, setHover] = useState(false);
 
     const toggleDeleteConfirmation = () => {
@@ -38,7 +38,7 @@ const TaskCard: React.FC<{ task: any, onDelete: () => void }> = ({task, onDelete
         setIsDeleting(true);
         setLoading(true);
         try {
-            await instanceAxios.delete(`/author/homework-tasks/${id}/${lessonId}/${task.id}`);
+            await instanceAxios.delete(`/author/homework-tasks/${courseId}/${lessonId}/${task.id}`);
 
             toggleDeleteConfirmation();
             setIsDeleting(false);
@@ -76,7 +76,7 @@ const TaskCard: React.FC<{ task: any, onDelete: () => void }> = ({task, onDelete
             onMouseLeave={() => setHover(false)}
         >
             <Heading mt={1} size="md" textAlign="center" cursor="pointer" textDecoration={isHover ?"underline" : "none"}>
-                <Text as={NavLink} to={`/tasks/${id}/${lessonId}/${task.id}`}>{task.title}</Text>
+                <Text as={NavLink} to={`/tasks/${courseId}/${lessonId}/${task.id}`}>{task.title}</Text>
             </Heading>
             {user && user.roles.includes('AUTHOR') && (
                 <Box position="absolute" right="2" top="2">

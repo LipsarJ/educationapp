@@ -1,5 +1,6 @@
 package com.example.educationapp.repo;
 
+import com.example.educationapp.dto.response.HomeworkPercentageProjection;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.Role;
 import com.example.educationapp.entity.User;
@@ -39,4 +40,23 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
 
     @Query("select c from Course c join c.teachers t where t = :teacher")
     List<Course> findCoursesByTeacher(User teacher);
+
+    @Query("SELECT " +
+            "l.id AS lessonId, " +
+            "u.id AS studentId, " +
+            "CASE " +
+            "WHEN COUNT(DISTINCT t) = 0 " +
+            "THEN 100.0 " +
+            "ELSE (COUNT(DISTINCT hd) * 100.0 / COUNT(DISTINCT t)) " +
+            "END AS percentage " +
+            "FROM Lesson l " +
+            "JOIN l.lessonsCourse c " +
+            "JOIN c.students u " +
+            "LEFT JOIN HomeworkTask t ON t.lesson = l " +
+            "LEFT JOIN HomeworkDone hd ON hd.task = t AND hd.student.id = u.id " +
+            "WHERE c = :course AND u IN :students " +
+            "GROUP BY l.id, u.id")
+    List<HomeworkPercentageProjection> getHomeworkPercentageForCourse(Course course, List<User> students);
+
+
 }

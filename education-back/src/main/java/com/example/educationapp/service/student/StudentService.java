@@ -43,7 +43,7 @@ public class StudentService {
 
     public List<ResponseCourseDto> getAllCoursesForStudent() {
         Set<Course> courses = courseUtils.getCoursesForStudent();
-        return courses.stream()
+        return courses.stream().filter(course -> course.getCourseStatus() == CourseStatus.ONGOING)
                 .map(studentCourseMapper::toResponseCourseDto)
                 .collect(Collectors.toList());
     }

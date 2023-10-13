@@ -27,7 +27,7 @@ const LessonCard: React.FC<{ lesson: any, onDelete: () => void, provided: any }>
     const [error, setError] = useState('');
     const {isAuthenticated, setAuthenticated, setUser, user} = useAuth();
     const [isHover, setHover] = useState(false);
-    const {id} = useParams();
+    const {courseId} = useParams();
 
     const toggleDeleteConfirmation = () => {
         setIsDeleting(!isDeleting);
@@ -38,7 +38,7 @@ const LessonCard: React.FC<{ lesson: any, onDelete: () => void, provided: any }>
         setIsDeleting(true);
         setLoading(true);
         try {
-            await instanceAxios.delete(`/author/lessons/${id}/${lesson.id}`);
+            await instanceAxios.delete(`/author/lessons/${courseId}/${lesson.id}`);
             toggleDeleteConfirmation();
             setIsDeleting(false);
             onDelete();
@@ -79,7 +79,7 @@ const LessonCard: React.FC<{ lesson: any, onDelete: () => void, provided: any }>
             {...(provided ? provided.dragHandleProps : {})}
         >
             <Heading mt={1} size="md" textAlign="center" cursor="pointer" textDecoration={isHover ?"underline" : "none"}>
-                <Text as={NavLink} to={`/lessons/${id}/${lesson.id}`}>{lesson.lessonName}</Text>
+                <Text as={NavLink} to={`/lessons/${courseId}/${lesson.id}`}>{lesson.lessonName}</Text>
             </Heading>
             {user && user.roles.includes('AUTHOR') && (
                 <Box position="absolute" right="2" top="2">

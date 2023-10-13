@@ -2,6 +2,7 @@ package com.example.educationapp.controller.management.teacher;
 
 import com.example.educationapp.controlleradvice.SimpleResponse;
 import com.example.educationapp.dto.request.management.teacher.AddOrRemoveStudentsDto;
+import com.example.educationapp.dto.response.HomeworkPercentageProjection;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.dto.response.UserInfoDto;
 import com.example.educationapp.dto.response.UserInfoPage;
@@ -82,5 +83,19 @@ public class TeacherManagement {
     })
     public List<ResponseUserDto> removeStudentsForCourse(@PathVariable Long id, @RequestBody AddOrRemoveStudentsDto addOrRemoveStudentsDto) {
         return teacherManagementService.removeStudentsForCourse(id, addOrRemoveStudentsDto);
+    }
+
+    @GetMapping("/{id}/hw-done-percentage")
+    @Operation(summary = "Получить процент выполненных дз к уроку от учеников")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешное получение информации",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = HomeworkPercentageProjection.class))),
+            @ApiResponse(responseCode = "400", description = "Введены неверные данные",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = SimpleResponse.class)))
+    })
+    public List<HomeworkPercentageProjection> getHomeworkDonePercentage(@PathVariable Long id, Pageable pageable) {
+        return teacherManagementService.getHomeworkDonePercentage(id, pageable);
     }
 }

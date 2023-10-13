@@ -2,6 +2,7 @@ package com.example.educationapp.service.management.teacher;
 
 import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.management.teacher.AddOrRemoveStudentsDto;
+import com.example.educationapp.dto.response.HomeworkPercentageProjection;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.dto.response.UserInfoDto;
 import com.example.educationapp.entity.Course;
@@ -65,5 +66,14 @@ public class TeacherManagementService {
         return students.stream()
                 .map(userMapper::toResponseUserDto)
                 .collect(Collectors.toList());
+    }
+
+    public List<HomeworkPercentageProjection> getHomeworkDonePercentage(Long id, Pageable pageable) {
+        Course course = courseUtils.validateAndGetCourseForTeacher(id);
+        Page<User> students = userRepo.findByCourse(course, pageable);
+        List<User> studentsList = students.toList();
+        List<HomeworkPercentageProjection> results = userRepo.getHomeworkPercentageForCourse(course, studentsList);
+
+        return results;
     }
 }

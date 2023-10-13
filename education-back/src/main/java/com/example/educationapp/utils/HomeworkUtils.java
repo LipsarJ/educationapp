@@ -6,6 +6,7 @@ import com.example.educationapp.entity.HomeworkTask;
 import com.example.educationapp.entity.Lesson;
 import com.example.educationapp.entity.User;
 import com.example.educationapp.exception.ForbiddenException;
+import com.example.educationapp.exception.NotFoundException;
 import com.example.educationapp.exception.extend.HomeworkDoneNotFoundException;
 import com.example.educationapp.exception.extend.HomeworkTaskNotFoundException;
 import com.example.educationapp.exception.extend.UserNotFoundException;
@@ -65,6 +66,17 @@ public class HomeworkUtils {
             throw new ForbiddenException("This homework task is not for this lesson");
         }
         HomeworkDone homeworkDone = homeworkDoneRepo.findById(homeworkDoneId).orElseThrow(() -> new HomeworkDoneNotFoundException(String.format("Homework solution with id: %s is not found", homeworkDoneId)));
+        return homeworkDone;
+    }
+
+    public HomeworkDone getHomeworkDoneForTeacherFromStudentForTask(Long id, Long lessonId, Long homeworkTaskId, Long studentId) {
+        Lesson lesson = lessonUtils.getLessonForTeacherValidatedCourse(id, lessonId);
+        HomeworkTask homeworkTask = homeworkTaskRepo.findById(homeworkTaskId).orElseThrow(() -> new HomeworkTaskNotFoundException("HomeworkTask is not found"));
+        if (!lesson.getHomeworkTaskList().contains(homeworkTask)) {
+            throw new ForbiddenException("This homework task is not for this lesson");
+        }
+        User student = userRepo.findById(studentId).orElseThrow(() -> new NotFoundException("User is not found"));
+        HomeworkDone homeworkDone = homeworkDoneRepo.findByStudentAndTask(student, homeworkTask);
         return homeworkDone;
     }
 
