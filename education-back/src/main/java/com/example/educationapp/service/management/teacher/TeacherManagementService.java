@@ -2,7 +2,7 @@ package com.example.educationapp.service.management.teacher;
 
 import com.example.educationapp.controlleradvice.Errors;
 import com.example.educationapp.dto.request.management.teacher.AddOrRemoveStudentsDto;
-import com.example.educationapp.dto.response.JournalResponseDto;
+import com.example.educationapp.dto.response.HomeworkPercentageProjection;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.dto.response.UserInfoDto;
 import com.example.educationapp.entity.Course;
@@ -17,7 +17,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -69,22 +68,12 @@ public class TeacherManagementService {
                 .collect(Collectors.toList());
     }
 
-    public List<JournalResponseDto> getHomeworkDonePercentage(Long id, Pageable pageable) {
+    public List<HomeworkPercentageProjection> getHomeworkDonePercentage(Long id, Pageable pageable) {
         Course course = courseUtils.validateAndGetCourseForTeacher(id);
         Page<User> students = userRepo.findByCourse(course, pageable);
         List<User> studentsList = students.toList();
-        List<Object[]> results = userRepo.getHomeworkPercentageForCourse(course, studentsList);
+        List<HomeworkPercentageProjection> results = userRepo.getHomeworkPercentageForCourse(course, studentsList);
 
-        List<JournalResponseDto> dtos = new ArrayList<>();
-
-        for (Object[] result : results) {
-            JournalResponseDto dto = new JournalResponseDto();
-            dto.setLessonId((Long) result[0]);
-            dto.setStudentId((Long) result[1]);
-            dto.setPercentage((Float) result[2]);
-            dtos.add(dto);
-        }
-
-        return dtos;
+        return results;
     }
 }

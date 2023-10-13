@@ -1,6 +1,6 @@
 package com.example.educationapp.repo;
 
-import com.example.educationapp.dto.response.JournalResponseDto;
+import com.example.educationapp.dto.response.HomeworkPercentageProjection;
 import com.example.educationapp.entity.Course;
 import com.example.educationapp.entity.Role;
 import com.example.educationapp.entity.User;
@@ -56,7 +56,7 @@ public interface UserRepo extends JpaRepository<User, Long>, JpaSpecificationExe
             "LEFT JOIN HomeworkDone hd ON hd.task = t AND hd.student.id = u.id " +
             "WHERE c = :course AND u IN :students " +
             "GROUP BY l.id, u.id")
-    List<Object[]> getHomeworkPercentageForCourse(Course course, List<User> students);
+    List<HomeworkPercentageProjection> getHomeworkPercentageForCourse(Course course, List<User> students);
 
 
 }

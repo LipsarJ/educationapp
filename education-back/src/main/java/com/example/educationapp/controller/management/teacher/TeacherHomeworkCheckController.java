@@ -56,7 +56,7 @@ public class TeacherHomeworkCheckController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешное получение информации о сделанных ДЗ",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = HomeworkDoneInfoPage.class))),
+                            schema = @Schema(implementation = ResponseHomeworkDoneStudentDto.class))),
             @ApiResponse(responseCode = "404", description = "Урок, задача или ДЗ не найдены",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = SimpleResponse.class))),

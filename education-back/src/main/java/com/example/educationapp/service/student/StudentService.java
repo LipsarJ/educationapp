@@ -24,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -43,13 +42,8 @@ public class StudentService {
     private final HomeworkTaskMapper homeworkTaskMapper;
 
     public List<ResponseCourseDto> getAllCoursesForStudent() {
-        Set<Course> courses = new HashSet<>();
-        for(Course course : courseUtils.getCoursesForStudent()) {
-            if(course.getCourseStatus() == CourseStatus.ONGOING) {
-                courses.add(course);
-            }
-        }
-        return courses.stream()
+        Set<Course> courses = courseUtils.getCoursesForStudent();
+        return courses.stream().filter(course -> course.getCourseStatus() == CourseStatus.ONGOING)
                 .map(studentCourseMapper::toResponseCourseDto)
                 .collect(Collectors.toList());
     }

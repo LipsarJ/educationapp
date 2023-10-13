@@ -2,7 +2,7 @@ package com.example.educationapp.controller.management.teacher;
 
 import com.example.educationapp.controlleradvice.SimpleResponse;
 import com.example.educationapp.dto.request.management.teacher.AddOrRemoveStudentsDto;
-import com.example.educationapp.dto.response.JournalResponseDto;
+import com.example.educationapp.dto.response.HomeworkPercentageProjection;
 import com.example.educationapp.dto.response.ResponseUserDto;
 import com.example.educationapp.dto.response.UserInfoDto;
 import com.example.educationapp.dto.response.UserInfoPage;
@@ -90,15 +90,12 @@ public class TeacherManagement {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешное получение информации",
                     content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = ResponseUserDto.class))),
-            @ApiResponse(responseCode = "404", description = "Курс или студент не найдены",
-                    content = @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = SimpleResponse.class))),
-            @ApiResponse(responseCode = "400", description = "Введены невенрные данные",
+                            schema = @Schema(implementation = HomeworkPercentageProjection.class))),
+            @ApiResponse(responseCode = "400", description = "Введены неверные данные",
                     content = @Content(mediaType = "application/json",
                             schema = @Schema(implementation = SimpleResponse.class)))
     })
-    public List<JournalResponseDto> getHomeworkDonePercentage(@PathVariable Long id, Pageable pageable) {
+    public List<HomeworkPercentageProjection> getHomeworkDonePercentage(@PathVariable Long id, Pageable pageable) {
         return teacherManagementService.getHomeworkDonePercentage(id, pageable);
     }
 }
