@@ -30,6 +30,9 @@ public class MediaLesson {
     @Column(nullable = false)
     private MediaType mediaType;
 
+    @Column(nullable = false)
+    private String fileKey;
+
     @ManyToOne
     @JoinColumn(name = "lesson_id")
     private Lesson mediaLesson;

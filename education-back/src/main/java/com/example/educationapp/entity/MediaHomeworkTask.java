@@ -30,6 +30,9 @@ public class MediaHomeworkTask {
     @Column(nullable = false)
     private MediaType mediaType;
 
+    @Column(nullable = false)
+    private String fileKey;
+
     @ManyToOne
     @JoinColumn(name = "task_id", nullable = false)
     private HomeworkTask taskMedia;

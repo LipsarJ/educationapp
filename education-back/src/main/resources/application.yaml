@@ -11,6 +11,10 @@ spring:
   properties:
     hibernate:
     format_sql: true
+  servlet:
+    multipart:
+      max-file-size: ${MAX_FILE_SIZE:500MB}
+      max-request-size: ${MAX_REQUEST_SIZE:500MB}
 app:
   security:
     refreshTokenDurationMs: 600000000
