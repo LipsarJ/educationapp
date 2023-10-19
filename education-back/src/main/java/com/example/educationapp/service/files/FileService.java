@@ -5,10 +5,7 @@ import com.example.educationapp.entity.*;
 import com.example.educationapp.exception.NotFoundException;
 import com.example.educationapp.mapper.MediaMapper;
 import com.example.educationapp.repo.*;
-import io.minio.*;
-import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,8 +14,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -27,8 +22,6 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @PreAuthorize("hasAuthority('AUTHOR')")
 public class FileService {
-    @Value("${minio.bucket}")
-    private String bucket;
     private final LessonRepo lessonRepo;
     private final HomeworkTaskRepo homeworkTaskRepo;
     private final HomeworkDoneRepo homeworkDoneRepo;
@@ -36,21 +29,15 @@ public class FileService {
     private final MediaHomeworkTaskRepo mediaHomeworkTaskRepo;
     private final MediaHomeworkDoneRepo mediaHomeworkDoneRepo;
     private final MediaMapper mediaMapper;
-    private final MinioClient minioClient;
+    private final MinioService minioService;
 
     public UploadFileResDto uploadFile(MultipartFile file, Long fileId, Long id, String mediaOwner) {
         String object = UUID.randomUUID().toString();
         String fileName = file.getOriginalFilename();
         UploadFileResDto uploadFileResDto = new UploadFileResDto();
         try (InputStream inputStream = file.getInputStream()) {
-            if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucket).build())) {
-                minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucket).build());
-            }
-            minioClient.putObject(PutObjectArgs.builder()
-                    .bucket(bucket)
-                    .object(object)
-                    .stream(inputStream, inputStream.available(), -1)
-                    .build());
+            minioService.createBucketIfNotExists();
+            minioService.uploadFile(object, inputStream);
             switch (mediaOwner) {
                 case "LESSON" -> {
                     Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new NotFoundException("Lesson is not found"));
@@ -115,14 +102,13 @@ public class FileService {
                 originalFileName = mediaHomeworkDone.getName();
             }
         }
-        try (InputStream response = minioClient.getObject(GetObjectArgs.builder().bucket(bucket).object(fileKey).build())) {
+        try (InputStream response = minioService.downloadFile(fileKey)) {
             return new UploadFileResDto(
                     URLEncoder.encode(originalFileName, StandardCharsets.UTF_8),
                     response.readAllBytes()
             );
-        } catch (InvalidResponseException | XmlParserException | ServerException | NoSuchAlgorithmException |
-                 InsufficientDataException | InvalidKeyException | ErrorResponseException | InternalException e) {
-            throw new IOException(e);
+        } catch (Exception e) {
+            throw new IOException(e.getMessage());
         }
     }
 
