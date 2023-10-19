@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UploadFileResDto {
     private String name;
-    private String fileKey;
+    private byte[] fileKey;
 }

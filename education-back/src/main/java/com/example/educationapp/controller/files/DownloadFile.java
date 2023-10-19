@@ -3,21 +3,35 @@ package com.example.educationapp.controller.files;
 import com.example.educationapp.dto.response.files.UploadFileResDto;
 import com.example.educationapp.service.files.FileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
+import java.util.UUID;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/v1/download/{mediaOwner}/{id}")
 public class DownloadFile {
-    @RestController
-    @RequiredArgsConstructor
-    @RequestMapping("/api/v1/download/{mediaOwner}/{id}")
-    public class UploadFile {
-        private final FileService fileService;
+    private final FileService fileService;
 
-        @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-        public UploadFileResDto uploadFile(@RequestParam("file") MultipartFile file,
-                                           @RequestParam("fileId") Long fileId, @PathVariable Long id, @PathVariable String mediaOwner) {
-            return fileService.uploadFile(file, fileId, id, mediaOwner);
+    @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.APPLICATION_OCTET_STREAM_VALUE})
+    public ResponseEntity<byte[]> downloadFile(@PathVariable UUID id, @PathVariable String mediaOwner) {
+        try {
+            UploadFileResDto uploadFileResDto = fileService.downloadFile(id, mediaOwner);
+            return ResponseEntity
+                    .ok()
+                    .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + uploadFileResDto.getName())
+                    .body(uploadFileResDto.getFileKey());
+        } catch (IOException e) {
+            return ResponseEntity.status(404).body(e.getMessage().getBytes());
         }
     }
 }
