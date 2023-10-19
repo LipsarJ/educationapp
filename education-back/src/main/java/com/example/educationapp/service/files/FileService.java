@@ -3,6 +3,7 @@ package com.example.educationapp.service.files;
 import com.example.educationapp.dto.response.files.UploadFileResDto;
 import com.example.educationapp.entity.*;
 import com.example.educationapp.exception.NotFoundException;
+import com.example.educationapp.mapper.MediaMapper;
 import com.example.educationapp.repo.*;
 import io.minio.*;
 import io.minio.errors.*;
@@ -18,6 +19,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -32,6 +35,7 @@ public class FileService {
     private final MediaLessonRepo mediaLessonRepo;
     private final MediaHomeworkTaskRepo mediaHomeworkTaskRepo;
     private final MediaHomeworkDoneRepo mediaHomeworkDoneRepo;
+    private final MediaMapper mediaMapper;
     private final MinioClient minioClient;
 
     public UploadFileResDto uploadFile(MultipartFile file, Long fileId, Long id, String mediaOwner) {
@@ -120,5 +124,27 @@ public class FileService {
                  InsufficientDataException | InvalidKeyException | ErrorResponseException | InternalException e) {
             throw new IOException(e);
         }
+    }
+
+    public List<UploadFileResDto> getAllFiles(Long id, String mediaOwner) {
+        List<UploadFileResDto> files = new ArrayList<>();
+        switch (mediaOwner) {
+            case "LESSON" -> {
+                files.addAll(lessonRepo.findById(id).
+                        orElseThrow(() -> new NotFoundException("Lesson is not found"))
+                        .getMediaLessonList().stream().map(mediaMapper::toLessonDto).toList());
+            }
+            case "HOMEWORK_TASK" -> {
+                files.addAll(homeworkTaskRepo.findById(id).
+                        orElseThrow(() -> new NotFoundException("Lesson is not found"))
+                        .getMediaHomeworkTaskList().stream().map(mediaMapper::toHomeworkTaskDto).toList());
+            }
+            case "HOMEWORK_DONE" -> {
+                files.addAll(homeworkDoneRepo.findById(id).
+                        orElseThrow(() -> new NotFoundException("Lesson is not found"))
+                        .getMediaHomeworkDoneList().stream().map(mediaMapper::toHomeworkDoneDto).toList());
+            }
+        }
+        return files;
     }
 }
