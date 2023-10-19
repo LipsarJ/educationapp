@@ -1,3 +1,8 @@
+minio:
+  client:
+    endpoint: "http://45.143.139.31:9000/"
+    accessKey: "admin"
+    secretKey: "7D3ffTPfo0h705Nn"
 spring:
   datasource:
     url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5433}/${DATABASE_NAME:education}
