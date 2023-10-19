@@ -8,7 +8,6 @@ import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,27 +19,18 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @PreAuthorize("hasAuthority('AUTHOR')")
 public class FileService {
-    @Value("${minio.client.endpoint}")
-    private String minioEndpoint;
-    @Value("${minio.client.accessKey}")
-    private String minioAccessKey;
-    @Value("${minio.client.secretKey}")
-    private String minioSecretKey;
     private final LessonRepo lessonRepo;
     private final HomeworkTaskRepo homeworkTaskRepo;
     private final HomeworkDoneRepo homeworkDoneRepo;
     private final MediaLessonRepo mediaLessonRepo;
     private final MediaHomeworkTaskRepo mediaHomeworkTaskRepo;
     private final MediaHomeworkDoneRepo mediaHomeworkDoneRepo;
+    private final MinioClient minioClient;
 
     public UploadFileResDto uploadFile(MultipartFile file, Long fileId, Long id, String mediaOwner) {
         String bucket = UUID.randomUUID().toString();
         String objectName = file.getOriginalFilename();
         UploadFileResDto uploadFileResDto = new UploadFileResDto();
-        MinioClient minioClient = MinioClient.builder()
-                .endpoint(minioEndpoint)
-                .credentials(minioAccessKey, minioSecretKey)
-                .build();
         try (InputStream inputStream = file.getInputStream()) {
             minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucket).build());
             minioClient.putObject(PutObjectArgs.builder()
