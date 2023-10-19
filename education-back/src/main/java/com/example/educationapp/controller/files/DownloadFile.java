@@ -16,15 +16,15 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/download/{mediaOwner}/{id}")
+@RequestMapping("/api/v1/download/{courseId}/{mediaOwner}/{id}")
 public class DownloadFile {
     private final FileService fileService;
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.APPLICATION_OCTET_STREAM_VALUE})
-    public ResponseEntity<byte[]> downloadFile(@PathVariable UUID id, @PathVariable String mediaOwner) {
+    public ResponseEntity<byte[]> downloadFile(@PathVariable Long courseId, @PathVariable UUID id, @PathVariable String mediaOwner) {
         try {
-            UploadFileResDto uploadFileResDto = fileService.downloadFile(id, mediaOwner);
+            UploadFileResDto uploadFileResDto = fileService.downloadFile(courseId, id, mediaOwner);
             return ResponseEntity
                     .ok()
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_OCTET_STREAM_VALUE)

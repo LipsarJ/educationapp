@@ -12,11 +12,12 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/{mediaOwner}/{id}/get-all-media")
+@RequestMapping("/api/v1/{courseId}/{mediaOwner}/{id}/get-all-media")
 public class GetFiles {
     private final FileService fileService;
+
     @GetMapping
-    public List<UploadFileResDto> getAllFiles(@PathVariable Long id, @PathVariable String mediaOwner) {
-        return fileService.getAllFiles(id, mediaOwner);
+    public List<UploadFileResDto> getAllFiles(@PathVariable Long courseId, @PathVariable Long id, @PathVariable String mediaOwner) {
+        return fileService.getAllFiles(courseId, id, mediaOwner);
     }
 }

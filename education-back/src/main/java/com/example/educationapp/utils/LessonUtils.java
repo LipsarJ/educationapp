@@ -31,4 +31,17 @@ public class LessonUtils {
         }
         return lesson;
     }
+
+    public Lesson getLessonForAuthorValidatedCourse(Long id, Long lessonId) {
+        Course course = courseUtils.validateAndGetCourseForAuthor(id);
+        Lesson lesson = lessonRepo.findById(lessonId).orElseThrow(() -> new LessonNotFoundException("Lesson is not found"));
+        if (!course.getLessonList().contains(lesson)) {
+            throw new ForbiddenException("This lesson is not for this course");
+        }
+        return lesson;
+    }
+
+    public void validateAllUsersForCourse(Long id) {
+        courseUtils.validateCourseForAll(id);
+    }
 }

@@ -2,11 +2,13 @@ package com.example.educationapp.service.files;
 
 import com.example.educationapp.dto.response.files.UploadFileResDto;
 import com.example.educationapp.entity.*;
+import com.example.educationapp.exception.ForbiddenException;
 import com.example.educationapp.exception.NotFoundException;
 import com.example.educationapp.mapper.MediaMapper;
 import com.example.educationapp.repo.*;
+import com.example.educationapp.security.service.UserContext;
+import com.example.educationapp.utils.LessonUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,7 +22,6 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('AUTHOR')")
 public class FileService {
     private final LessonRepo lessonRepo;
     private final HomeworkTaskRepo homeworkTaskRepo;
@@ -30,8 +31,12 @@ public class FileService {
     private final MediaHomeworkDoneRepo mediaHomeworkDoneRepo;
     private final MediaMapper mediaMapper;
     private final MinioService minioService;
+    private final LessonUtils lessonUtils;
+    private final UserContext userContext;
+    private final UserRepo userRepo;
 
-    public UploadFileResDto uploadFile(MultipartFile file, Long fileId, Long id, String mediaOwner) {
+
+    public UploadFileResDto uploadFile(Long courseId, MultipartFile file, Long fileId, Long id, String mediaOwner) {
         String object = UUID.randomUUID().toString();
         String fileName = file.getOriginalFilename();
         UploadFileResDto uploadFileResDto = new UploadFileResDto();
@@ -40,7 +45,7 @@ public class FileService {
             minioService.uploadFile(object, inputStream);
             switch (mediaOwner) {
                 case "LESSON" -> {
-                    Lesson lesson = lessonRepo.findById(id).orElseThrow(() -> new NotFoundException("Lesson is not found"));
+                    Lesson lesson = lessonUtils.getLessonForAuthorValidatedCourse(courseId, id);
                     MediaLesson mediaLesson = new MediaLesson();
                     mediaLesson.setMediaLesson(lesson);
                     mediaLesson.setFileKey(object);
@@ -52,6 +57,9 @@ public class FileService {
                 }
                 case "HOMEWORK_TASK" -> {
                     HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new NotFoundException("Homework Task is not found"));
+                    if (!homeworkTask.getLesson().getLessonsCourse().getAuthors().contains(userRepo.findById(userContext.getUserDto().getId()))) {
+                        throw new ForbiddenException("You are not author of this course");
+                    }
                     MediaHomeworkTask mediaHomeworkTask = new MediaHomeworkTask();
                     mediaHomeworkTask.setTaskMedia(homeworkTask);
                     mediaHomeworkTask.setFileKey(object);
@@ -63,6 +71,9 @@ public class FileService {
                 }
                 case "HOMEWORK_DONE" -> {
                     HomeworkDone homeworkDone = homeworkDoneRepo.findById(id).orElseThrow(() -> new NotFoundException("HomeworkDone is not found"));
+                    if (!homeworkDone.getTask().getLesson().getLessonsCourse().getStudents().contains(homeworkDone.getStudent())) {
+                        throw new ForbiddenException("You are not student of this course");
+                    }
                     MediaHomeworkDone mediaHomeworkDone = new MediaHomeworkDone();
                     mediaHomeworkDone.setHomeworkDone(homeworkDone);
                     mediaHomeworkDone.setFileKey(object);
@@ -82,9 +93,10 @@ public class FileService {
         return uploadFileResDto;
     }
 
-    public UploadFileResDto downloadFile(UUID id, String mediaOwner) throws IOException {
+    public UploadFileResDto downloadFile(Long courseId, UUID id, String mediaOwner) throws IOException {
         String fileKey = "";
         String originalFileName = "";
+        lessonUtils.validateAllUsersForCourse(courseId);
         switch (mediaOwner) {
             case "LESSON" -> {
                 MediaLesson mediaLesson = mediaLessonRepo.findById(id).orElseThrow(() -> new NotFoundException("File is not found"));
@@ -112,8 +124,9 @@ public class FileService {
         }
     }
 
-    public List<UploadFileResDto> getAllFiles(Long id, String mediaOwner) {
+    public List<UploadFileResDto> getAllFiles(Long courseId, Long id, String mediaOwner) {
         List<UploadFileResDto> files = new ArrayList<>();
+        lessonUtils.validateAllUsersForCourse(courseId);
         switch (mediaOwner) {
             case "LESSON" -> {
                 files.addAll(lessonRepo.findById(id).
