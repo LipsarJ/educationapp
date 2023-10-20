@@ -29,6 +29,13 @@ public class MinioService {
                 .build());
     }
 
+    public void deleteFile(String fileKey) throws Exception{
+        minioClient.removeObject(RemoveObjectArgs.builder()
+                .bucket(bucket)
+                .object(fileKey)
+                .build());
+    }
+
     public InputStream downloadFile(String fileKey) throws Exception {
         return minioClient.getObject(GetObjectArgs.builder().bucket(bucket).object(fileKey).build());
     }

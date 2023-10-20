@@ -43,52 +43,52 @@ public class FileService {
         try (InputStream inputStream = file.getInputStream()) {
             minioService.createBucketIfNotExists();
             minioService.uploadFile(object, inputStream);
-            switch (mediaOwner) {
-                case "LESSON" -> {
-                    Lesson lesson = lessonUtils.getLessonForAuthorValidatedCourse(courseId, id);
-                    MediaLesson mediaLesson = new MediaLesson();
-                    mediaLesson.setMediaLesson(lesson);
-                    mediaLesson.setFileKey(object);
-                    mediaLesson.setMediaType(MediaType.DOCUMENT);
-                    mediaLesson.setSize(file.getSize());
-                    mediaLesson.setName(fileName);
-                    mediaLessonRepo.save(mediaLesson);
-                    lesson.getMediaLessonList().add(mediaLesson);
-                }
-                case "HOMEWORK_TASK" -> {
-                    HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new NotFoundException("Homework Task is not found"));
-                    if (!homeworkTask.getLesson().getLessonsCourse().getAuthors().contains(userRepo.findById(userContext.getUserDto().getId()))) {
-                        throw new ForbiddenException("You are not author of this course");
-                    }
-                    MediaHomeworkTask mediaHomeworkTask = new MediaHomeworkTask();
-                    mediaHomeworkTask.setTaskMedia(homeworkTask);
-                    mediaHomeworkTask.setFileKey(object);
-                    mediaHomeworkTask.setMediaType(MediaType.DOCUMENT);
-                    mediaHomeworkTask.setSize(file.getSize());
-                    mediaHomeworkTask.setName(fileName);
-                    mediaHomeworkTaskRepo.save(mediaHomeworkTask);
-                    homeworkTask.getMediaHomeworkTaskList().add(mediaHomeworkTask);
-                }
-                case "HOMEWORK_DONE" -> {
-                    HomeworkDone homeworkDone = homeworkDoneRepo.findById(id).orElseThrow(() -> new NotFoundException("HomeworkDone is not found"));
-                    if (!homeworkDone.getTask().getLesson().getLessonsCourse().getStudents().contains(homeworkDone.getStudent())) {
-                        throw new ForbiddenException("You are not student of this course");
-                    }
-                    MediaHomeworkDone mediaHomeworkDone = new MediaHomeworkDone();
-                    mediaHomeworkDone.setHomeworkDone(homeworkDone);
-                    mediaHomeworkDone.setFileKey(object);
-                    mediaHomeworkDone.setMediaType(MediaType.DOCUMENT);
-                    mediaHomeworkDone.setSize(file.getSize());
-                    mediaHomeworkDone.setName(fileName);
-                    mediaHomeworkDoneRepo.save(mediaHomeworkDone);
-                    homeworkDone.getMediaHomeworkDoneList().add(mediaHomeworkDone);
-                }
-            }
-            uploadFileResDto.setFileKey(object.getBytes());
-            uploadFileResDto.setName(fileName);
         } catch (Exception ex) {
             throw new RuntimeException(ex.getMessage());
         }
+        switch (mediaOwner) {
+            case "LESSON" -> {
+                Lesson lesson = lessonUtils.getLessonForAuthorValidatedCourse(courseId, id);
+                MediaLesson mediaLesson = new MediaLesson();
+                mediaLesson.setMediaLesson(lesson);
+                mediaLesson.setFileKey(object);
+                mediaLesson.setMediaType(MediaType.DOCUMENT);
+                mediaLesson.setSize(file.getSize());
+                mediaLesson.setName(fileName);
+                mediaLessonRepo.save(mediaLesson);
+                lesson.getMediaLessonList().add(mediaLesson);
+            }
+            case "HOMEWORK_TASK" -> {
+                HomeworkTask homeworkTask = homeworkTaskRepo.findById(id).orElseThrow(() -> new NotFoundException("Homework Task is not found"));
+                if (!homeworkTask.getLesson().getLessonsCourse().getAuthors().contains(userRepo.findById(userContext.getUserDto().getId()))) {
+                    throw new ForbiddenException("You are not author of this course");
+                }
+                MediaHomeworkTask mediaHomeworkTask = new MediaHomeworkTask();
+                mediaHomeworkTask.setTaskMedia(homeworkTask);
+                mediaHomeworkTask.setFileKey(object);
+                mediaHomeworkTask.setMediaType(MediaType.DOCUMENT);
+                mediaHomeworkTask.setSize(file.getSize());
+                mediaHomeworkTask.setName(fileName);
+                mediaHomeworkTaskRepo.save(mediaHomeworkTask);
+                homeworkTask.getMediaHomeworkTaskList().add(mediaHomeworkTask);
+            }
+            case "HOMEWORK_DONE" -> {
+                HomeworkDone homeworkDone = homeworkDoneRepo.findById(id).orElseThrow(() -> new NotFoundException("HomeworkDone is not found"));
+                if (!homeworkDone.getTask().getLesson().getLessonsCourse().getStudents().contains(homeworkDone.getStudent())) {
+                    throw new ForbiddenException("You are not student of this course");
+                }
+                MediaHomeworkDone mediaHomeworkDone = new MediaHomeworkDone();
+                mediaHomeworkDone.setHomeworkDone(homeworkDone);
+                mediaHomeworkDone.setFileKey(object);
+                mediaHomeworkDone.setMediaType(MediaType.DOCUMENT);
+                mediaHomeworkDone.setSize(file.getSize());
+                mediaHomeworkDone.setName(fileName);
+                mediaHomeworkDoneRepo.save(mediaHomeworkDone);
+                homeworkDone.getMediaHomeworkDoneList().add(mediaHomeworkDone);
+            }
+        }
+        uploadFileResDto.setFileKey(object.getBytes());
+        uploadFileResDto.setName(fileName);
 
         return uploadFileResDto;
     }
@@ -121,6 +121,41 @@ public class FileService {
             );
         } catch (Exception e) {
             throw new IOException(e.getMessage());
+        }
+    }
+
+    public void deleteFile(Long courseId, Long ownerId, UUID id, String mediaOwner) {
+        String fileKey = "";
+        switch (mediaOwner) {
+            case "LESSON" -> {
+                lessonUtils.getLessonForAuthorValidatedCourse(courseId, ownerId);
+                MediaLesson mediaLesson = mediaLessonRepo.findById(id).orElseThrow(() -> new NotFoundException("Media is not found"));
+                fileKey = mediaLesson.getFileKey();
+                mediaLessonRepo.delete(mediaLesson);
+            }
+            case "HOMEWORK_TASK" -> {
+                HomeworkTask homeworkTask = homeworkTaskRepo.findById(ownerId).orElseThrow(() -> new NotFoundException("Homework Task is not found"));
+                if (!homeworkTask.getLesson().getLessonsCourse().getAuthors().contains(userRepo.findById(userContext.getUserDto().getId()))) {
+                    throw new ForbiddenException("You are not author of this course");
+                }
+                MediaHomeworkTask mediaHomeworkTask = mediaHomeworkTaskRepo.findById(id).orElseThrow(() -> new NotFoundException("Homework task is not found"));
+                fileKey = mediaHomeworkTask.getFileKey();
+                mediaHomeworkTaskRepo.delete(mediaHomeworkTask);
+            }
+            case "HOMEWORK_DONE" -> {
+                HomeworkDone homeworkDone = homeworkDoneRepo.findById(ownerId).orElseThrow(() -> new NotFoundException("HomeworkDone is not found"));
+                if (!homeworkDone.getTask().getLesson().getLessonsCourse().getStudents().contains(homeworkDone.getStudent())) {
+                    throw new ForbiddenException("You are not student of this course");
+                }
+                MediaHomeworkDone mediaHomeworkDone = mediaHomeworkDoneRepo.findById(id).orElseThrow(() -> new NotFoundException("Homework done is not found"));
+                fileKey = mediaHomeworkDone.getFileKey();
+                mediaHomeworkDoneRepo.delete(mediaHomeworkDone);
+            }
+        }
+        try {
+            minioService.deleteFile(fileKey);
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage());
         }
     }
 

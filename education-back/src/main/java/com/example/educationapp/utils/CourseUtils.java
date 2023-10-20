@@ -65,7 +65,7 @@ public class CourseUtils {
         ResponseUserDto responseUserDto = userContext.getUserDto();
         User user = userRepo.findById(responseUserDto.getId()).orElseThrow(() -> new UserNotFoundException("User not found"));
         Course course = courseRepo.findById(id).orElseThrow(() -> new CourseNotFoundException("Course is not found."));
-        if(user.getStudentCourseSet().contains(course) || user.getTeacherCourseSet().contains(course) || user.getTeacherCourseSet().contains(course)){
+        if(user.getStudentCourseSet().contains(course) || user.getTeacherCourseSet().contains(course) || user.getAuthorCourseSet().contains(course)){
             return course;
         } else {
             throw new ForbiddenException("You are not allowed to this course.");
