@@ -44,6 +44,15 @@ public class HomeworkUtils {
         return homeworkTask;
     }
 
+    public HomeworkTask getHomeworkTaskForAuthorValidatedLesson(Long id, Long lessonId, Long homeworkTaskId) {
+        Lesson lesson = lessonUtils.getLessonForAuthorValidatedCourse(id, lessonId);
+        HomeworkTask homeworkTask = homeworkTaskRepo.findById(homeworkTaskId).orElseThrow(() -> new HomeworkTaskNotFoundException("HomeworkTask is not found"));
+        if (!lesson.getHomeworkTaskList().contains(homeworkTask)) {
+            throw new ForbiddenException("This homework task is not for this lesson");
+        }
+        return homeworkTask;
+    }
+
     public HomeworkDone getHomeworkDoneForStudent(Long id, Long lessonId, Long homeworkTaskId) {
         ResponseUserDto studentDto = userContext.getUserDto();
         User student = userRepo.findById(studentDto.getId()).orElseThrow(() -> new UserNotFoundException("User is not found"));

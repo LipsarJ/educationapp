@@ -61,6 +61,17 @@ public class CourseUtils {
         }
         return course;
     }
+    public Course validateCourseForAll(Long id) {
+        ResponseUserDto responseUserDto = userContext.getUserDto();
+        User user = userRepo.findById(responseUserDto.getId()).orElseThrow(() -> new UserNotFoundException("User not found"));
+        Course course = courseRepo.findById(id).orElseThrow(() -> new CourseNotFoundException("Course is not found."));
+        if(user.getStudentCourseSet().contains(course) || user.getTeacherCourseSet().contains(course) || user.getAuthorCourseSet().contains(course)){
+            return course;
+        } else {
+            throw new ForbiddenException("You are not allowed to this course.");
+        }
+    }
+
 
     public boolean isStatusChangeValid(CourseStatus currentStatus, CourseStatus newStatus) {
         return (currentStatus == CourseStatus.TEMPLATE && newStatus == CourseStatus.ONGOING)
