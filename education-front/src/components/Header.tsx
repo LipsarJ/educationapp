@@ -16,7 +16,7 @@ const Header: React.FC<HeaderProps> = ({onToggleSidebar, isSidebarOpen, isMobile
 
     switch (location.pathname) {
         case '/':
-            currentPage = 'Домашняя страница';
+            currentPage = 'Домашняя страница!';
             break;
         case '/login':
             currentPage = 'Вход';
