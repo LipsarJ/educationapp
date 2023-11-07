@@ -56,7 +56,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SERVER_SSH }}
           source: "./education-back/build/libs"
-          target: "/root/educationapp/"
+          target: "/root/"
       - name: SSH into the server
         if: ${{ github.event_name == 'push' }}
         uses: appleboy/ssh-action@master
@@ -65,5 +65,4 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SERVER_SSH }}
           script: |
-            cd educationapp
             docker compose -f prod-docker-compose.yaml up education -d --build
