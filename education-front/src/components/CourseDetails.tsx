@@ -413,7 +413,7 @@ const CourseDetails = () => {
                                         }}
                                         width="100%"
                                     >
-                                        Изменить студентов
+                                        Изменить студентовввв
                                     </Button>
                                     {course.courseStatus === Statuses.CourseStatusOngoing && (
                                         <Button
