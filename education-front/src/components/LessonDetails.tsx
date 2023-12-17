@@ -319,7 +319,7 @@ const LessonDetails = () => {
                             Дата обновления: {lesson.updateDate}
                         </Text>
                         {user && user.roles.includes('AUTHOR') && isAuthor && (
-                            <Flex mt={4} mb={4} ml={2} mr={2} flexDir="row" justifyContent="space-between" w="100%" gap={5}>
+                            <Flex mt={4} mb={4} flexDir="row" justifyContent="space-between" w="90%" gap={5}>
                                 <Button
                                     leftIcon={<FiEdit2/>}
                                     color="white"
