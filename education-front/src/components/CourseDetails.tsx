@@ -402,34 +402,34 @@ const CourseDetails = () => {
                                     )}
                                 </Flex>
                             )}
-                            {user && !user.roles.includes('TEACHER') && (
-                                <Flex justifyContent="center" w="100%" mt={4} gap={5} borderRadius={8}>
+                            {user && user.roles.includes('TEACHER')} : (
+                            <Flex justifyContent="center" w="100%" mt={4} gap={5} borderRadius={8}>
+                                <Button
+                                    color="white"
+                                    bg="blue.500"
+                                    leftIcon={<FiUsers/>}
+                                    onClick={() => {
+                                        navigate(`/users/${courseId}/${'STUDENT'}`)
+                                    }}
+                                    width="100%"
+                                >
+                                    Изменить студентов
+                                </Button>
+                                {course.courseStatus === Statuses.CourseStatusOngoing && (
                                     <Button
                                         color="white"
                                         bg="blue.500"
-                                        leftIcon={<FiUsers/>}
+                                        leftIcon={<FiBookOpen/>}
                                         onClick={() => {
-                                            navigate(`/users/${courseId}/${'STUDENT'}`)
+                                            navigate(`/courses/${courseId}/journal`)
                                         }}
                                         width="100%"
                                     >
-                                        Изменить студентов
+                                        Журнал
                                     </Button>
-                                    {course.courseStatus === Statuses.CourseStatusOngoing && (
-                                        <Button
-                                            color="white"
-                                            bg="blue.500"
-                                            leftIcon={<FiBookOpen/>}
-                                            onClick={() => {
-                                                navigate(`/courses/${courseId}/journal`)
-                                            }}
-                                            width="100%"
-                                        >
-                                            Журнал
-                                        </Button>
-                                    )}
-                                </Flex>
-                            )}
+                                )}
+                            </Flex>
+                            ) ? <>''</>)
                             {user && user.roles.includes('AUTHOR') && isAuthor && (
                                 <Flex justifyContent="space-between" mt={4} gap={5} borderRadius={8}>
                                     <Button
