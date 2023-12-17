@@ -402,7 +402,7 @@ const CourseDetails = () => {
                                     )}
                                 </Flex>
                             )}
-                            {user && user.roles.includes('TEACHER')} : (
+                            {user && user.roles.includes('TEACHER') ? (
                             <Flex justifyContent="center" w="100%" mt={4} gap={5} borderRadius={8}>
                                 <Button
                                     color="white"
@@ -429,7 +429,7 @@ const CourseDetails = () => {
                                     </Button>
                                 )}
                             </Flex>
-                            ) ? <>''</>)
+                            ) : (<>''</>)}
                             {user && user.roles.includes('AUTHOR') && isAuthor && (
                                 <Flex justifyContent="space-between" mt={4} gap={5} borderRadius={8}>
                                     <Button
