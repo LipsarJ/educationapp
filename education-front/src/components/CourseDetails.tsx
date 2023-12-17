@@ -402,7 +402,7 @@ const CourseDetails = () => {
                                     )}
                                 </Flex>
                             )}
-                            {user && user.roles.includes('TEACHER') && (
+                            {user && !user.roles.includes('TEACHER') && (
                                 <Flex justifyContent="center" w="100%" mt={4} gap={5} borderRadius={8}>
                                     <Button
                                         color="white"
@@ -413,7 +413,7 @@ const CourseDetails = () => {
                                         }}
                                         width="100%"
                                     >
-                                        Изменить студентовввв
+                                        Изменить студентов
                                     </Button>
                                     {course.courseStatus === Statuses.CourseStatusOngoing && (
                                         <Button
