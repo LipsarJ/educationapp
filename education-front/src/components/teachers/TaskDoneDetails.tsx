@@ -169,20 +169,6 @@ const TaskDoneDetails = () => {
                     </Heading>
                     <Text>{!taskDone.teacherInfoDto ? "-" : `${taskDone.teacherInfoDto.firstname} ${taskDone.teacherInfoDto.middlename} ${taskDone.teacherInfoDto.lastname}`}</Text>
                     {user && user.roles.includes("TEACHER") && (
-                        <Button
-                            leftIcon={<FiClipboard/>}
-                            mt={4}
-                            color="white"
-                            colorScheme="green"
-                            onClick={() => {
-                                navigate(`/tasks-done/${courseId}/${lessonId}/${homeworkTaskId}`);
-                            }}
-                            width="70%"
-                        >
-                            Список готовых заданий
-                        </Button>
-                    )}
-                    {user && user.roles.includes("TEACHER") && (
                         <Button mt={4} mb={3} colorScheme="blue" onClick={openRatingModal} width="70%" leftIcon={<FiEdit2/>}>
                             {taskDone.grade !== null ? "Изменить оценку" : "Поставить оценку"}
                         </Button>
