@@ -1,7 +1,7 @@
 minio:
   bucket: "education"
   client:
-    endpoint: "http://91.203.192.157:9000"
+    endpoint: "http://46.173.214.121:9000"
     accessKey: "admin"
     secretKey: "7D3ffTPfo0h705Nn"
 spring:
