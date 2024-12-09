@@ -9,7 +9,7 @@ def dbDriver = 'org.postgresql.Driver'
 def dbUser = System.getenv('DATABASE_USER') ?: 'education'
 def dbPassword = System.getenv('DATABASE_PASSWORD') ?: 'password'
 def dbHost = System.getenv('DATABASE_HOST') ?: 'localhost'
-def dbPort = System.getenv('DATABASE_PORT') ?: 5433
+def dbPort = System.getenv('DATABASE_PORT') ?: 5432
 def dbName = System.getenv('DATABASE_NAME') ?: 'education'
 def dbUrl = System.getenv('DATABASE_URL') ?: "jdbc:postgresql://$dbHost:$dbPort/$dbName"
 
