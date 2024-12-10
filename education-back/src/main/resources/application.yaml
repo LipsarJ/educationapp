@@ -6,7 +6,7 @@ minio:
     secretKey: "7D3ffTPfo0h705Nn"
 spring:
   datasource:
-    url: jdbc:postgresql://${DATABASE_HOST:194.87.190.26}:${DATABASE_PORT:5433}/${DATABASE_NAME:education}
+    url: jdbc:postgresql://${DATABASE_HOST:194.87.190.26}:${DATABASE_PORT:5432}/${DATABASE_NAME:education}
     driver-class-name: org.postgresql.Driver
     username: ${DATABASE_USER:education}
     password: ${DATABASE_PASSWORD:password}
