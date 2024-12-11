@@ -92,9 +92,9 @@ const CreateTask: React.FC = () => {
     };
 
     return (
-        <Container mt="5" centerContent>
-            <Heading mb={4} size="lg">
-                Создать Задание
+        <Container mt="5" centerContent bg="#F9F9F9" boxShadow="sm" border="1px solid #ccc" borderRadius="8">
+            <Heading mb={4} mt={4} size="lg">
+                Создание задания
             </Heading>
             {globalError && <div style={{color: 'red'}}>{globalError}</div>}
             <Formik
@@ -182,13 +182,13 @@ const CreateTask: React.FC = () => {
                         </Field>
                         <Button
                             mt={5}
+                            mb={5}
                             color="white"
-                            colorScheme = "green"
+                            bg="facebook.400"
                             size="lg"
                             type="submit"
                             mx="auto"
                             display="block"
-                            leftIcon = {<FiCheckSquare/>}
                         >
                             {isLoading ? (
                                 <ThreeDots height={'10px'} color="white"/>

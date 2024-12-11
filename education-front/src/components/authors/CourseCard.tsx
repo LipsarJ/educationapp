@@ -66,10 +66,11 @@ const CourseCard: React.FC<{ course: any, onDelete: () => void }> = ({course, on
             flexDir="column"
             alignItems="center"
             gap={3}
+            background = "#F9F9F9"
             boxShadow="sm"
             border="1px solid #ccc"
             _hover={{
-                bg: "#F9F9F9"
+                bg: "gray.200"
             }}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}

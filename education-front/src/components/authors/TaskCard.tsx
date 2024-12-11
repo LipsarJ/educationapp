@@ -68,9 +68,10 @@ const TaskCard: React.FC<{ task: any, onDelete: () => void }> = ({task, onDelete
             alignItems="center"
             gap={3}
             boxShadow="sm"
+            bg = "#F9F9F9"
             border="1px solid #ccc"
             _hover={{
-                bg: "#F9F9F9"
+                bg: "gray.200"
             }}
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}

@@ -263,7 +263,7 @@ const UserList = () => {
     const isNextDisabledRight = totalRight <= (pageRight + 1) * pageSizeRight;
 
     return (
-        <Flex flexDirection="column" alignItems="center" justifyContent="center">
+        <Flex flexDirection="column" alignItems="center" w="40%" margin="0 auto" mt={4} justifyContent="center" bg="#F9F9F9" boxShadow="sm" border="1px solid #ccc" borderRadius="8">
             <Heading size="lg" textAlign="center" mb={4} padding="16px">
                 {roleName === 'AUTHOR' ? (
                     <>Изменить авторов</>
@@ -287,7 +287,7 @@ const UserList = () => {
                 mb={5}
             />
             <Flex justifyContent="center" alignItems="flex-start" gap={8} minWidth="800px">
-                <List spacing={4} textAlign="center" w="50%" borderWidth="1px" borderRadius="8">
+                <List spacing={4} textAlign="center" w="50%" borderWidth="1px" borderRadius="8" mb={6}>
                     <Heading size="sm" mb={2} mt={2}>
                         {roleName === 'AUTHOR' ? (
                             <>Доступные авторы</>

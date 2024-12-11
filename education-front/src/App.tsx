@@ -23,7 +23,7 @@ import CreateTaskDone from './components/student/CreateTaskDone'
 import TaskDoneDetails from './components/teachers/TaskDoneDetails'
 import EditTaskDone from './components/student/EditTaskDone'
 import UsersControl from './components/admin/UsersControl'
-import StudentsControle from './components/StudentsControl'
+import StudentsControl from './components/StudentsControl'
 
 function App() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -54,7 +54,7 @@ function App() {
                             <Route path="/courses" element={<Courses/>}/>
                             <Route path="/courses/create" element={<CreateCourse/>}/>
                             <Route path="/courses/:courseId" element={<CourseDetails/>}/>
-                            <Route path="/courses/:courseId/journal" element={<StudentsControle/>}/>
+                            <Route path="/courses/:courseId/journal" element={<StudentsControl/>}/>
                             <Route path="/lessons/create/:courseId" element={<CreateLesson/>}/>
                             <Route path="/lessons/:courseId/:lessonId" element={<LessonDetails/>}/>
                             <Route path="/tasks/create/:courseId/:lessonId" element={<CreateTask/>}/>

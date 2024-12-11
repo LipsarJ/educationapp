@@ -52,8 +52,8 @@ const CreateTaskDone: React.FC = () => {
     };
 
     return (
-        <Container mt="5" centerContent>
-            <Heading mb={4} size="lg">
+        <Container mt="5" centerContent bg="#F9F9F9" boxShadow="sm" border="1px solid #ccc" borderRadius="8">
+            <Heading mb={4} mt={4} size="lg">
                 Добавить решение
             </Heading>
             {globalError && <div style={{ color: 'red' }}>{globalError}</div>}
@@ -102,6 +102,7 @@ const CreateTaskDone: React.FC = () => {
                             type="submit"
                             mx="auto"
                             display="block"
+                            mb={4}
                         >
                             {isLoading ? (
                                 <ThreeDots height={'10px'} color="white" />

@@ -143,6 +143,7 @@ const TaskDoneDetails = () => {
                 borderColor="grey.500"
                 w="500px"
                 mx="auto"
+                bg="#F9F9F9" boxShadow="sm" border="1px solid #ccc"
             >
                 <Flex alignItems="center" textAlign="center" flexDir="column" mx="auto" mb={1} mt={3}>
                     <Heading ml={2} mr={2} mb={3}>
@@ -167,7 +168,7 @@ const TaskDoneDetails = () => {
                     <Heading size="lg" textAlign="center" mb={1}>
                         Проверил:
                     </Heading>
-                    <Text>{!taskDone.teacherInfoDto ? "-" : `${taskDone.teacherInfoDto.firstname} ${taskDone.teacherInfoDto.middlename} ${taskDone.teacherInfoDto.lastname}`}</Text>
+                    <Text mb={4}>{!taskDone.teacherInfoDto ? "-" : `${taskDone.teacherInfoDto.firstname} ${taskDone.teacherInfoDto.middlename} ${taskDone.teacherInfoDto.lastname}`}</Text>
                     {user && user.roles.includes("TEACHER") && (
                         <Button mt={4} mb={3} colorScheme="blue" onClick={openRatingModal} width="70%" leftIcon={<FiEdit2/>}>
                             {taskDone.grade !== null ? "Изменить оценку" : "Поставить оценку"}

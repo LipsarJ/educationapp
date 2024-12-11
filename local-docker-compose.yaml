@@ -57,8 +57,6 @@ services:
       - education-net
     depends_on:
       - education
-    build:
-      dockerfile: ./education-back/Dockerfile-nginx
 
   education:
     container_name: education

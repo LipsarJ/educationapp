@@ -60,6 +60,7 @@ const LessonDetails = () => {
         const fetchData = async () => {
             if (user) {
                 if (user.roles.includes('AUTHOR')) {
+                    setIsAuthor(true);
                     if (user.roles.includes('TEACHER')) {
                         try {
                             const response = await instanceAxios.get<Task[]>(`/teacher/homework-tasks/${courseId}/${lessonId}`);
@@ -71,7 +72,6 @@ const LessonDetails = () => {
                         try {
                             const response = await instanceAxios.get<Task[]>(`/author/homework-tasks/${courseId}/${lessonId}`);
                             setTasks(response.data);
-                            setIsAuthor(true);
                         } catch (error) {
                             console.error(error);
                         }
@@ -104,6 +104,7 @@ const LessonDetails = () => {
     const fetchLesson = async () => {
         if (user) {
             if (user.roles.includes('AUTHOR')) {
+                setIsAuthor(true);
                 if (user.roles.includes('TEACHER')) {
                     try {
                         const response = await instanceAxios.get(`/teacher/lessons/${courseId}/${lessonId}`);
@@ -115,7 +116,6 @@ const LessonDetails = () => {
                     try {
                         const response = await instanceAxios.get(`/author/lessons/${courseId}/${lessonId}`);
                         setLesson(response.data);
-                        setIsAuthor(true);
                     } catch (error) {
                         console.error(error);
                     }
@@ -217,11 +217,11 @@ const LessonDetails = () => {
 
     return (
         <Box>
-            <Heading size="lg" textAlign="center" mb={4} padding="16px">
-                {isEditing ? "Редактирование урока" : lesson.lessonName}
-            </Heading>
             {isEditing ? (
-                <Flex justifyContent="center" alignItems="center" flexDir="column">
+                <Flex justifyContent="center" alignItems="center" flexDir="column" bg="#F9F9F9" boxShadow="sm" border="1px solid #ccc" borderRadius="8" margin="0 auto" mt={4}  w="20%">
+                    <Heading size="lg" textAlign="center" mb={4} padding="16px">
+                        {isEditing ? "Редактирование урока" : lesson.lessonName}
+                    </Heading>
                     {globalError && <div style={{color: 'red'}}>{globalError}</div>}
                     <Formik
                         initialValues={{lessonName: lesson.lessonName, content: lesson.content, num: lesson.num}}
@@ -258,7 +258,7 @@ const LessonDetails = () => {
                                     )}
                                 </Field>
                                 <Flex flexDir="row" justifyContent="space-between" gap={4}>
-                                    <Button mt={4} w="100%" color="white"
+                                    <Button mt={4} mb={4} w="100%" color="white"
                                             size="lg"
                                             bg="facebook.400"
                                             mx="auto"
@@ -273,7 +273,7 @@ const LessonDetails = () => {
                                             <Text style={{alignSelf: "center"}}>Вернуться </Text>
                                         </Flex>
                                     </Button>
-                                    <Button mt={4} w="100%" colorScheme="green"
+                                    <Button mt={4} mb={4} w="100%" colorScheme="green"
                                             size="lg" type='submit'
                                             mx="auto"
                                             display="block"
@@ -302,8 +302,13 @@ const LessonDetails = () => {
                       w="500px"
                       mx="auto"
                       borderRadius={8}
+                      bg="#F9F9F9" boxShadow="sm" border="1px solid #ccc"
+                      flexDir="column"
                 >
-                    <Flex alignItems="center" textAlign="center" flexDir="column" mx="auto" mt={3}>
+                    <Heading size="lg" textAlign="center" mb={4} padding="16px">
+                        {lesson.lessonName}
+                    </Heading>
+                    <Flex alignItems="center" textAlign="center" flexDir="column" mx="auto">
                         <Text fontSize="lg" mb={2}>
                             Статус:{" "}
                             {lesson.lessonStatus === "ACTIVE"
@@ -380,9 +385,10 @@ const LessonDetails = () => {
                             cursor="pointer"
                             color="gray"
                             boxShadow="md"
+                            bg="#F9F9F9"
                             onClick={() => navigate(`/tasks/create/${courseId}/${lessonId}`)}
                             _hover={{
-                                bg: "#F9F9F9",
+                                bg: "gray.200",
                             }}
                         >
                             <FiPlus size={32}/>

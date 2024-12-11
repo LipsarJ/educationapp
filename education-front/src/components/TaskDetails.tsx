@@ -70,6 +70,7 @@ const TaskDetails = () => {
     const fetchTask = async () => {
         if (user) {
             if (user.roles.includes('AUTHOR')) {
+                setIsAuthor(true);
                 if (user.roles.includes('TEACHER')) {
                     try {
                         const response = await instanceAxios.get<Task>(`/teacher/homework-tasks/${courseId}/${lessonId}/${homeworkTaskId}`);
@@ -81,7 +82,6 @@ const TaskDetails = () => {
                     try {
                         const response = await instanceAxios.get<Task>(`/author/homework-tasks/${courseId}/${lessonId}/${homeworkTaskId}`);
                         setTask(response.data);
-                        setIsAuthor(true);
                     } catch (error) {
                         console.error(error);
                     }
@@ -196,11 +196,11 @@ const TaskDetails = () => {
 
     return (
         <Box>
-            <Heading size="lg" textAlign="center" mb={4} padding="16px">
-                {isEditing ? "Редактирование задания" : task.title}
-            </Heading>
             {isEditing ? (
-                <Flex justifyContent="center" alignItems="center" flexDir="column">
+                <Flex justifyContent="center" margin="0 auto" mt={4} alignItems="center" flexDir="column" bg="#F9F9F9" boxShadow="sm" border="1px solid #ccc" borderRadius="8" w="30%">
+                    <Heading size="lg" textAlign="center" mb={4} padding="16px">
+                        {"Редактирование задания"}
+                    </Heading>
                     {globalError && <div style={{color: "red"}}>{globalError}</div>}
                     <Formik
                         initialValues={{
@@ -293,6 +293,7 @@ const TaskDetails = () => {
                                             setIsEditing(false);
                                             setGlobalError("");
                                         }}
+                                        mb={4}
                                     >
                                         <Flex flexDir="row" justifyContent="center" alignItems="center">
                                             <FiArrowLeftCircle
@@ -309,6 +310,7 @@ const TaskDetails = () => {
                                         type="submit"
                                         mx="auto"
                                         display="block"
+                                        mb={4}
                                     >
                                         {isLoading ? (
                                             <Flex alignItems="center" justifyContent="center">
@@ -333,7 +335,13 @@ const TaskDetails = () => {
                       borderWidth="1px"
                       borderColor="grey.500"
                       w="500px"
-                      mx="auto">
+                      flexDir="column"
+                      mx="auto"
+                      bg="#F9F9F9" boxShadow="sm" border="1px solid #ccc"
+                >
+                    <Heading size="lg" textAlign="center" padding="16px">
+                        {task.title}
+                    </Heading>
                     <Flex alignItems="center" textAlign="center" flexDir="column" mx="auto" mb={4} mt={3}>
                         <Text fontSize="lg"> Заголовок задания: {task.title}</Text>
                         <Text fontSize="lg"> Описание задания: {task.description}</Text>

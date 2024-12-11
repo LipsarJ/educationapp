@@ -270,16 +270,19 @@ const CourseDetails = () => {
 
         return (
             <Box>
-                <Heading size="lg" textAlign="center" mb={4} padding="16px">
-                    {isEditing ? "Редактирование курса" : course.courseName}
-                </Heading>
                 {isEditing ? (
-                    <Flex justifyContent="center" alignItems="center">
+                    <Flex justifyContent="center" alignItems="center" bg="#F9F9F9" w="22%" margin="0 auto" boxShadow="sm"
+                          border="1px solid #ccc" borderRadius="8" flexDir="column" mt={4} mb={4}>
+                        <Heading size="lg" textAlign="center" mb={4} padding="16px">
+                            {"Редактирование курса"}
+                        </Heading>
                         <Formik
                             initialValues={{courseName: course.courseName}}
                             onSubmit={handleSaveClick}
                             validateOnChange={false}
                             validateOnBlur={false}
+                            mt={5}
+                            mb={5}
                         >
                             {({handleSubmit}) => (
                                 <Form>
@@ -307,6 +310,7 @@ const CourseDetails = () => {
                                                         setIsEditing(false);
                                                         setChanged(false);
                                                     }}
+                                                    ml={2}
                                                 >
                                                     <FiArrowLeftCircle
                                                         color="black"
@@ -331,6 +335,7 @@ const CourseDetails = () => {
                                                             handleSubmit();
                                                         }
                                                     }}
+                                                    mr={2}
                                                 >
                                                     <FiCheckSquare
                                                         color={isChanged || isDragged && !error ? "green" : "gray"}
@@ -343,6 +348,9 @@ const CourseDetails = () => {
                                 </Form>
                             )}
                         </Formik>
+                        <Heading size="lg" textAlign="center" padding="20px" mt={10}>
+                            Уроки курса
+                        </Heading>
                     </Flex>
                 ) : (
                     <Flex justifyContent="center" mt={3} borderRadius={8}
@@ -350,8 +358,13 @@ const CourseDetails = () => {
                           borderColor="grey.500"
                           w="500px"
                           mx="auto"
+                          bg="#F9F9F9" boxShadow="sm" border="1px solid #ccc"
+                          flexDir="column"
                     >
-                        <Flex alignItems="center" flexDir="column" mt={3}>
+                        <Heading size="lg" textAlign="center" mb={4} padding="16px">
+                            {course.courseName}
+                        </Heading>
+                        <Flex alignItems="center" flexDir="column">
                             <Text fontSize="lg" mb={2}>
                                 Статус:{" "}
                                 {course.courseStatus === "TEMPLATE"
@@ -381,6 +394,7 @@ const CourseDetails = () => {
                                             setIsEditing(true);
                                         }}
                                         width="100%"
+                                        mr={3} ml={3}
                                     >
                                         Редактировать
                                     </Button>
@@ -396,6 +410,7 @@ const CourseDetails = () => {
                                                 });
                                             }}
                                             width="100%"
+                                            mr={3} ml={3}
                                         >
                                             Запустить курс
                                         </Button>
@@ -403,35 +418,37 @@ const CourseDetails = () => {
                                 </Flex>
                             )}
                             {user && user.roles.includes('TEACHER') && (
-                            <Flex justifyContent="center" w="100%" mt={4} gap={5} borderRadius={8}>
-                                <Button
-                                    color="white"
-                                    bg="blue.500"
-                                    leftIcon={<FiUsers/>}
-                                    onClick={() => {
-                                        navigate(`/users/${courseId}/${'STUDENT'}`)
-                                    }}
-                                    width="100%"
-                                >
-                                    Изменить студентов
-                                </Button>
-                                {course.courseStatus === Statuses.CourseStatusOngoing && (
+                                <Flex justifyContent="center"  mt={4} gap={5} borderRadius={8} w="100%">
                                     <Button
                                         color="white"
                                         bg="blue.500"
-                                        leftIcon={<FiBookOpen/>}
+                                        leftIcon={<FiUsers/>}
                                         onClick={() => {
-                                            navigate(`/courses/${courseId}/journal`)
+                                            navigate(`/users/${courseId}/${'STUDENT'}`)
                                         }}
                                         width="100%"
+                                        mr={3} ml={3}
                                     >
-                                        Журнал
+                                        Изменить студентов
                                     </Button>
-                                )}
-                            </Flex>
+                                    {course.courseStatus === Statuses.CourseStatusOngoing && (
+                                        <Button
+                                            color="white"
+                                            bg="blue.500"
+                                            leftIcon={<FiBookOpen/>}
+                                            onClick={() => {
+                                                navigate(`/courses/${courseId}/journal`)
+                                            }}
+                                            width="100%"
+                                            mr={3} ml={3}
+                                        >
+                                            Журнал
+                                        </Button>
+                                    )}
+                                </Flex>
                             )}
                             {user && user.roles.includes('AUTHOR') && isAuthor && (
-                                <Flex justifyContent="space-between" mt={4} gap={5} borderRadius={8}>
+                                <Flex justifyContent="center" mt={4} gap={5} borderRadius={8} w="100%">
                                     <Button
                                         color="white"
                                         bg="blue.500"
@@ -439,7 +456,8 @@ const CourseDetails = () => {
                                         onClick={() => {
                                             navigate(`/users/${courseId}/${'AUTHOR'}`)
                                         }}
-                                        width="50%"
+                                        width="100%"
+                                        mr={3} ml={3}
                                     >
                                         Изменить авторов
                                     </Button>
@@ -450,7 +468,8 @@ const CourseDetails = () => {
                                         onClick={() => {
                                             navigate(`/users/${courseId}/${'TEACHER'}`)
                                         }}
-                                        width="50%"
+                                        width="100%"
+                                        mr={3} ml={3}
                                     >
                                         Изменить учителей
                                     </Button>
@@ -499,9 +518,6 @@ const CourseDetails = () => {
 
                 {isEditing && (
                     <>
-                        <Heading size="lg" textAlign="center" padding="20px">
-                            Уроки курса
-                        </Heading>
                         <DragDropContext onDragEnd={handleDragEnd}>
                             <Droppable droppableId="lessonList" direction="horizontal">
                                 {(provided, snapshot) => (
@@ -544,9 +560,10 @@ const CourseDetails = () => {
                                             cursor="pointer"
                                             color="gray"
                                             boxShadow="md"
+                                            bg="#F9F9F9"
                                             onClick={() => navigate(`/lessons/create/${course.id}`)}
                                             _hover={{
-                                                bg: "#F9F9F9"
+                                                bg: "gray.200"
                                             }}
                                         >
                                             <FiPlus size={32}/>

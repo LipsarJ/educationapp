@@ -116,10 +116,11 @@ const Courses: React.FC = () => {
                                 justifyContent="center"
                                 cursor="pointer"
                                 color="gray"
+                                bg="#F9F9F9"
                                 boxShadow="md"
                                 onClick={() => navigate('/courses/create')}
                                 _hover={{
-                                    bg: "#F9F9F9"
+                                    bg: "gray.200"
                                 }}
                             >
                                 <FiPlus size={32}/>

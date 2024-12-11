@@ -55,9 +55,11 @@ export default function Sidebar({isSidebarOpen, isMobile}: { isSidebarOpen: bool
                             <NavItem title="Управление пользователями" icon={FiUsers}
                                      description="Управлениее пользователями" url="/admin/users"/>
                         )}
+                        {user && user.roles.includes('ADMIN') && (
+                            <NavItem title="Поиск сотрудников" icon={IoPeople} description="Поиск сотрудников"
+                                     url="/persons"/>
+                        )}
                         <NavItem title="Мои курсы" icon={FiBook} description="Список курсов" url="/courses"/>
-                        <NavItem title="Поиск сотрудников" icon={IoPeople} description="Поиск сотрудников"
-                                 url="/persons"/>
                         <div onClick={handleLogout} style={{cursor: 'pointer', width: "100%"}}>
                             <NavItem
                                 title="Выйти"

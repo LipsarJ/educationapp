@@ -59,9 +59,9 @@ const CreateCourse: React.FC = () => {
     };
 
     return (
-        <Container mt="5" centerContent>
-            <Heading mb={4} size="lg">
-                Создать курс
+        <Container mt="5" bg="#F9F9F9" centerContent boxShadow="sm" border="1px solid #ccc" borderRadius="8">
+            <Heading mt={4} mb={4} size="lg">
+                Создание курса
             </Heading>
             {globalError && <div style={{color: 'red'}}>{globalError}</div>}
             <Formik
@@ -127,6 +127,7 @@ const CreateCourse: React.FC = () => {
                         </Field>
                         <Button
                             mt={5}
+                            mb={5}
                             color="white"
                             bg="facebook.400"
                             size="lg"

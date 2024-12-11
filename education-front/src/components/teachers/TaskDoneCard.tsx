@@ -47,8 +47,9 @@ const TaskDoneCard: React.FC<{ taskDone: any }> = ({taskDone}) => {
             boxShadow="sm"
             w="10%"
             border="1px solid #ccc"
+            background = "#F9F9F9"
             _hover={{
-                bg: "#F9F9F9"
+                bg: "gray.200"
             }}
             as={NavLink} to={`/tasks-done/${courseId}/${lessonId}/${homeworkTaskId}/${taskDone.id}`}
         >

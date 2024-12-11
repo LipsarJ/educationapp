@@ -20,7 +20,7 @@ import {
     FormLabel,
     FormErrorMessage,
     Input as ChakraInput,
-    Icon, Select, Flex, Checkbox
+    Icon, Select, Flex, Checkbox, Heading
 } from '@chakra-ui/react';
 import {Formik, Field, Form, ErrorMessage} from 'formik';
 import {instanceAxios} from '../../utils/axiosConfig';
@@ -186,8 +186,11 @@ const UsersControl: React.FC = () => {
     }
 
     return (
-        <Container mt={5} maxW="container.xl" centerContent>
-            <Box w="full" p={4} borderWidth={1} borderRadius="md" borderColor={borderColor}>
+        <Container mt={5} maxW="container.xl" centerContent bg="#F9F9F9" boxShadow="sm" border="1px solid #ccc" borderRadius="8">
+            <Heading mt={4} size="lg">
+                Изменение данных пользователей
+            </Heading>
+            <Box w="full" p={4} borderWidth={1} borderRadius="md" borderColor={borderColor} mt={4}>
                 <VStack spacing={4}>
                     <Input
                         placeholder="Введите имя пользователя..."

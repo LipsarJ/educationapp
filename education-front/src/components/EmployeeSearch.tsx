@@ -1,15 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {
-    Box,
-    Container,
-    Input,
-    Button,
-    Text,
-    VStack,
-    Divider,
-    HStack,
-    useColorModeValue
-} from '@chakra-ui/react';
+import React, {useEffect, useState} from 'react';
+import {Box, Button, Container, Divider, HStack, Input, Text, useColorModeValue, VStack, Heading} from '@chakra-ui/react';
 import {instanceAxios} from '../utils/axiosConfig';
 
 interface Employee {
@@ -70,7 +60,11 @@ const EmployeeSearch: React.FC = () => {
     const isNextDisabled = total <= (page + 1) * pageSize;
 
     return (
-        <Container mt={5} maxW="container.xl" centerContent>
+        <Container mt={5} maxW="container.xl" centerContent bg="#F9F9F9" boxShadow="sm" border="1px solid #ccc"
+                   borderRadius="8">
+            <Heading mt={4} size="lg" mb={4}>
+                Поиск пользователей
+            </Heading>
             <Box w="full" p={4} borderWidth={1} borderRadius="md" borderColor={borderColor}>
                 <VStack spacing={4}>
                     <Input
@@ -101,9 +95,10 @@ const EmployeeSearch: React.FC = () => {
                     color="white"
                     bg="facebook.400"
                     onClick={() => {
-                       handlePrev()
+                        handlePrev()
                     }}
                     isDisabled={isPrevDisabled}
+                    mb={4}
                 >
                     Назад
                 </Button>
@@ -114,6 +109,7 @@ const EmployeeSearch: React.FC = () => {
                         handleNext();
                     }}
                     isDisabled={isNextDisabled}
+                    mb={4}
                 >
                     Вперед
                 </Button>
