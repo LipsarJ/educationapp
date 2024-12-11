@@ -37,6 +37,5 @@ out/
 ### VS Code ###
 .vscode/
 .env
-education-front/.env
-education-back/src/main/resources/application.yaml
-education-front/.env
+.education-front/.env
+.education-back/src/main/resources/application.yaml
