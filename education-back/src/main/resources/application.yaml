@@ -1,15 +1,15 @@
 minio:
   bucket: "education"
   client:
-    endpoint: "http://localhost:9000"
+    endpoint: "https://194.87.190.26:9000"
     accessKey: "admin"
     secretKey: "7D3ffTPfo0h705Nn"
 spring:
   datasource:
-    url: jdbc:postgresql://${DATABASE_HOST:localhost}:${DATABASE_PORT:5432}/${DATABASE_NAME:postgres}
+    url: jdbc:postgresql://${DATABASE_HOST:194.87.190.26}:${DATABASE_PORT:5432}/${DATABASE_NAME:education}
     driver-class-name: org.postgresql.Driver
-    username: ${DATABASE_USER:postgres}
-    password: ${DATABASE_PASSWORD:Notna20002}
+    username: ${DATABASE_USER:education}
+    password: ${DATABASE_PASSWORD:password}
   jpa:
     hibernate:
       ddl-auto: validate
