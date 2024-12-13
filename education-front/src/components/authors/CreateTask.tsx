@@ -1,12 +1,11 @@
 import React, {useState} from 'react';
 import {Field, Form, Formik} from 'formik';
-import {Button, Container, FormControl, FormErrorMessage, Heading, Input, FormLabel} from '@chakra-ui/react';
+import {Button, Container, FormControl, FormErrorMessage, FormLabel, Heading, Input} from '@chakra-ui/react';
 import {instanceAxios} from '../../utils/axiosConfig';
 import {useNavigate, useParams} from 'react-router-dom';
 import {ThreeDots} from 'react-loader-spinner';
 import {ErrorCodes} from '../auth/ErrorCodes'
 import {format} from "date-fns-tz";
-import {FiCheckSquare} from 'react-icons/fi'
 
 interface TaskData {
     title: string;

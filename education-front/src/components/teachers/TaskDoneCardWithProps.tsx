@@ -1,24 +1,6 @@
 import React, {useState} from "react";
 import {NavLink, useParams} from "react-router-dom";
-import {instanceAxios} from '../../utils/axiosConfig';
-import {
-    Box,
-    Button,
-    Divider,
-    Flex,
-    Heading,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    Text,
-} from "@chakra-ui/react";
-import {FiX} from "react-icons/fi";
-import {ErrorCodes} from "../auth/ErrorCodes";
-import {ThreeDots} from "react-loader-spinner";
+import {Flex, Heading, Text,} from "@chakra-ui/react";
 import {useAuth} from '../../contexts/AuthContext';
 
 const TaskDoneCardWithProps: React.FC<{ taskDone: any, homeworkTaskId: number }> = ({taskDone, homeworkTaskId}) => {
@@ -46,9 +28,10 @@ const TaskDoneCardWithProps: React.FC<{ taskDone: any, homeworkTaskId: number }>
             gap={3}
             boxShadow="sm"
             w="10%"
+            bg="#F9F9F9"
             border="1px solid #ccc"
             _hover={{
-                bg: "#F9F9F9"
+                bg: "gray.200"
             }}
             as={NavLink} to={`/tasks-done/${courseId}/${lessonId}/${homeworkTaskId}/${taskDone.id}`}
         >

@@ -28,7 +28,7 @@ interface User {
     roles: string[];
 }
 
-export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 
     const [isAuthenticated, setAuthenticated] = useState(() => {
         return JSON.parse(localStorage.getItem('isAuthenticated') || 'false');
@@ -46,7 +46,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, setAuthenticated, user, setUser }}>
+        <AuthContext.Provider value={{isAuthenticated, setAuthenticated, user, setUser}}>
             {children}
         </AuthContext.Provider>
     );

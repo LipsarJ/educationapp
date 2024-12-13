@@ -1,24 +1,6 @@
 import React, {useState} from "react";
 import {NavLink, useParams} from "react-router-dom";
-import {instanceAxios} from '../../utils/axiosConfig';
-import {
-    Box,
-    Button,
-    Divider,
-    Flex,
-    Heading,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    Text,
-} from "@chakra-ui/react";
-import {FiX} from "react-icons/fi";
-import {ErrorCodes} from "../auth/ErrorCodes";
-import {ThreeDots} from "react-loader-spinner";
+import {Flex, Heading, Text,} from "@chakra-ui/react";
 import {useAuth} from '../../contexts/AuthContext';
 
 const TaskDoneCard: React.FC<{ taskDone: any }> = ({taskDone}) => {
@@ -47,7 +29,7 @@ const TaskDoneCard: React.FC<{ taskDone: any }> = ({taskDone}) => {
             boxShadow="sm"
             w="10%"
             border="1px solid #ccc"
-            background = "#F9F9F9"
+            background="#F9F9F9"
             _hover={{
                 bg: "gray.200"
             }}

@@ -1,25 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {FiPlus, FiX} from 'react-icons/fi';
+import {FiPlus} from 'react-icons/fi';
 import {instanceAxios} from '../../utils/axiosConfig';
 import {useAuth} from '../../contexts/AuthContext';
-import {
-    Box,
-    Button,
-    Divider,
-    Flex,
-    Heading,
-    Modal,
-    ModalBody,
-    ModalCloseButton,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    ModalOverlay,
-    Text,
-} from '@chakra-ui/react';
-import {NavLink, useNavigate} from 'react-router-dom';
-import {Oval, ThreeDots} from 'react-loader-spinner';
-import {ErrorCodes} from '../auth/ErrorCodes'
+import {Flex, Heading,} from '@chakra-ui/react';
+import {useNavigate} from 'react-router-dom';
+import {Oval} from 'react-loader-spinner';
 import CourseCard from './CourseCard'
 
 interface Course {

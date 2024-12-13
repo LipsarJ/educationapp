@@ -66,7 +66,7 @@ const CourseCard: React.FC<{ course: any, onDelete: () => void }> = ({course, on
             flexDir="column"
             alignItems="center"
             gap={3}
-            background = "#F9F9F9"
+            background="#F9F9F9"
             boxShadow="sm"
             border="1px solid #ccc"
             _hover={{
@@ -75,7 +75,8 @@ const CourseCard: React.FC<{ course: any, onDelete: () => void }> = ({course, on
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
         >
-            <Heading mt={1} size="md" textAlign="center" cursor="pointer" textDecoration={isHover ?"underline" : "none"}>
+            <Heading mt={1} size="md" textAlign="center" cursor="pointer"
+                     textDecoration={isHover ? "underline" : "none"}>
                 <Text as={NavLink} to={`/courses/${course.id}`}>{course.courseName}</Text>
             </Heading>
 

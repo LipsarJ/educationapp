@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {instanceAxios} from '../utils/axiosConfig';
-import {Box, Button, Flex, FormControl, FormErrorMessage, Heading, Input, Text, FormLabel} from "@chakra-ui/react";
+import {Box, Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Text} from "@chakra-ui/react";
 import {Field, Form, Formik} from "formik";
-import {FiArrowLeftCircle, FiCheckSquare, FiClipboard, FiEdit2, FiPlus} from "react-icons/fi";
+import {FiArrowLeftCircle, FiCheckSquare, FiEdit2, FiPlus} from "react-icons/fi";
 import {ErrorCodes} from "./auth/ErrorCodes";
 import {Oval, ThreeDots} from "react-loader-spinner";
 import {format} from "date-fns-tz";
@@ -197,7 +197,8 @@ const TaskDetails = () => {
     return (
         <Box>
             {isEditing ? (
-                <Flex justifyContent="center" margin="0 auto" mt={4} alignItems="center" flexDir="column" bg="#F9F9F9" boxShadow="sm" border="1px solid #ccc" borderRadius="8" w="30%">
+                <Flex justifyContent="center" margin="0 auto" mt={4} alignItems="center" flexDir="column" bg="#F9F9F9"
+                      boxShadow="sm" border="1px solid #ccc" borderRadius="8" w="30%">
                     <Heading size="lg" textAlign="center" mb={4} padding="16px">
                         {"Редактирование задания"}
                     </Heading>
@@ -342,16 +343,13 @@ const TaskDetails = () => {
                     <Heading size="lg" textAlign="center" padding="16px">
                         {task.title}
                     </Heading>
-                    <Flex alignItems="center" textAlign="center" flexDir="column" mx="auto" mb={4} mt={3}>
-                        <Text fontSize="lg"> Заголовок задания: {task.title}</Text>
-                        <Text fontSize="lg"> Описание задания: {task.description}</Text>
-                        <Text fontSize="lg" mb={2}>
-                            Дата создания: {task.createDate}
-                        </Text>
-                        <Text fontSize="lg" mb={2}>
-                            Дата обновления: {task.updateDate}
-                        </Text>
-                        <Text fontSize="lg">Дата сдачи: {task.deadlineDate}</Text>
+                    <Flex alignItems="center" textAlign="center" flexDir="column" mx="auto" mb={4} mt={3} w="100%">
+                        <Heading fontSize="lg"> Заголовок задания:</Heading>
+                        <Text mt={2} mb={2} maxWidth="90%" noOfLines={40}>{task.title}</Text>
+                        <Heading fontSize="lg"> Описание задания:</Heading>
+                        <Text  mt={2} mb={2} maxWidth="90%" noOfLines={40}>{task.description}</Text>
+                        <Heading fontSize="lg">Дедлайн:</Heading>
+                        <Text mb={40}>{task.deadlineDate}</Text>
                         {user && user.roles.includes('AUTHOR') && isAuthor && (
                             <Button
                                 leftIcon={<FiEdit2/>}
@@ -361,11 +359,17 @@ const TaskDetails = () => {
                                 onClick={() => {
                                     setIsEditing(true);
                                 }}
-                                width="100%"
+                                width="90%"
                             >
                                 Редактировать
                             </Button>
                         )}
+                        <Text fontSize="lg" mt={4} mb={2}>
+                            Дата создания: {task.createDate}
+                        </Text>
+                        <Text fontSize="lg" mb={2}>
+                            Дата обновления: {task.updateDate}
+                        </Text>
                     </Flex>
                 </Flex>
             )}

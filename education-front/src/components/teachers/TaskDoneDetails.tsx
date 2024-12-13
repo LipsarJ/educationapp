@@ -16,7 +16,7 @@ import {
     ModalOverlay,
     Text,
 } from "@chakra-ui/react";
-import {FiClipboard, FiEdit2, FiCheckSquare} from "react-icons/fi";
+import {FiCheckSquare, FiEdit2} from "react-icons/fi";
 import {Oval} from "react-loader-spinner";
 import {useAuth} from "../../contexts/AuthContext";
 import {Field, Form, Formik} from "formik";
@@ -25,6 +25,7 @@ interface TeacherChecked {
     grade: number;
     teacherFeedback: string;
 }
+
 interface TaskDone {
     id: number;
     submissionDate: string;
@@ -165,12 +166,14 @@ const TaskDoneDetails = () => {
                         Дата загрузки:
                     </Heading>
                     <Text fontSize="lg"> {taskDone.submissionDate}</Text>
-                    <Heading size="lg" textAlign="center" mb={1}>
+                    <Heading size="lg" textAlign="center" mb={1} mt={4}>
                         Проверил:
                     </Heading>
-                    <Text mb={4}>{!taskDone.teacherInfoDto ? "-" : `${taskDone.teacherInfoDto.firstname} ${taskDone.teacherInfoDto.middlename} ${taskDone.teacherInfoDto.lastname}`}</Text>
+                    <Text
+                        mb={4}>{!taskDone.teacherInfoDto ? "-" : `${taskDone.teacherInfoDto.firstname} ${taskDone.teacherInfoDto.middlename} ${taskDone.teacherInfoDto.lastname}`}</Text>
                     {user && user.roles.includes("TEACHER") && (
-                        <Button mt={4} mb={3} colorScheme="blue" onClick={openRatingModal} width="70%" leftIcon={<FiEdit2/>}>
+                        <Button mt={4} mb={3} colorScheme="blue" onClick={openRatingModal} width="70%"
+                                leftIcon={<FiEdit2/>}>
                             {taskDone.grade !== null ? "Изменить оценку" : "Поставить оценку"}
                         </Button>
                     )}
@@ -238,7 +241,7 @@ const TaskDoneDetails = () => {
                                 </Field>
                             </ModalBody>
                             <ModalFooter>
-                                <Button colorScheme = "green" type="submit" mr={3} leftIcon = {<FiCheckSquare/>}>
+                                <Button colorScheme="green" type="submit" mr={3} leftIcon={<FiCheckSquare/>}>
                                     Сохранить
                                 </Button>
                                 <Button onClick={closeRatingModal}>Отмена</Button>

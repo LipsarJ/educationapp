@@ -1,5 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {Box, Button, Container, Divider, HStack, Input, Text, useColorModeValue, VStack, Heading} from '@chakra-ui/react';
+import {
+    Box,
+    Button,
+    Container,
+    Divider,
+    Heading,
+    HStack,
+    Input,
+    Text,
+    useColorModeValue,
+    VStack
+} from '@chakra-ui/react';
 import {instanceAxios} from '../utils/axiosConfig';
 
 interface Employee {
@@ -32,6 +43,19 @@ const EmployeeSearch: React.FC = () => {
         } catch (err) {
             console.error('Error fetching data', err);
         }
+    };
+    const filterEmployees = (text: string) => {
+        if (!text) fetchEmployees(0);
+
+        const filteredEmployees = employees.filter((employee) => {
+            const fullName = `${employee.firstname} ${employee.middlename} ${employee.lastname}`;
+            return (
+                (employee.username.toLowerCase().includes(text.toLowerCase()) || fullName.toLowerCase().includes(text.toLowerCase()))
+            );
+        });
+
+        setEmployees(filteredEmployees);
+        setTotal(filteredEmployees.length)
     };
 
     useEffect(() => {
@@ -70,7 +94,11 @@ const EmployeeSearch: React.FC = () => {
                     <Input
                         placeholder="Введите имя пользователя..."
                         value={searchText}
-                        onChange={(e) => setSearchText(e.target.value)}
+                        onChange={(e) => {
+                            const text = e.target.value;
+                            setSearchText(text);
+                            filterEmployees(text);
+                        }}
                     />
                     <Button color="white" bg="facebook.400" onClick={() => {
                         handleSearch();

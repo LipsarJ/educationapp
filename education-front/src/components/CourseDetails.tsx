@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import {instanceAxios} from '../utils/axiosConfig';
-import {Box, Button, Flex, FormControl, FormErrorMessage, FormLabel, Heading, Input, Text} from "@chakra-ui/react";
+import {Box, Button, Flex, FormControl, FormErrorMessage, Heading, Input, Text} from "@chakra-ui/react";
 import {Field, Form, Formik} from "formik";
-import {FiArrowLeftCircle, FiCheckSquare, FiEdit2, FiPlus, FiUsers, FiBookOpen} from "react-icons/fi";
+import {FiArrowLeftCircle, FiBookOpen, FiCheckSquare, FiEdit2, FiPlus, FiUsers} from "react-icons/fi";
 import {ErrorCodes} from "./auth/ErrorCodes";
 import {Oval} from "react-loader-spinner";
 import LessonCard from './authors/LessonCard';
@@ -418,7 +418,7 @@ const CourseDetails = () => {
                                 </Flex>
                             )}
                             {user && user.roles.includes('TEACHER') && (
-                                <Flex justifyContent="center"  mt={4} gap={5} borderRadius={8} w="100%">
+                                <Flex justifyContent="center" mt={4} gap={5} borderRadius={8} w="100%">
                                     <Button
                                         color="white"
                                         bg="blue.500"

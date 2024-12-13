@@ -68,7 +68,7 @@ const TaskCard: React.FC<{ task: any, onDelete: () => void }> = ({task, onDelete
             alignItems="center"
             gap={3}
             boxShadow="sm"
-            bg = "#F9F9F9"
+            bg="#F9F9F9"
             border="1px solid #ccc"
             _hover={{
                 bg: "gray.200"
@@ -76,7 +76,8 @@ const TaskCard: React.FC<{ task: any, onDelete: () => void }> = ({task, onDelete
             onMouseEnter={() => setHover(true)}
             onMouseLeave={() => setHover(false)}
         >
-            <Heading mt={1} size="md" textAlign="center" cursor="pointer" textDecoration={isHover ?"underline" : "none"}>
+            <Heading mt={1} size="md" textAlign="center" cursor="pointer"
+                     textDecoration={isHover ? "underline" : "none"}>
                 <Text as={NavLink} to={`/tasks/${courseId}/${lessonId}/${task.id}`}>{task.title}</Text>
             </Heading>
             {user && user.roles.includes('AUTHOR') && (

@@ -1,12 +1,12 @@
 import React from 'react';
-import { Box } from '@chakra-ui/react';
+import {Box} from '@chakra-ui/react';
 
 interface SidebarOverlayProps {
     isOpen: boolean;
     onClose: () => void;
 }
 
-const SidebarOverlay: React.FC<SidebarOverlayProps> = ({ isOpen, onClose }) => {
+const SidebarOverlay: React.FC<SidebarOverlayProps> = ({isOpen, onClose}) => {
     return isOpen ? (
         <Box
             position="fixed"

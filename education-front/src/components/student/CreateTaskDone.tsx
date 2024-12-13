@@ -1,17 +1,9 @@
-import React, { useState } from 'react';
-import { Field, Form, Formik } from 'formik';
-import {
-    Button,
-    Container,
-    FormControl,
-    FormErrorMessage,
-    Heading,
-    Input,
-    FormLabel
-} from '@chakra-ui/react';
-import { instanceAxios } from '../../utils/axiosConfig';
-import { useNavigate, useParams } from 'react-router-dom';
-import { ThreeDots } from 'react-loader-spinner';
+import React, {useState} from 'react';
+import {Field, Form, Formik} from 'formik';
+import {Button, Container, FormControl, FormErrorMessage, FormLabel, Heading, Input} from '@chakra-ui/react';
+import {instanceAxios} from '../../utils/axiosConfig';
+import {useNavigate, useParams} from 'react-router-dom';
+import {ThreeDots} from 'react-loader-spinner';
 
 interface TaskDoneData {
     studentDescription: string;
@@ -21,7 +13,7 @@ const CreateTaskDone: React.FC = () => {
     const [isLoading, setLoading] = useState(false);
     const [globalError, setGlobalError] = useState('');
     const [errorDescription, setErrorDescription] = useState('');
-    const { courseId, lessonId, homeworkTaskId } = useParams();
+    const {courseId, lessonId, homeworkTaskId} = useParams();
     const navigate = useNavigate();
 
     const validateDescription = (value: string) => {
@@ -56,7 +48,7 @@ const CreateTaskDone: React.FC = () => {
             <Heading mb={4} mt={4} size="lg">
                 Добавить решение
             </Heading>
-            {globalError && <div style={{ color: 'red' }}>{globalError}</div>}
+            {globalError && <div style={{color: 'red'}}>{globalError}</div>}
             <Formik
                 initialValues={{
                     studentDescription: '',
@@ -66,9 +58,9 @@ const CreateTaskDone: React.FC = () => {
                 onSubmit={handleCreateTaskDone}
             >
                 {() => (
-                    <Form style={{ minWidth: '100%' }}>
+                    <Form style={{minWidth: '100%'}}>
                         <Field name="studentDescription" validate={validateDescription}>
-                            {({ field, form }: { field: any; form: any }) => (
+                            {({field, form}: { field: any; form: any }) => (
                                 <FormControl
                                     width="100%"
                                     mt={0}
@@ -105,7 +97,7 @@ const CreateTaskDone: React.FC = () => {
                             mb={4}
                         >
                             {isLoading ? (
-                                <ThreeDots height={'10px'} color="white" />
+                                <ThreeDots height={'10px'} color="white"/>
                             ) : (
                                 <>Создать решение</>
                             )}

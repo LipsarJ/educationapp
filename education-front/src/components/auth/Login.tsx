@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { Button, Container, Heading, Input, Flex} from '@chakra-ui/react';
+import React, {useState} from 'react';
+import {Button, Container, Flex, Heading, Input} from '@chakra-ui/react';
 import axios from 'axios';
-import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate, Link } from 'react-router-dom';
+import {useAuth} from '../../contexts/AuthContext';
+import {Link, useNavigate} from 'react-router-dom';
 import {ErrorCodes} from './ErrorCodes';
 import {ThreeDots} from 'react-loader-spinner'
 
@@ -26,7 +26,7 @@ const Login: React.FC = () => {
     const handleLogin = async () => {
         setLoadingLogin(true);
         try {
-            const response = await axios.post(process.env.REACT_APP_API_URL+'/auth/signin', loginData, {
+            const response = await axios.post(process.env.REACT_APP_API_URL + '/auth/signin', loginData, {
                 withCredentials: true
             });
             setAuthenticated(true);
@@ -47,12 +47,12 @@ const Login: React.FC = () => {
     return (
         <Container centerContent mt="5" maxWidth="lg">
             <Heading mb={4} size="lg">Войти</Heading>
-            {error && <div style={{ color: 'red' }}>{error}</div>}
+            {error && <div style={{color: 'red'}}>{error}</div>}
             <Input
                 placeholder="Username"
                 size="md"
                 w="100%"
-                onChange={(e) => setLoginData({ ...loginData, username: e.target.value })}
+                onChange={(e) => setLoginData({...loginData, username: e.target.value})}
                 mb={3}
             />
             <Input
@@ -61,18 +61,19 @@ const Login: React.FC = () => {
                 size="md"
                 w="100%"
                 mb={3}
-                onChange={(e) => setLoginData({ ...loginData, password: e.target.value })}
+                onChange={(e) => setLoginData({...loginData, password: e.target.value})}
             />
             <Flex
                 w="100%"
             >
                 <Button bg="facebook.400" size="md" flex="1" mr={2} color="white" onClick={handleLogin}>
-                    {isLoadingLogin ? (<ThreeDots height={"10px"} color="white" />) : (<>
+                    {isLoadingLogin ? (<ThreeDots height={"10px"} color="white"/>) : (<>
                         Войти</>)}
                 </Button>
-                <Button as={Link} to="/register" bg="facebook.400" ml={2} size="md" flex="1" color="white" onClick={fetchDataRegister}>
-                    {isLoadingRegister ? (<ThreeDots height={"10px"} color="white" />) : (<>
-                    Регистрация</>)}
+                <Button as={Link} to="/register" bg="facebook.400" ml={2} size="md" flex="1" color="white"
+                        onClick={fetchDataRegister}>
+                    {isLoadingRegister ? (<ThreeDots height={"10px"} color="white"/>) : (<>
+                        Регистрация</>)}
                 </Button>
             </Flex>
         </Container>

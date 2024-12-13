@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Field, Form, Formik} from 'formik';
-import { Button, Container, FormControl, FormErrorMessage, Heading, Input, FormLabel  } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
-import { ErrorCodes } from './ErrorCodes';
+import React, {useState} from 'react';
+import {Field, Form, Formik} from 'formik';
+import {Button, Container, FormControl, FormErrorMessage, FormLabel, Heading, Input} from '@chakra-ui/react';
+import {useNavigate} from 'react-router-dom';
+import {ErrorCodes} from './ErrorCodes';
 import axios from 'axios';
-import { ThreeDots } from 'react-loader-spinner';
+import {ThreeDots} from 'react-loader-spinner';
 
 interface SignupData {
     username: string;
@@ -115,7 +115,7 @@ const Register: React.FC = () => {
             <Heading mb={4} size="lg">
                 Зарегистрироваться
             </Heading>
-            {globalError && <div style={{ color: 'red' }}>{globalError}</div>}
+            {globalError && <div style={{color: 'red'}}>{globalError}</div>}
             <Formik
                 initialValues={{
                     username: '',
@@ -130,9 +130,9 @@ const Register: React.FC = () => {
                 onSubmit={handleRegister}
             >
                 {() => (
-                    <Form style={{ minWidth: '100%' }}>
+                    <Form style={{minWidth: '100%'}}>
                         <Field name="username" validate={validateUsername}>
-                            {({ field, form }: { field: any; form: any }) => (
+                            {({field, form}: { field: any; form: any }) => (
 
                                 <FormControl
                                     isInvalid={errorUsername && form.touched.username}
@@ -159,7 +159,7 @@ const Register: React.FC = () => {
                         </Field>
 
                         <Field name="email" validate={validateEmail}>
-                            {({ field, form }: { field: any; form: any }) => (
+                            {({field, form}: { field: any; form: any }) => (
                                 <FormControl
                                     isInvalid={errorEmail && form.touched.email}
                                     width="100%"
@@ -184,7 +184,7 @@ const Register: React.FC = () => {
                             )}
                         </Field>
                         <Field name="password" validate={validatePassword}>
-                            {({ field, form }: { field: any; form: any }) => (
+                            {({field, form}: { field: any; form: any }) => (
                                 <FormControl
                                     isInvalid={errorPassword && form.touched.password}
                                     width="100%"
@@ -210,7 +210,7 @@ const Register: React.FC = () => {
                             )}
                         </Field>
                         <Field name="firstname" validate={validateFirstname}>
-                            {({ field, form }: { field: any; form: any }) => (
+                            {({field, form}: { field: any; form: any }) => (
                                 <FormControl
                                     isInvalid={errorFirstname && form.touched.firstname}
                                     width="100%"
@@ -235,7 +235,7 @@ const Register: React.FC = () => {
                             )}
                         </Field>
                         <Field name="lastname" validate={validateLastname}>
-                            {({ field, form }: { field: any; form: any }) => (
+                            {({field, form}: { field: any; form: any }) => (
                                 <FormControl
                                     isInvalid={errorLastname && form.touched.lastname}
                                     width="100%"
@@ -260,7 +260,7 @@ const Register: React.FC = () => {
                             )}
                         </Field>
                         <Field name="middlename" validate={validateMiddlename}>
-                            {({ field, form }: { field: any; form: any }) => (
+                            {({field, form}: { field: any; form: any }) => (
                                 <FormControl
                                     isInvalid={errorMiddlename && form.touched.middlename}
                                     width="100%"
@@ -294,7 +294,7 @@ const Register: React.FC = () => {
                             display="block"
                         >
                             {isLoading ? (
-                                <ThreeDots height={'10px'} color="white" />
+                                <ThreeDots height={'10px'} color="white"/>
                             ) : (
                                 <>Зарегистрироваться</>
                             )}

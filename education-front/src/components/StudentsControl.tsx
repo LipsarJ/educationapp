@@ -4,6 +4,7 @@ import {
     Container,
     Flex,
     Icon,
+    Input,
     Table,
     TableCaption,
     Tbody,
@@ -11,8 +12,7 @@ import {
     Text,
     Th,
     Thead,
-    Tr,
-    Input
+    Tr
 } from '@chakra-ui/react';
 import {instanceAxios} from '../utils/axiosConfig';
 import {useNavigate, useParams} from 'react-router-dom';
@@ -131,8 +131,9 @@ const StudentsControl = () => {
         </Flex>)
 
     return (
-        <Flex alignItems="center" justifyContent="center" flexDir="column">
-            <Flex minW="container.lg" mt={3} mb={3}>
+        <Flex alignItems="center" justifyContent="center" flexDir="column" bg="#F9F9F9" boxShadow="sm"
+              border="1px solid #ccc" borderRadius="8" margin="0 auto" mt={4} w="50%">
+            <Flex minW="container.lg" mt={4} mb={3}>
                 <Input
                     type="text"
                     placeholder="Поиск студента..."
@@ -201,6 +202,7 @@ const StudentsControl = () => {
                     }}
                     isDisabled={isPrevDisabled}
                     cursor={isPrevDisabled ? "not-allowed" : "pointer"}
+                    mb={4}
                 >
                     <Icon
                         as={FiArrowLeftCircle}
@@ -213,6 +215,7 @@ const StudentsControl = () => {
                     }}
                     isDisabled={isNextDisabled}
                     cursor={isNextDisabled ? "not-allowed" : "pointer"}
+                    mb={4}
                 >
                     <Icon
                         as={FiArrowRightCircle}

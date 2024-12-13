@@ -1,30 +1,33 @@
-import React, {useState, useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     Box,
-    Container,
-    Input,
     Button,
-    Text,
-    VStack,
+    Checkbox,
+    Container,
     Divider,
-    HStack,
-    useColorModeValue,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalCloseButton,
-    ModalBody,
-    ModalFooter,
+    Flex,
     FormControl,
-    FormLabel,
     FormErrorMessage,
+    FormLabel,
+    Heading,
+    HStack,
+    Icon,
+    Input,
     Input as ChakraInput,
-    Icon, Select, Flex, Checkbox, Heading
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Text,
+    useColorModeValue,
+    VStack
 } from '@chakra-ui/react';
-import {Formik, Field, Form, ErrorMessage} from 'formik';
+import {ErrorMessage, Field, Form, Formik} from 'formik';
 import {instanceAxios} from '../../utils/axiosConfig';
-import {FiArrowRightCircle, FiArrowLeftCircle, FiEdit2} from 'react-icons/fi'
+import {FiArrowLeftCircle, FiArrowRightCircle, FiEdit2} from 'react-icons/fi'
 import {Oval, ThreeDots} from 'react-loader-spinner';
 
 

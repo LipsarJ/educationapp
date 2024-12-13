@@ -218,7 +218,8 @@ const LessonDetails = () => {
     return (
         <Box>
             {isEditing ? (
-                <Flex justifyContent="center" alignItems="center" flexDir="column" bg="#F9F9F9" boxShadow="sm" border="1px solid #ccc" borderRadius="8" margin="0 auto" mt={4}  w="20%">
+                <Flex justifyContent="center" alignItems="center" flexDir="column" bg="#F9F9F9" boxShadow="sm"
+                      border="1px solid #ccc" borderRadius="8" margin="0 auto" mt={4} w="20%">
                     <Heading size="lg" textAlign="center" mb={4} padding="16px">
                         {isEditing ? "Редактирование урока" : lesson.lessonName}
                     </Heading>
@@ -308,20 +309,15 @@ const LessonDetails = () => {
                     <Heading size="lg" textAlign="center" mb={4} padding="16px">
                         {lesson.lessonName}
                     </Heading>
-                    <Flex alignItems="center" textAlign="center" flexDir="column" mx="auto">
+                    <Flex alignItems="center" textAlign="center" flexDir="column" mx="auto" w="100%">
                         <Text fontSize="lg" mb={2}>
                             Статус:{" "}
                             {lesson.lessonStatus === "ACTIVE"
                                 ? "Активен" : "Закончен"}
                         </Text>
-                        <Text fontSize="lg" mb={2}>
-                            Содержание урока: {lesson.content}
-                        </Text>
-                        <Text fontSize="lg" mb={2}>
-                            Дата создания: {lesson.createDate}
-                        </Text>
-                        <Text fontSize="lg" mb={2}>
-                            Дата обновления: {lesson.updateDate}
+                        <Heading fontSize="lg" mb={4}> Содержание урока:</Heading>
+                        <Text mb={2} maxWidth="90%" noOfLines={40}>
+                            {lesson.content}
                         </Text>
                         {user && user.roles.includes('AUTHOR') && isAuthor && (
                             <Flex mt={4} mb={4} flexDir="row" justifyContent="space-between" w="90%" gap={5}>
@@ -354,6 +350,12 @@ const LessonDetails = () => {
                                 )}
                             </Flex>
                         )}
+                        <Text fontSize="lg" mb={2}>
+                            Дата создания: {lesson.createDate}
+                        </Text>
+                        <Text fontSize="lg" mb={2}>
+                            Дата обновления: {lesson.updateDate}
+                        </Text>
                     </Flex>
                 </Flex>
             )}

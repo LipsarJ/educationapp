@@ -1,6 +1,6 @@
 import React from 'react';
 import {useAuth} from '../contexts/AuthContext';
-import {useNavigate, Link} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {Button, Flex, Heading, Text, VStack} from '@chakra-ui/react';
 
 const Home: React.FC = () => {

@@ -133,14 +133,14 @@ const UserList = () => {
             setSelectedRightUsers((prevSelected) =>
                 prevSelected.filter((id) => id !== userId)
             );
-        } else if(user && user.id !== userId){
+        } else if (user && user.id !== userId) {
             setSelectedRightUsers((prevSelected) => [...prevSelected, userId]);
         }
     };
 
     const moveUsersToLeft = () => {
         const usersToMove = usersRight.filter((user) => selectedRightUsers.includes(user.id));
-        if(!searchText) {
+        if (!searchText) {
             setUsersLeft((prevUsers) => [...prevUsers, ...usersToMove]);
             setUsersRight((prevUsers) => prevUsers.filter((user) => !selectedRightUsers.includes(user.id)));
             setSelectedRightUsers([]);
@@ -155,7 +155,7 @@ const UserList = () => {
 
     const moveUsersToRight = () => {
         const usersToMove = usersLeft.filter((user) => selectedLeftUsers.includes(user.id));
-        if(!searchText) {
+        if (!searchText) {
             setUsersRight((prevUsers) => [...prevUsers, ...usersToMove]);
             setUsersLeft((prevUsers) => prevUsers.filter((user) => !selectedLeftUsers.includes(user.id)));
             setSelectedLeftUsers([]);
@@ -263,7 +263,8 @@ const UserList = () => {
     const isNextDisabledRight = totalRight <= (pageRight + 1) * pageSizeRight;
 
     return (
-        <Flex flexDirection="column" alignItems="center" w="40%" margin="0 auto" mt={4} justifyContent="center" bg="#F9F9F9" boxShadow="sm" border="1px solid #ccc" borderRadius="8">
+        <Flex flexDirection="column" alignItems="center" w="40%" margin="0 auto" mt={4} justifyContent="center"
+              bg="#F9F9F9" boxShadow="sm" border="1px solid #ccc" borderRadius="8">
             <Heading size="lg" textAlign="center" mb={4} padding="16px">
                 {roleName === 'AUTHOR' ? (
                     <>Изменить авторов</>

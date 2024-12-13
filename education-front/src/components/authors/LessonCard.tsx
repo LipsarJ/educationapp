@@ -79,7 +79,8 @@ const LessonCard: React.FC<{ lesson: any, onDelete: () => void, provided: any }>
             {...(provided ? provided.draggableProps : {})}
             {...(provided ? provided.dragHandleProps : {})}
         >
-            <Heading mt={1} size="md" textAlign="center" cursor="pointer" textDecoration={isHover ?"underline" : "none"}>
+            <Heading mt={1} size="md" textAlign="center" cursor="pointer"
+                     textDecoration={isHover ? "underline" : "none"}>
                 <Text as={NavLink} to={`/lessons/${courseId}/${lesson.id}`}>{lesson.lessonName}</Text>
             </Heading>
             {user && user.roles.includes('AUTHOR') && (
